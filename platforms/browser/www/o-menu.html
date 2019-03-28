@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MENU</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="js/o-main.js"></script>
+  <link rel="stylesheet" type="text/css" href="css/o-main.css">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script></head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+<style >
+body{
+  background: #ffa31a;
+}
+
+.topnav a {
+  text-decoration: none;
+}
+
+.topnav a:hover{
+  background-color: #ffff1a;
+}
+
+.topnav .active {
+  background-color: #e6e600;
+  color: black;
+}
+
+.left {
+  width: 72%;
+  float: left;
+  padding: 10px;
+}
+
+.right {
+  width: 28%;
+  float: right;
+}
+
+.add {
+  background-color: #ff5c33;
+  border: none;
+  color: white;
+  padding: 10px 12px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 13px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.main {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  vertical-align: middle;
+  background: none;
+  padding: 0;
+  text-align: center;
+  overflow: hidden;
+}
+
+.t-cust{
+  width: 100%;
+  height: auto;
+  max-height: 60%;
+  background: #f2f2f2;
+  overflow-y: auto;
+  overflow: -moz-scrollbars-none; 
+  -ms-overflow-style: none;
+}
+
+.t-cust::-webkit-scrollbar { 
+  width: 0 !important 
+}
+
+.t-cust th {
+  width: 33.33%;
+}
+
+.t-title {
+  width: 100%;
+}
+
+.t-title th {
+  width: 33.33%;
+}
+
+#custname {
+  width: 40%;
+}
+
+.title {
+  height: 10%;
+}
+
+.title h1{
+  margin: 0;
+}
+
+.search {
+  width: 80%;
+} 
+
+ table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  border: 1px solid #ddd;
+}
+
+th, td {
+  text-align: center;
+  font-size: 1em;
+  padding: 8px;
+  border-style: solid;
+  border-width: 0 0 2px 0;
+  font-weight:lighter;
+}
+
+tr:nth-child(even){background-color: #f2f2f2;}
+tr{background-color: #f2f2f2;}
+
+/* The Close Button */
+.close {
+  padding: 2%;
+  color: black;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-header {
+  padding: 2px 10px;
+  background-color: #ffd11a;
+  color: black;
+  text-align: left;
+}
+.modal-header h2 {
+  font-size: 1.5em;
+}
+/* Modal Body */
+.modal-body {padding: 2px 16px;}
+
+/* Modal Footer */
+.modal-footer {
+  padding: 1px 16px;
+  background-color: #ffe680;
+  color: black;
+}
+
+/* Modal Content */
+.modal-content {
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: auto; /* Full width */
+  height: auto; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 0;
+  border: 1px solid #888;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  animation-name: animatetop;
+  animation-duration: 0.4s
+}
+
+.modal-backdrop {
+  z-index: -1;
+}
+
+/* Add Animation */
+@keyframes animatetop {
+  from {top: -300px; opacity: 0}
+  to {top: 0; opacity: 1}
+}
+
+.reg input{
+  width: 90%;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+.submit {
+  margin-top: 5%;
+  font-weight: bold;
+  font-size: 1em;
+  border-radius: 5px;
+  border: none;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+}
+
+.delete {
+  margin-top: 5%;
+  font-weight: bold;
+  font-size: 1em;
+  border-radius: 5px;
+  border: none;
+  padding: 10px 20px;
+  background-color: red;
+}
+
+.save {
+  margin-top: 5%;
+  font-weight: bold;
+  font-size: 1em;
+  border-radius: 5px;
+  border: none;
+  padding: 10px 20px;
+  background-color: blue;
+}
+
+.regbox {
+  margin:auto;
+  position: relative;
+  width: 100%
+  vertical-align: center;
+  background: white;
+  max-width: 400px;
+  padding: 45px 20px 35px 20px;
+  text-align: center;
+  text-align: center;
+}
+
+@media screen and (max-width: 1025px){
+  .modal-content {
+    margin: 15% 30%;
+  }
+  .left input {
+    width: 90%;
+  }
+}
+
+@media screen and (max-width: 769px){
+  .modal-content {
+    margin: 15% 20%;
+  }
+}
+
+@media screen and (max-width: 426px){
+  .modal-content {
+    margin: 15% auto;
+  }
+  .left input {
+    width: 80%;
+  }
+}
+
+@media screen and (max-width: 321px){
+  .title h1{
+    font-size: 2.2em;
+  }
+  .left{
+    width: 68%;
+  }
+  .right{
+    width: 32%;
+  }
+}
+</style>
+<body>
+
+<!-- Top Navigation Menu -->
+<div class="topnav" id="myTopnav">
+  <a href="o-menu.php" class="active">Food Menu</a>
+  <a href="o-main.php">Employee</a>
+  <a href="o-sub.php">Subscription</a>
+  <a href="o-hist.php">Order History</a>
+  <a href="o-out.php">Logout</a>
+  <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+    <i class="fa fa-bars"></i>
+  </a>
+</div>
+
+<div class="main">
+  <div class="title">
+  <h1>MENU OF THE DAY</h1>
+  </div>
+
+  <div class="left">
+    <form action="">
+        <input class="search" type="text" placeholder="Search.." name="search">
+        <button type="submit"><i class="fa fa-search"></i></button>
+    </form>
+  </div>
+
+  <div class="right">
+    <!-- php --><button class="add" id="myAdd" data-toggle="modal" data-target="#ADDfood">ADD FOOD</button><!-- php -->
+  </div>
+  <div class="t-title">
+    <table>
+      <tr>
+        <th id="custname">Food name</th>
+        <th>Price</th>
+        <th>Action</th>
+      </tr>
+    </table>
+  </div>
+  <div class="t-cust">
+   <table>
+    <!-- php -->
+    <tr>
+      <th id="custname">Japanese Siomai</th>
+      <th>P 8.00</th>
+      <th>
+        <button class="editbut" name="edit_btn" data-toggle="modal" data-target="#EDITfood"><i class="glyphicon glyphicon-edit"></i></button>
+        <button class="deletebut" name="delete_btn" data-toggle="modal" data-target="#DELfood"><i class="glyphicon glyphicon-trash"></i></button>
+      </th>
+    </tr>
+    <!-- php -->
+   </table>
+  </div>
+</div>
+
+
+<!-- Add Modal -->
+<div class="modal fade" id="ADDfood" role="dialog">
+<div class="modal-content">
+  <div class="modal-header">
+    <span class="close" data-dismiss="modal">&times;</span>
+    <h2>ADD FOOD</h2>
+  </div>
+  <div class="modal-body">
+   <div class="regbox">
+     <form class="reg" action="">
+       <label for="image">Select image of food</label>
+       <input type="file" name="image" id="image">
+       <input type="text" placeholder="Food name" name="fname" required>
+       <input type="text" placeholder="Food description" name="fdesc" required>
+       <input type="text" placeholder="Food price" name="fprice" required>
+       <button class="submit" name="submit_btn">SUBMIT</button>
+     </form>
+   </div>
+  </div>
+</div>
+</div>
+
+<div class="modal fade" id="EDITfood" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="close" data-dismiss="modal">&times;</span>
+        <h2>EDIT FOOD</h2>
+      </div>
+      <div class="modal-body">
+        <div class="regbox">
+          <form class="reg" action="">
+           <input type="text" placeholder="Food name" name="fname" value="Japanese Siomai" required>
+           <input type="text" placeholder="Food description" name="fdesc" value="Not your ordinary siomai" required>
+           <input type="text" placeholder="Food price" name="fprice" value="P 8.00" required>
+           <button class="save" name="edit_btn">SAVE</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="DELfood" role="dialog">
+  <div class="modal-dialog modal-lg">
+   <div class="modal-content">
+    <div class="modal-header">
+     <span class="close" data-dismiss="modal">&times;</span>
+     <h2>DELETE FOOD</h2>
+    </div>
+   <div class="modal-body">
+    <div class="regbox">
+     <p>Are you sure you want to delete this food?</p>
+     <button class="delete" name="del_btn">DELETE</button>
+     <button data-dismiss="modal">NO</button>
+    </div>
+   </div>
+   </div>
+  </div>
+</div>
+
+</div>
+
+</body>
+</html>

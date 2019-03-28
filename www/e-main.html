@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ORDERS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="js/o-main.js"></script>
+  <link rel="stylesheet" type="text/css" href="css/o-main.css">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script></head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+<style >
+* {
+  outline: none;
+}
+body{
+  background: #ffa31a;
+}
+
+.topnav a {
+  text-decoration: none;
+}
+
+.topnav a:hover{
+  background-color: #ffff1a;
+}
+
+.topnav .active {
+  background-color: #e6e600;
+  color: black;
+}
+
+.main {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  vertical-align: middle;
+  background: none;
+  padding: 0;
+  text-align: center;
+  overflow: hidden;
+}
+
+.t-cust{
+  width: 100%;
+  height: auto;
+  max-height: 60%;
+  background: #f2f2f2;
+  overflow-y: auto;
+  overflow: -moz-scrollbars-none; 
+  -ms-overflow-style: none;
+}
+
+.t-cust::-webkit-scrollbar { 
+  width: 0 !important 
+}
+
+.t-cust th {
+  width: 30%;
+}
+
+.t-title {
+  width: 100%;
+}
+
+.t-title th {
+  width: 30%;
+}
+
+#custname {
+  width: 50%;
+}
+
+.left {
+  margin: auto;
+  height: 8%;
+  width: 100%;
+  float: left;
+  padding: 10px;
+}
+
+.title {
+  height: 10%;
+}
+
+.title h1{
+  margin: 0;
+}
+
+.search {
+  width: 80%;
+}
+
+ table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  border: 1px solid #ddd;
+}
+
+th, td {
+  text-align: center;
+  font-size: 1em;
+  padding: 8px;
+  border-style: solid;
+  border-width: 0 0 2px 0;
+  font-weight:lighter;
+}
+
+tr:nth-child(even){background-color: #f2f2f2;}
+tr{background-color: #f2f2f2;}
+
+.add {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 10px 12px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 13px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+/* The Close Button */
+.close {
+  padding: 2%;
+  color: black;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-header {
+  padding: 1px 10px;
+  background-color: #ffd11a;
+  color: black;
+  text-align: center;
+}
+.modal-header h2 {
+  font-size: 3em;
+
+}
+/* Modal Body */
+.modal-body {
+  width: 100%;
+  height: 100%;
+  padding: 2px 16px;
+  position: fixed;
+}
+
+/* Modal Footer */
+.modal-footer {
+  width: 100%;
+  padding: 1px 3px;
+  background-color: #ffe680;
+  color: black;
+}
+
+/* Modal Content */
+.modal-content {
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: #fefefe;
+  margin: 0 auto;
+  padding: 0;
+  border: 1px solid #888;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  animation-name: animatetop;
+  animation-duration: 0.4s
+}
+
+.modal-backdrop {
+  z-index: -1;
+}
+
+/* Add Animation */
+@keyframes animatetop {
+  from {top: -300px; opacity: 0}
+  to {top: 0; opacity: 1}
+}
+
+.viewbut{
+  margin: 0 .5px;
+  background: none;
+  border: 0;
+}
+
+.labelT{
+  width:13%;
+  float:left;
+  font-size:1em;
+  text-align:left;
+}
+
+.labelV{
+  width:34%;
+  font-size:0.7em;
+  text-align:left;
+  float:left;
+  margin-top: 2%;
+}
+
+.labelC{
+  width:47%;
+  font-size:1em;
+  text-align:left;
+  float:left;
+}
+
+.labelP{
+  width:47%;
+  font-size:1em;
+  text-align:left;
+  float:left;
+}
+
+.TotalA{
+  width:40%;
+  float:right;
+  font-size:1em;
+  text-align:right;
+}
+
+.TotalP{
+  width:40%;
+  float:right;
+  font-size:1em;
+  text-align:right;
+}
+
+.TotalC{
+  width:40%;
+  float:right;
+  font-size:1em;
+  text-align:right;
+}
+
+.info {
+  height: 15%;
+  width: 100%;
+  text-align: left;
+}
+
+.info p{
+  margin: 0;
+}
+
+.header {
+  width: 100%;
+  padding: 1px 10px;
+  background-color: #ffd11a;
+  color: black;
+  text-align: center;
+  margin: 0 0;
+}
+
+.header h2 {
+  font-size: 4em;
+}
+
+.location {
+  margin: auto;
+  width: 100%;
+  height: 7%;
+}
+
+.timebox {
+  width: 80%;
+  margin:2px auto;
+  background: #ffb84d;
+  color: black;
+  font-size: 1.5em;
+  padding: 2px 5px;
+  text-align: center;
+}
+
+.order{
+  width: 100%;
+  height: 35%;
+  background: #f2f2f2;
+  overflow-y: auto;
+  overflow: -moz-scrollbars-none; 
+  -ms-overflow-style: none;
+}
+
+.order::-webkit-scrollbar { 
+  width: 0 !important 
+}
+
+.custInfo {
+  width: auto;
+  font-size: 2em;
+  color: black;
+  background-color: #ff9900;
+  padding: 6px 15px;
+  border: 1px solid;
+  border-color: #ff9900;
+  border-radius: 100px;
+  text-align: center;
+  margin: 5% auto;
+}
+
+.remove {
+  padding: 0;
+  background: none;
+  border: none;
+  margin: 0;
+  text-align: right;
+}
+
+.cust {
+  width: 100%;
+  text-align: left;
+}
+
+.cust p{
+  font-size: 1em;
+  margin: 5% 0;
+}
+
+.order tr > th > a {
+  color:black;
+  text-decoration: none;
+}
+
+.order tr > th > a:hover {
+  color:black;
+}
+
+#foodreq{
+  height: 30%;
+  margin: 50% auto;
+  width: 100%;
+}
+
+#custreq h2{
+  font-size: 20px;
+}
+
+#infoCUST {
+  margin: 15% auto;
+  height: 50%;
+}
+
+.request {
+  width: 100%;
+  padding: 5%;
+  font-size: 20px;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.Delibox {
+  width: 100%;
+  margin: 3% auto;
+  text-align: center;
+}
+
+.confirm {
+  font-size: 1em;
+  padding: 3% 5%;
+  background: green;
+  color: black;
+  border-radius: 3px;
+  border:none;
+  height: 5%;
+  margin: 0;
+}
+
+.regbox {
+  margin:auto;
+  position: relative;
+  width: 100%
+  vertical-align: center;
+  background: white;
+  max-width: 400px;
+  text-align: center;
+}
+
+@media screen and (max-width: 1025px){
+  body {
+    font-size: 3em;
+  }
+  .location {
+    width: 50%;
+    height: 3%;
+  }
+  .info {
+    height: 13%;
+  }
+  .order {  
+    height: 40%;
+  }
+  .labelT{
+    width: 10%;
+  }
+  .labelV {
+    margin-top: 1%;
+  }
+  .labelP {
+    position: relative;
+    left: -10%;
+  }
+}
+
+@media screen and (max-width: 769px){
+  body {
+    font-size: 2em;
+  }
+  .location {
+    height: 3%;
+  }
+  .info {
+    height: 13%;
+  }
+  .order {  
+    height: 40%;
+  }
+  .labelT {
+    width: 7%;
+  }
+  .labelV {
+    margin-top: .9%;
+  }
+  .labelP {
+    position: relative;
+    left: -7%;
+  }
+}
+
+@media screen and (max-width: 426px){
+  body {
+    font-size: 1.5em;
+  }
+  .location {
+    width: 70%;
+    height: 5%;
+  }
+  .info {
+    height: 13%;
+  }
+  .order {  
+    height: 40%;
+  }
+  .labelT{
+    width: 13%;
+  }
+  .labelT{
+    width: 13%;
+  }
+  .labelV {
+    margin-top: 1%;
+  }
+  .labelP {
+    position: relative;
+    left: -13%;
+  }
+}
+
+@media screen and (max-width: 376px){
+  body {
+    font-size: 1.5em;
+  }
+  .location {
+    width: 70%;
+    height: 5%;
+  }
+  .info {
+    height: 13%;
+  }
+  .order {  
+    height: 40%;
+  }
+  .labelT{
+    width: 13%;
+  }
+  .labelV {
+    margin-top: 1.5%; 
+    width: 32%;
+  }
+  .labelP {
+    position: relative;
+    left: -13%;
+  }
+}
+
+@media screen and (max-width: 321px){
+  body {
+    font-size: 1em;
+  }
+  .location {
+    width: 70%;
+    height: 5%;
+  }
+  .info {
+    height: 13%;
+  }
+  .order {  
+    height: 39%;
+  }
+  .labelT {
+    width: 13%;
+  }
+  .labelV {
+    margin-top: 1.2%;
+    width: 30%;
+  }
+  .labelP {
+    position: relative;
+    left: -13%;
+  }
+}
+</style>
+<body>
+<!-- Top Navigation Menu -->
+<div class="topnav" id="myTopnav">
+  <a href="e-main.html" class="active">Order list</a>
+  <a href="e-menu.html">Food Menu</a>
+  <a href="e-hist.html">Order History</a>
+  <a href="e-out.html">Logout</a>
+  <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+    <i class="fa fa-bars"></i>
+  </a>
+</div>
+
+<div class="main">
+  <div class="title">
+  <h1>Order list</h1>
+  </div>
+  <div class="left">
+    <form action="">
+        <input class="search" type="text" placeholder="Search.." name="search">
+        <button type="submit"><i class="fa fa-search"></i></button>
+    </form>
+  </div>
+
+  <div class="t-title">
+    <table>
+      <tr>
+        <th>Order ID</th>
+        <th id="custname">Full name</th>
+        <th>Action</th>
+      </tr>
+    </table>
+  </div>
+  <div class="t-cust">
+    <table>
+      <!-- php -->
+      <tr>
+        <th>BM3Y4</th>
+        <th id="custname">Junas Bangayan</th>
+        <th>
+          <button class="viewbut" name="view_btn" data-toggle="modal" data-target="#VIEWord"><i class="glyphicon glyphicon-eye-open"></i></button>
+        </th>
+      </tr>
+      <!-- php -->
+    </table>
+  </div>
+
+<!-- Add Modal -->
+<div class="modal fade" id="VIEWord" role="dialog">
+<div class="modal-content">
+  <span class="close" data-dismiss="modal">&times;</span>
+  <div class="header">
+    <!-- php --><h2>BM3Y4</h2><!-- php -->
+  </div>
+  <div class="modal-body">
+    <!-- php | API KEY -->
+    <div class="location">
+      <div class="timebox" data-toggle="modal" data-target="#LOCinfo">13 MINS | 6.5 KM</div>
+    </div>
+    <!-- php -->
+     <div class="info">
+       <center>
+        <button class="custInfo" data-toggle="modal" data-target="#CUSTinfo"><!-- php -->Junas Bangayan<!-- php --></button>
+       </center>
+     </div>
+     <div class="t-order">
+      <table>
+        <tr>
+          <th style="width: 67%; text-align: left;">Product</th>
+          <th style="width: 5%; text-align: center;">Qty</th>
+          <th style="width: 25%; text-align: left;">Price</th>
+          <th style="width: 3%; text-align: right;"></th>
+        </tr>
+      </table>
+     </div>
+     <div class="order">
+      <table>
+        <!-- php -->
+        <tr>
+          <th style="width: 67%; text-align: left;"><a data-toggle="modal" data-target="#CUSTreq">Bola-bola Siopao</a></th>
+          <th style="width: 5%; text-align: center;">4</th>
+          <th style="width: 25%; text-align: left;">P92.00</th>
+          <th style="width: 3%; text-align: right;"> <!-- php --><button class="remove" href="">&times;</button><!-- php --> </th>
+        </tr>
+      </table>
+     </div>
+    <div class="modal-footer">
+      <div class="labelT">TOTAL</div><div class="labelV">(Incl. VAT)</div>
+      <!-- php --><div class="TotalA">P 92.00</div><!-- php -->
+      <!-- php | when customer chooses on-spot payment method-->
+      <div class="labelP">PAYMENT</div><div class="TotalP">P 100.00</div>
+      <div class="labelC">CHANGE</div><div class="TotalC">P 8.00</div>
+      <!-- php -->
+    </div>
+    <div class="Delibox">
+      <button class="confirm" data-dismiss="modal" data-toggle="modal" data-target="#Dprompt">DELIVERED</button>
+    </div>
+  </div>
+ </div>
+</div>
+
+<!-- php -->
+<div class="modal fade" id="Dprompt" role="dialog">
+  <div class="modal-content" id="foodreq">
+    <div class="modal-header" id="custreq">
+      <span class="close" data-dismiss="modal">&times;</span>
+      <h2>BOLA-BOLA SIOPAO</h2>
+    </div>
+    <div class="modal-body" id="qtyFOOD">
+      <div class="regbox">
+        <p>Are you sure that the customer received the order?</p>
+        <button class="confirm" name="del_btn" data-dismiss="modal">YES</button>
+        <button data-dismiss="modal" data-toggle="modal" data-target="#VIEWord" >NO</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- php -->
+      
+<!-- php -->
+<div class="modal fade" id="CUSTreq" role="dialog">
+  <div class="modal-content" id="foodreq">
+    <div class="modal-header" id="custreq">
+      <span class="close" data-dismiss="modal">&times;</span>
+      <h2>BOLA-BOLA SIOPAO</h2>
+    </div>
+    <div class="modal-body" id="qtyFOOD">
+      <p class="request">Please add more sauce. Thank you!</p>
+    </div>
+  </div>
+</div>
+<!-- php -->
+
+<div class="modal fade" id="CUSTinfo" role="dialog">
+<div class="modal-content" id="infoCUST">
+  <div class="modal-header">
+    <span class="close" data-dismiss="modal">&times;</span>
+    <!-- php --><h2>BM3Y4</h2><!-- php -->
+  </div>
+  <div class="modal-body">
+   <div class="cust">
+    <!-- php -->
+    <p>Customer name: Junas Bangayan</p>
+    <p>Address: Minglanilla</p>
+    <p>Contact number: 09771215342</p>
+    <p>Email: junasmarcil@gmail.com</p>
+    <p>Date & Time: April 20, 2018 | 4:20 PM</p> 
+    <!-- php -->
+   </div>
+  </div>
+</div>
+</div>
+
+<div class="modal fade" id="LOCinfo" role="dialog">
+<div class="modal-content" id="infoCUST">
+  <div class="modal-header">
+    <span class="close" data-dismiss="modal">&times;</span>
+    <!-- php --><h2>BM3Y4</h2><!-- php -->
+  </div>
+  <div class="modal-body">
+   <div class="cust">
+    <!-- php | location of customer -->
+   </div>
+  </div>
+</div>
+</div>
+
+</div>
+
+</body>
+</html>
