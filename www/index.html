@@ -4,41 +4,21 @@
   <title>CRAPI</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" type="text/css" href="css/login.css">
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 </head>
-<style>
-body {
-  background: #ffa31a;
-}
-.submit {
-  margin-top: 5%;
-  font-weight: bold;
-  font-size: 1em;
-  border-radius: 5px;
-  border: none;
-  padding: 10px 20px;
-  background-color: #ffad33;
-}
-.message a {
-  text-decoration: none;
-  color:orange;
-}
-</style>
-<body>
+<body id="bg-color">
+    <div class="title">
+        <h1>CraPi</h1>
+    </div>
 
-<div class="title">
-<h1>CraPi</h1>
-</div>
-
-<div class="container">
-  <form class="login" action="">
-    <input type="email" placeholder="Email address" name="email" required>
-    <input type="password" placeholder="Password" name="password" required>
-    <button class="submit" name="login_btn">LOGIN</button> 
-    <p class="message">Not registered? <a href="c-reg.html"> Sign up</a></p>
-    <p class="regis">Owned a restaurant? <a href="o-reg.html"> SUBSCRIBE HERE!</a></p>
-  </form>
-</div>
-
+    <div class="container">
+        <form class="login" action="e-menu.html">
+            <input type="email" placeholder="Email address" name="email" required>
+            <input type="password" placeholder="Password" name="password" required>
+            <button class="submit" name="login_btn">LOGIN</button> 
+            <p class="message">Not registered? <a href="c-reg.html"> Sign up</a></p>
+            <p class="regis">Owned a restaurant? <a href="o-reg.html"> SUBSCRIBE HERE!</a></p>
+        </form>
+    </div>
+<script src="lib/jquery.min.js"></script>
 </body>
 </html>
