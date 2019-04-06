@@ -4,7 +4,7 @@
     <title>OWNERS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/o-main.css">
-    <link rel="stylesheet" href="css/style.css" type="text/css" >
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/a-style.css" type="text/css" >
     <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css" >
     <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" >
@@ -14,8 +14,8 @@
 
 <div class="sidenav">
   <h1>CRAPI APPLICATION</h1>
-  <a href="a-main.html" class="active">OWNERS</a>
-  <a href="a-pend.html">PENDING ACCOUNTS</a>
+  <a href="a-main.html">OWNERS</a>
+  <a href="a-pend.html"  class="active">PENDING ACCOUNTS</a>
   <a href="a-emp.html">EMPLOYEES</a>
   <a href="a-cust.html">CUSTOMERS</a>
   <a href="a-hist.html">ORDER HISTORY</a>
@@ -30,14 +30,6 @@
                     <input class="search" type="text" placeholder="Search.." name="search">
                     <button type="button" class="btn-light search-btn-light" style="padding: 10px !important;" id="fsearch"><i class="fa fa-search"></i></button>
                 </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="right">
-        <div class="row">
-            <div class="col-sm-12 col-md-12 col-lg-12">
-                <button class="add" data-toggle="modal" data-target="#ADDown">ADD RESTAURANT OWNER</button>
             </div>
         </div>
     </div>
@@ -61,8 +53,8 @@
       <th>Dis N' Dat</th>
       <th>09771215342</th>
       <th>
-        <button class="editbut" name="edit_btn" data-toggle="modal" data-target="#EDITown"><i class="glyphicon glyphicon-edit"></i></button>
-        <button class="deletebut" name="delete_btn" data-toggle="modal" data-target="#DELown"><i class="glyphicon glyphicon-trash"></i></button>
+          <button class="approve" data-toggle="modal" data-target="#ADDown">Approved</button>
+          <button class="decline" data-toggle="modal" data-target="#ADDown">Declined</button>
       </th>
     </tr>
     <!-- php -->
@@ -139,6 +131,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="DELown" role="dialog">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content" >
