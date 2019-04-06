@@ -43,30 +43,20 @@
     </div>
   </div>
 
-  <div class="t-title">
-   <table>
-    <tr>
-      <th>Full name</th>
-      <th>Address</th>
-      <th>Contact number</th>
-      <th>Action</th>
-    </tr>
-   </table>
-  </div>
-  <div class="t-own">
-  	<table>
-    <!-- php -->
-    <tr>
-      <th>Junas Bangayan</th>
-      <th>Minglanilla, Cebu</th>
-      <th>09771215342</th>
-      <th>
-        <button class="editbut" name="edit_btn" data-toggle="modal" data-target="#EDITcust"><i class="glyphicon glyphicon-edit"></i></button>
-        <button class="deletebut" name="delete_btn" data-toggle="modal" data-target="#DELcust"><i class="glyphicon glyphicon-trash"></i></button>
-      </th>
-    </tr>
-    <!-- php -->
-  </table>
+    <div class="container-fluid">        
+        <table class="table">
+            <thead>
+              <tr>
+                <th id="custname">Full name</th>
+                <th>Address</th>
+                <th>Contact number</th>
+                <th class="text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody id="product-data">
+            </tbody>
+        </table>
+    </div>
   </div>
 </div>
 
@@ -102,11 +92,11 @@
       <div class="modal-body">
         <div class="regbox">
           <form class="reg" action="">
-           <input type="text" placeholder="Full name" name="name" value="Junas Bangayan" required>       
-           <input type="text" placeholder="Home address" name="address" value="Minglanilla, Cebu" required>
-           <input type="text" placeholder="Contact number" name="contact" value="09771215342" required>
-           <input type="email" placeholder="Email address" name="email" value="junasmarcil@gmail.com" required>
-           <input type="password" placeholder="Password" name="password" value="**********" required>
+           <input type="text" placeholder="Full name" name="name" required>       
+           <input type="text" placeholder="Home address" name="address" required>
+           <input type="text" placeholder="Contact number" name="contact" required>
+           <input type="email" placeholder="Email address" name="email" required>
+           <input type="password" placeholder="Password" name="password" required>
            <button class="save" name="edit_btn">SAVE</button>
           </form>
         </div>
@@ -136,5 +126,50 @@
 <script src="lib/jquery.min.js"></script>
 <script src="lib/bootstrap.min.js"></script>
 <script src="js/jquery.growl.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $.ajax({
+            url: "http://localhost/order_list.php"
+        }).then(function(data) {
+            console.log(data[0]);
+            var html = "";
+            $.each( data, function( key, value ) {
+                if (value.id == undefined) {
+                        return false;
+                }
+                html +='<tr '+value.id+'><th>' + value.full_name +'</th><th>' + value.address +'</th><th>' + value.contact_no +'</th><th class="text-right"><button class="editbut" onclick="edit_details(\'' + value.full_name + '\',\'' + value.address + '\',\'' + value.email_address + '\',\'' + value.contact_no + '\'); return false;" name="edit_btn" data-toggle="modal" data-target="#EDITcust"><i class="glyphicon glyphicon-edit"></i></button><button class="deletebut" name="delete_btn" data-toggle="modal" data-target="#DELcust"><i class="glyphicon glyphicon-trash"></i></button></th></tr>';
+            });
+            $('#product-data').empty().append(html);
+        });
+    });
+
+    function edit_details(full_name,address,email_address,contact_no) {
+        $('input[name="name"]').val(full_name);
+        $('input[name="address"]').val(address);
+        $('input[name="contact"]').val(contact_no);
+        $('input[name="email"]').val(email_address);
+        $('input[name="password"]').val('*****');
+    }
+
+    $("#fsearch").click(function(){
+        var fsearch = $('input[name="search"]').val();     
+        $.ajax({
+            type: "GET",
+            data: {fsearch:fsearch},
+            contentType: "application/json; charset=utf-8",
+            url: "http://localhost/search_list.php",
+            success: function(data){
+                var html = "";
+                $.each( data, function( key, value ) {
+                    if (value.id == undefined) {
+                        return false;
+                    }
+                    html +='<tr '+value.id+'><th>' + value.full_name +'</th><th>' + value.address +'</th><th>' + value.contact_no +'</th><th class="text-right"><button class="editbut" name="edit_btn" data-toggle="modal" data-target="#EDITcust"><i class="glyphicon glyphicon-edit"></i></button><button class="deletebut" name="delete_btn" data-toggle="modal" data-target="#DELcust"><i class="glyphicon glyphicon-trash"></i></button></th></tr>';
+                });
+                $('#product-data').empty().append(html);
+            }
+        });
+    });
+</script>
 </body>
 </html>
