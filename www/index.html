@@ -61,6 +61,9 @@
                 } 
                 window.location.href = 'o-main.html';
             break;
+            default:
+                $.growl.error({ message: "Username and password not registered!" });
+                return false;
         }
     });
 
