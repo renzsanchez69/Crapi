@@ -40,13 +40,6 @@
             return false;
         }
         switch(mail) {
-            case 'admin@gmail.com':
-                if (mail != 'admin@gmail.com' && pw != 'admin123') {
-                    $.growl.error({ message: "Invalid username and password!" });
-                    return false;
-                } 
-                window.location.href = 'a-main.html';
-            break;
             case 'customer@gmail.com':
                 if (mail != 'customer@gmail.com' && pw != 'admin123') {
                     $.growl.error({ message: "Invalid username and password!" });
