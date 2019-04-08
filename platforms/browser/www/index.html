@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>CRAPI</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1,connect-src *">
 	<link rel="stylesheet" type="text/css" href="css/login.css">
     <link href="css/jquery.growl.css" rel="stylesheet" type="text/css" />
 </head>
@@ -26,45 +26,76 @@
     $('#log_form').click(function(e){
         e.preventDefault();
         var mail = $('input[name="email"]').val();
-        if (!validateEmail(mail)) {
-             $.growl.error({ message: "Invalid email address!" });
-            return false;
-        }
         var pw = $('input[name="password"]').val();
         if (!mail) {
             $.growl.error({ message: "Email address must not be empty!" });
             return false;
+        } else {
+            if (!validateEmail(mail)) {
+                $.growl.error({ message: "Invalid email address!" });
+                return false;
+            }
         }
         if (!pw) {
             $.growl.error({ message: "Password must not be empty!" });
             return false;
         }
-        switch(mail) {
-            case 'customer@gmail.com':
-                if (mail != 'customer@gmail.com' && pw != 'admin123') {
-                    $.growl.error({ message: "Invalid username and password!" });
+        $.ajax({
+            type: "POST",
+            url: "http://localhost/login.php", // Example 
+            data: { "email":mail, "pw": pw },
+            success: function(result_data) {
+                console.log(result_data.data);
+                if (result_data.data.result == 'OK') {
+
+                    if (typeof(Storage) !== "undefined") {
+                        // Code for localStorage/sessionStorage.
+                        localStorage.setItem("token_id", result_data.data.password);
+                        window.location.href = 'c-main.html';
+
+                    } else {
+                        $.growl.error({ message: "Sorry! browser not supported!" });
+
+                    }
+
+                    $.growl.notice({ message: result_data.data.message });
+                } else {
+                    $.growl.error({ message: result_data.data.message });
                     return false;
-                } 
-                window.location.href = 'c-main.html';
-            break;
-            case 'employee@gmail.com':
-                if (mail != 'employee@gmail.com' && pw != 'admin123') {
-                    $.growl.error({ message: "Invalid username and password!" });
-                    return false;
-                } 
-                window.location.href = 'e-main.html';
-            break;
-            case 'owners@gmail.com':
-                if (mail != 'owners@gmail.com' && pw != 'admin123') {
-                    $.growl.error({ message: "Invalid username and password!" });
-                    return false;
-                } 
-                window.location.href = 'o-main.html';
-            break;
-            default:
-                $.growl.error({ message: "Username and password not registered!" });
+
+                }
+            },
+            error: function(e) {
+                $.growl.error({ message: e.message});
                 return false;
-        }
+            }
+        });
+       /* $.ajax({
+            url: "http://localhost/login.php", 
+            type: "POST",
+            data: {mail:mail,pw:pw},
+            contentType: "application/json; charset=utf-8",
+        }).then(function(result_data) {
+            if (result_data.data.result == 'OK') {
+
+                if (typeof(Storage) !== "undefined") {
+                    // Code for localStorage/sessionStorage.
+                    localStorage.setItem("token_id", result_data.data.password);
+                    window.location.href = 'c-main.html';
+
+                } else {
+                    $.growl.error({ message: "Sorry! browser not supported!" });
+
+                }
+
+                $.growl.notice({ message: "Your logged successfully!" });
+            } else {
+                $.growl.error({ message: "Account not yet exist!" });
+                return false;
+
+            }
+
+        });*/
     });
 
     function validateEmail(email) {

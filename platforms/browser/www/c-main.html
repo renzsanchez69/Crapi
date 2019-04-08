@@ -18,7 +18,7 @@
     <a href="c-main.html" class="active">Orders</a>
     <a href="c-locate.html">Locate</a>
     <a href="c-hist.html">Order History</a>
-    <a href="index.html">Logout</a>
+    <a href="index.html" id="log-out">Logout</a>
     <a href="javascript:void(0);" class="icon" onclick="myFunction()">
     <i class="fa fa-bars"></i>
     </a>
@@ -31,7 +31,7 @@
   <div class="left">
     <form action="">
         <input class="search" type="text" placeholder="Search.." name="search">
-        <button type="submit"><i class="fa fa-search"></i></button>
+        <button type="button" class="btn-light search-btn-light" style="padding: 10px !important;" id="fsearch"><i class="fa fa-search"></i></button>
     </form>
   </div>
   <div class="right">
@@ -96,7 +96,7 @@
   <div class="modal-body" id="addfood">
       <form action="">
         <input class="search" type="text" placeholder="Search.." name="search">
-        <button type="submit"><i class="fa fa-search"></i></button>
+        <button type="button" class="btn-light search-btn-light" style="padding: 10px !important;" id="afsearch"><i class="fa fa-search"></i></button>
       </form>
     <div class="t-order">
       <table class="menu">
@@ -203,6 +203,15 @@
 
 </body>
 <script>
+$(function(){
+    if (localStorage.getItem("token_id") === null) {
+        window.location.href = 'index.html';
+    }
+});
+$('#log-out').click(function(e){
+    localStorage.removeItem("token_id");
+    window.location.href = 'c-main.html';
+});
 function wcqib_refresh_quantity_increments() {
     jQuery("div.quantity:not(.buttons_added), td.quantity:not(.buttons_added)").each(function(a, b) {
         var c = jQuery(b);
