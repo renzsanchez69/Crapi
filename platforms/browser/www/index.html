@@ -42,14 +42,13 @@
         }
         $.ajax({
             type: "POST",
-            url: "http://localhost/login.php", // Example 
+            url: "http://localhost/crapi_admin/api/home/users", // Example 
             data: { "email":mail, "pw": pw },
             success: function(result_data) {
-                console.log(result_data.data);
-                if (result_data.data.result == 'OK') {
+                if (result_data.result == 'OK') {
 
                     if (typeof(Storage) !== "undefined") {
-                        localStorage.setItem("token_id", result_data.data.password);
+                        localStorage.setItem("token_id", result_data.password);
                         window.location.href = 'c-main.html';
 
                     } else {
@@ -57,15 +56,15 @@
 
                     }
 
-                    $.growl.notice({ message: result_data.data.message });
+                    $.growl.notice({ message: result_data.message });
                 } else {
-                    $.growl.error({ message: result_data.data.message });
+                    $.growl.error({ message: result_data.message });
                     return false;
 
                 }
             },
             error: function(e) {
-                $.growl.error({ message: e.message});
+                $.growl.error({ message: "Connection refused!"});
                 return false;
             }
         });
