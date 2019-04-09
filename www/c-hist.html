@@ -116,7 +116,7 @@
                 if (value.order_id == undefined) {
                         return false;
                 }
-                html +='<tr '+value.order_id+'><th id="custname">' + value.order_date +'</th><th>' + value.full_name +'</th><th class="text-right"><button class="viewbut" name="view_btn" onclick="view_details(\'' + value.order_date + '\',\'' + value.full_name + '\',\'' + value.description + '\',\'' + value.address + '\',\'' + value.email_address + '\',\'' + value.contact_no + '\',\'' + value.food_name + '\','+value.price+','+value.qty+','+value.order_hash+'); return false;"><i class="glyphicon glyphicon-eye-open"></i></th></tr>';
+                html +='<tr '+value.order_id+'><th id="custname">' + value.full_name  +'</th><th>' +value.order_date +'</th><th class="text-right"><button class="viewbut" name="view_btn" onclick="view_details(\'' + value.order_date + '\',\'' + value.full_name + '\',\'' + value.description + '\',\'' + value.address + '\',\'' + value.email_address + '\',\'' + value.contact_no + '\',\'' + value.food_name + '\','+value.price+','+value.qty+','+value.order_hash+'); return false;"><i class="glyphicon glyphicon-eye-open"></i></th></tr>';
             });
             $('#product-data').empty().append(html);
         });
