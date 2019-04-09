@@ -517,3 +517,15 @@ tr{background-color: #f2f2f2;}
     margin: 0 32%;
   }
 }
+
+.tfoot-bgcolor,.font-text{
+  background-color: #C0C0C0;
+  font-weight: bold !important;
+}
+.font-text-amt{
+  background-color: #ffff00;
+  font-weight: bold !important;
+}
+.o-btn{
+  padding: 4% 11% !important;
+}
