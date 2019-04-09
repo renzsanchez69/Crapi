@@ -30,7 +30,7 @@
 
   <div class="left">
     <form action="">
-        <input class="search" type="text" placeholder="Search.." name="search">
+        <input class="search" name="search" type="text" placeholder="Search.." name="search">
         <button type="button" class="btn-light search-btn-light" style="padding: 10px !important;" id="fsearch"><i class="fa fa-search"></i></button>
     </form>
   </div>
@@ -47,85 +47,32 @@
                 <th class="text-right">Action</th>
             </tr>
         </thead>
-        <tfoot>
-            <tr class="tfoot-bgcolor">
-                <th class="text-left font-text">TOTAL:</th>
-                <th class="text-center"></th>
-                <th class="text-center font-text-amt">P 24.00</th>
-                <th class="text-right font-text-amt"></th>
-            </tr>
-        </tfoot>
-        <tbody>
-            <tr>
-                <td class="text-left">Japanese Siomai</td>
-                <td class="text-center">3</td>
-                <td class="text-center">P8.00</td>
-                <td class="text-right">
-                    <button class="editbut" name="edit_btn" data-toggle="modal" data-target="#EDITfood"><i class="glyphicon glyphicon-edit"></i></button>
-                    <button class="deletebut" name="delete_btn" data-toggle="modal" data-target="#DELfood"><i class="glyphicon glyphicon-trash"></i></button>
-                </td>
-            </tr>
+        <tbody id="tbody-order-list">
         </tbody>
+        <tfoot id="fbody-order-list">
+        </tfoot>
     </table>
   </div>
-<div class="container-fluid">
-    <div class="col-sm-12 col-md-6 col-lg-6">
-        <br>
-        <button class="PayMaya" name="order_btn" data-toggle="modal" data-target="#VIEWloc">CREDIT</button> 
-    </div>
-    <div class="col-sm-12 col-md-6 col-lg-6">
-        <br>
-        <button class="OnSpot" name="order_btn" data-toggle="modal" data-target="#VIEWloc">CASH</button> 
-    </div>
-    <br>
-    <br>
-    <div class="col-sm-12 col-md-4 col-lg-4">
-    </div>
-    <div class="col-sm-12 col-md-4 col-lg-4">
-        <br>
-        <button class="b-order o-btn" name="order_btn" data-toggle="modal" data-target="#VIEWloc">ORDER</button>
-    </div>
-    <div class="col-sm-12 col-md-4 col-lg-4">
-    </div>
-</div>
-<!--<div class="t-title">
-    <table>
-      <tr>
-        <th id="custname">Food name</th>
-        <th>QTY</th>
-        <th>Price</th>
-        <th>Action</th>
-      </tr>
-    </table>
+  <div class="container-fluid">
+      <div class="col-sm-12 col-md-6 col-lg-6">
+          <br>
+          <button class="PayMaya" name="order_btn" data-toggle="modal" data-target="#VIEWloc">CREDIT</button> 
+      </div>
+      <div class="col-sm-12 col-md-6 col-lg-6">
+          <br>
+          <button class="OnSpot" name="order_btn" data-toggle="modal" data-target="#VIEWloc">CASH</button> 
+      </div>
+      <br>
+      <br>
+      <div class="col-sm-12 col-md-4 col-lg-4">
+      </div>
+      <div class="col-sm-12 col-md-4 col-lg-4">
+          <br>
+          <button class="b-order o-btn" name="order_btn" data-toggle="modal" data-target="#VIEWloc">ORDER</button>
+      </div>
+      <div class="col-sm-12 col-md-4 col-lg-4">
+      </div>
   </div>
-  <div class="t-cust">
-    <table>
-        <tr>
-        <th id="custname">Japanese Siomai</th>
-        <th>3</th>
-        <th>P8.00</th>
-        <th>
-          <button class="editbut" name="edit_btn" data-toggle="modal" data-target="#EDITfood"><i class="glyphicon glyphicon-edit"></i></button>
-          <button class="deletebut" name="delete_btn" data-toggle="modal" data-target="#DELfood"><i class="glyphicon glyphicon-trash"></i></button>
-        </th>
-      </tr>
-    </table>
-  </div>
-    <div class="t-but">
-    <div class="t-foot">
-      <div class="label">TOTAL:</div>
-      <div class="amount">P 24.00</div>
-    </div>
-    <div class="b-left">
-      <button class="OnSpot" name="order_btn" data-toggle="modal" data-target="#VIEWloc">CASH</button> 
-    </div>
-    <div class="b-right">
-      <button class="PayMaya" name="order_btn" data-toggle="modal" data-target="#VIEWloc">CREDIT</button> 
-    </div>
-    </div>
-    <div class="t-but">
-  <button class="b-order" name="order_btn" data-toggle="modal" data-target="#VIEWloc">ORDER</button>
-</div> -->
 </div>
 <!-- Add Modal -->
 <div class="modal fade" id="ADDfood" role="dialog">
@@ -205,7 +152,7 @@
   <div class="modal-content" id="foodqty">
   <div class="modal-header">
     <span class="close" data-dismiss="modal">&times;</span>
-    <h2>JAPANESE SIOMAI</h2>
+    <h2 id="order-name">JAPANESE SIOMAI</h2>
   </div>
   <div class="modal-body" id="qtyFOOD">
     <div style="width: 100%;vertical-align: middle;text-align:center;">
@@ -229,13 +176,14 @@
     <div class="modal-content">
       <div class="modal-header">
         <span class="close" data-dismiss="modal">&times;</span>
+        <input type="hidden" name="del-order" id="del-order">
         <h2>Delete Food</h2>
       </div>
       <div class="modal-body">
         <div class="regbox">
           <p>Are you sure you want to remove this food?</p>
-          <button class="delete" name="del_btn">REMOVE</button>
-          <button data-dismiss="modal">NO</button>
+          <button class="delete btn-danger" onclick="del_order(); return false;" name="del_btn">REMOVE</button>
+          <button class="no-delete"data-dismiss="modal">NO</button>
         </div>
       </div>
     </div>
@@ -248,11 +196,162 @@ $(function(){
     if (localStorage.getItem("token_id") === null) {
         window.location.href = 'index.html';
     }
+    get_data();
 });
 $('#log-out').click(function(e){
     localStorage.removeItem("token_id");
+    localStorage.removeItem("uid");
     window.location.href = 'c-main.html';
 });
+// - Get menu data
+function get_data() {
+    $.ajax({
+        type: "POST",
+        url: "http://localhost/crapi_admin/api/orders/order_list", // Example 
+        data: { "usr_id":localStorage.getItem("uid")},
+        success: function(result_data) {
+            console.log(result_data);
+            if (result_data.result == 'OK') {
+                var tbody_html = "";
+                var fbody_html = "";
+                var total_qty = 0;
+                var total_price
+                $.each( result_data.data, function( key, value ) {
+                        total_qty = (value.qty + value.qty);
+                        total_price = (value.price + value.price);
+                        tbody_html +='<tr id="'+value.id+'">';
+                            tbody_html +='<td class="text-left">'+value.food_name+'</td>';
+                            tbody_html +='<td class="text-center">'+value.qty+'</td>';
+                            tbody_html +='<td class="text-center">P'+value.price.toFixed(2)+'</td>';
+                            tbody_html +='<td class="text-right">';
+                                tbody_html +='<button class="editbut" name="edit_btn" onclick="edit_order('+value.id+',\'' + value.food_name + '\'); return false;"><i class="glyphicon glyphicon-edit"></i></button>';
+                                tbody_html +='<button class="deletebut" name="delete_btn" onclick="delete_order('+value.id+'); return false;"><i class="glyphicon glyphicon-trash"></i></button>';
+                            tbody_html +='</td>';
+                        tbody_html +='</tr>';
+
+                }); 
+                    var total = (total_qty * total_price);
+                    fbody_html +='<tr class="tfoot-bgcolor  font-text-amt">';
+                        fbody_html +='<th class="text-left font-text  font-text-amt">TOTAL</th>';
+                        fbody_html +='<th class="text-center"></th>';
+                        fbody_html +='<th class="text-center">P '+total.toFixed(2)+'</th>';
+                        fbody_html +='<th class="text-right font-text-amt"></th>';
+                    fbody_html +='</tr>';
+                $('#tbody-order-list').empty().append(tbody_html);
+                $('#fbody-order-list').empty().append(fbody_html);
+            }
+        },
+        error: function(e) {
+            $.growl.error({ message: "Connection refused!"});
+            return false;
+        }
+    });
+}
+
+// -Edit menu data
+function edit_order(oid,oname) {
+    $('#EDITfood').modal('show');
+    $('#order-name').text(oname);
+}
+
+// -Delete menu data
+function delete_order(oid) {
+    $('#DELfood').modal('show'); 
+    $('#del-order').val(oid);
+}
+
+function del_order() {
+    $('#DELfood').modal('hide'); 
+    var oid = $('#del-order').val();
+    $('#'+oid).remove();
+    $.ajax({
+        type: "POST",
+        url: "http://localhost/crapi_admin/api/orders/order_delete", // Example 
+        data: { "oid":oid},
+        success: function(result_data){
+            console.log(result_data);
+            if (result_data.result == 'OK') {
+                var tbody_html = "";
+                var fbody_html = "";
+                var total_qty = 0;
+                var total_price
+                $.each( result_data.data, function( key, value ) {
+                        total_qty = (value.qty + value.qty);
+                        total_price = (value.price + value.price);
+                        tbody_html +='<tr id="'+value.id+'">';
+                            tbody_html +='<td class="text-left">'+value.food_name+'</td>';
+                            tbody_html +='<td class="text-center">'+value.qty+'</td>';
+                            tbody_html +='<td class="text-center">P'+value.price.toFixed(2)+'</td>';
+                            tbody_html +='<td class="text-right">';
+                                tbody_html +='<button class="editbut" name="edit_btn" onclick="edit_order('+value.id+',\'' + value.food_name + '\'); return false;"><i class="glyphicon glyphicon-edit"></i></button>';
+                                tbody_html +='<button class="deletebut" name="delete_btn" onclick="delete_order('+value.id+'); return false;"><i class="glyphicon glyphicon-trash"></i></button>';
+                            tbody_html +='</td>';
+                        tbody_html +='</tr>';
+
+                }); 
+                    var total = (total_qty * total_price);
+                    fbody_html +='<tr class="tfoot-bgcolor  font-text-amt">';
+                        fbody_html +='<th class="text-left font-text  font-text-amt">TOTAL</th>';
+                        fbody_html +='<th class="text-center"></th>';
+                        fbody_html +='<th class="text-center">P '+total.toFixed(2)+'</th>';
+                        fbody_html +='<th class="text-right font-text-amt"></th>';
+                    fbody_html +='</tr>';
+                $('#tbody-order-list').empty().append(tbody_html);
+                $('#fbody-order-list').empty().append(fbody_html);
+            }
+        },
+        error: function(e) {
+            $.growl.error({ message: "Connection refused!"});
+            return false;
+        }
+    });
+}
+
+$("#fsearch").click(function(){
+    var fsearch = $('input[name="search"]').val();     
+    $.ajax({
+        type: "POST",
+        url: "http://localhost/crapi_admin/api/orders/order_search", // Example 
+        data: { "search":fsearch},
+        success: function(result_data){
+            console.log(result_data);
+            if (result_data.result == 'OK') {
+                var tbody_html = "";
+                var fbody_html = "";
+                var total_qty = 0;
+                var total_price
+                $.each( result_data.data, function( key, value ) {
+                        total_qty = (value.qty + value.qty);
+                        total_price = (value.price + value.price);
+                        tbody_html +='<tr id="'+value.id+'">';
+                            tbody_html +='<td class="text-left">'+value.food_name+'</td>';
+                            tbody_html +='<td class="text-center">'+value.qty+'</td>';
+                            tbody_html +='<td class="text-center">P'+value.price.toFixed(2)+'</td>';
+                            tbody_html +='<td class="text-right">';
+                                tbody_html +='<button class="editbut" name="edit_btn" onclick="edit_order('+value.id+',\'' + value.food_name + '\'); return false;"><i class="glyphicon glyphicon-edit"></i></button>';
+                                tbody_html +='<button class="deletebut" name="delete_btn" onclick="delete_order('+value.id+'); return false;"><i class="glyphicon glyphicon-trash"></i></button>';
+                            tbody_html +='</td>';
+                        tbody_html +='</tr>';
+
+                }); 
+                    var total = (total_qty * total_price);
+                    fbody_html +='<tr class="tfoot-bgcolor  font-text-amt">';
+                        fbody_html +='<th class="text-left font-text  font-text-amt">TOTAL</th>';
+                        fbody_html +='<th class="text-center"></th>';
+                        fbody_html +='<th class="text-center">P '+total.toFixed(2)+'</th>';
+                        fbody_html +='<th class="text-right font-text-amt"></th>';
+                    fbody_html +='</tr>';
+                $('#tbody-order-list').empty().append(tbody_html);
+                $('#fbody-order-list').empty().append(fbody_html);
+            }
+        },
+        error: function(e) {
+            $.growl.error({ message: "Connection refused!"});
+            return false;
+        }
+    });
+});
+
 function wcqib_refresh_quantity_increments() {
     jQuery("div.quantity:not(.buttons_added), td.quantity:not(.buttons_added)").each(function(a, b) {
         var c = jQuery(b);

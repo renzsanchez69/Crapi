@@ -49,6 +49,7 @@
 
                     if (typeof(Storage) !== "undefined") {
                         localStorage.setItem("token_id", result_data.password);
+                        localStorage.setItem("uid", result_data.id);
                         window.location.href = 'c-main.html';
 
                     } else {

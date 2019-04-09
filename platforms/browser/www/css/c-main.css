@@ -355,6 +355,15 @@ tr{background-color: #f2f2f2;}
   padding: 10px 20px;
   background-color: red;
 }
+.no-delete {
+  margin-top: 5% !important;
+  font-weight: bold !important;
+  font-size: 1em !important;
+  border-radius: 5px !important;
+  border: none !important;
+  padding: 10px 40px !important;
+  background-color: #e0dede !important;
+}
 
 .save {
   margin-top: 5%;
