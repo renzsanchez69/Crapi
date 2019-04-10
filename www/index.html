@@ -42,14 +42,13 @@
         }
         $.ajax({
             type: "POST",
-            url: "http://localhost/crapi_admin/api/home/users", // Example 
+            url: "http://localhost/crapi_admin/api/customers/users", // Example 
             data: { "email":mail, "pw": pw },
             success: function(result_data) {
                 if (result_data.result == 'OK') {
 
                     if (typeof(Storage) !== "undefined") {
                         localStorage.setItem("token_id", result_data.password);
-                        localStorage.setItem("uid", result_data.id);
                         window.location.href = 'c-main.html';
 
                     } else {

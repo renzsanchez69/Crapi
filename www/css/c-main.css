@@ -290,9 +290,6 @@ tr{background-color: #f2f2f2;}
   width: 30%;
 }
 
-#Fname {
-  width: 50%;
-}
 
 .order tr > th > a {
   color:black;
@@ -537,4 +534,9 @@ tr{background-color: #f2f2f2;}
 }
 .o-btn{
   padding: 4% 11% !important;
+}
+
+.Fname {
+  width: 50%;
+ cursor: pointer !important;
 }
