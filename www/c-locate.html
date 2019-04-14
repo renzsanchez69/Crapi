@@ -10,6 +10,13 @@
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <script src="lib/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            if (localStorage.getItem("login_token") === null) {
+              window.location.href = 'index.html';
+            }
+        });
+    </script>
     <script src="lib/bootstrap.min.js"></script>
     <style>
       /* Always set the map height explicitly to define the size of the div
@@ -32,7 +39,7 @@
   <a href="c-locate.html" class="active">Locate</a>
   <a href="c-hist.html">Order History</a>
   <a href="c-main.html">Orders</a>
-  <a href="index.html">Logout</a>
+  <a href="index.html"  id="log-out">Logout</a>
   <a href="javascript:void(0);" class="icon" onclick="myFunction()">
     <i class="fa fa-bars"></i>
   </a>
@@ -60,6 +67,13 @@
 <script src="js/o-main.js"></script>
 <script src="lib/jquery.min.js"></script>
 <script src="lib/bootstrap.min.js"></script>
+<script type="text/javascript">
+  $('#log-out').click(function(e){
+      localStorage.removeItem("login_token");
+      localStorage.removeItem("role");
+      window.location.href = 'c-main.html';
+  });
+</script>
 <script>
   var map, marker, geocoder;
   function getDefaultMapCenter() {

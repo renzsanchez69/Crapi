@@ -10,6 +10,15 @@
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link href="css/jquery.growl.css" rel="stylesheet" type="text/css" />
+    <script src="lib/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            if (localStorage.getItem("login_token") === null) {
+              window.location.href = 'index.html';
+            }
+        });
+    </script>
+</head>
 <body>
 
 <!-- Top Navigation Menu -->
@@ -190,24 +199,20 @@
 </div>
 
 </body>
-<script src="lib/jquery.min.js"></script>
 <script src="lib/bootstrap.min.js"></script>
 <script src="js/jquery.growl.js" type="text/javascript"></script>
 <script>
 $(function(){
-    if (localStorage.getItem("token_id") === null) {
-        window.location.href = 'index.html';
-    }
     get_data();
 });
 $('#log-out').click(function(e){
-    localStorage.removeItem("token_id");
+    localStorage.removeItem("login_token");
     localStorage.removeItem("role");
-    window.location.href = 'c-main.html';
+    window.location.href = 'index.html';
 });
 // - Get menu data
 function get_data() {
-    var token = localStorage.getItem("token_id");
+    var token = localStorage.getItem("login_token");
     var role  = localStorage.getItem("role");
     $.ajax({
         type: "POST",
@@ -267,7 +272,7 @@ function delete_order(oid) {
 function del_order() {
     $('#DELfood').modal('hide'); 
     var oid = $('#del-order').val();
-    var token = localStorage.getItem("token_id");
+    var token = localStorage.getItem("login_token");
     var role  = localStorage.getItem("role");
     $('#'+oid).remove();
     $.ajax({
@@ -315,7 +320,7 @@ function del_order() {
 
 $("#fsearch").click(function(){
     var fsearch = $('input[name="search"]').val(); 
-    var token = localStorage.getItem("token_id");
+    var token = localStorage.getItem("login_token");
     var role  = localStorage.getItem("role");    
     $.ajax({
         type: "POST",
@@ -364,7 +369,7 @@ $("#fsearch").click(function(){
 // -Add menu data
 function add_order() {
     $('#ADDfood').modal('show');
-    var token = localStorage.getItem("token_id");
+    var token = localStorage.getItem("login_token");
     var role  = localStorage.getItem("role");    
     $.ajax({
         type: "POST",
@@ -398,7 +403,7 @@ function menu_order(id,fname) {
 
 $("#afsearch").click(function(){
     var fsearch = $('input[name="search"]').val();
-    var token = localStorage.getItem("token_id");
+    var token = localStorage.getItem("login_token");
     var role  = localStorage.getItem("role");     
     $.ajax({
         type: "POST",

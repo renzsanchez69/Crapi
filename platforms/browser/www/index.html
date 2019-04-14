@@ -42,23 +42,41 @@
         }
         $.ajax({
             type: "POST",
-            url: "http://localhost/crapi_admin/api/customers/users", // Example 
-            data: { "email":mail, "pw": pw },
+            url: "http://localhost/crapi_admin/api/login/login", // Example 
+            data: { "email":mail, "password": pw },
             success: function(result_data) {
+                console.log(result_data);
                 if (result_data.result == 'OK') {
 
                     if (typeof(Storage) !== "undefined") {
-                        localStorage.setItem("token_id", result_data.password);
-                        window.location.href = 'c-main.html';
+                        localStorage.setItem("login_token", result_data.token);
+                        localStorage.setItem("role", result_data.role);
+                        
+                        switch(result_data.role) {
+                            case 'employee':
+                                window.location.href = 'a-main.html';
+                            break;
+                            case 'owner':
+                                window.location.href = 'o-main.html';
+                            break;
+                            case 'customer':
+                                window.location.href = 'c-main.html';
+                            break;
+                            case 'admin':
+                                window.location.href = 'admin.html';
+                            break;
+                          default:
+                            $.growl.error({ message: "Sorry! your account not recognize!" });
+                        }
 
                     } else {
                         $.growl.error({ message: "Sorry! browser not supported!" });
 
                     }
 
-                    $.growl.notice({ message: result_data.message });
+                    $.growl.notice({ message: result_data.description });
                 } else {
-                    $.growl.error({ message: result_data.message });
+                    $.growl.error({ message: result_data.description });
                     return false;
 
                 }
