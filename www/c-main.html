@@ -202,14 +202,17 @@ $(function(){
 });
 $('#log-out').click(function(e){
     localStorage.removeItem("token_id");
+    localStorage.removeItem("role");
     window.location.href = 'c-main.html';
 });
 // - Get menu data
 function get_data() {
+    var token = localStorage.getItem("token_id");
+    var role  = localStorage.getItem("role");
     $.ajax({
         type: "POST",
         url: "http://localhost/crapi_admin/api/orders/order_list", // Example 
-        data: { "token":localStorage.getItem("token_id")},
+        data: { "token":token,"role":role},
         success: function(result_data) {
             console.log(result_data);
             if (result_data.result == 'OK') {
@@ -221,11 +224,11 @@ function get_data() {
                         total_qty = (value.qty + value.qty);
                         total_price = (value.price + value.price);
                         tbody_html +='<tr id="'+value.id+'">';
-                            tbody_html +='<td class="text-left">'+value.food_name+'</td>';
+                            tbody_html +='<td class="text-left">'+value.name+'</td>';
                             tbody_html +='<td class="text-center">'+value.qty+'</td>';
                             tbody_html +='<td class="text-center">P'+value.price.toFixed(2)+'</td>';
                             tbody_html +='<td class="text-right">';
-                                tbody_html +='<button class="editbut" name="edit_btn" onclick="edit_order('+value.id+',\'' + value.food_name + '\'); return false;"><i class="glyphicon glyphicon-edit"></i></button>';
+                                tbody_html +='<button class="editbut" name="edit_btn" onclick="edit_order('+value.id+',\'' + value.name + '\'); return false;"><i class="glyphicon glyphicon-edit"></i></button>';
                                 tbody_html +='<button class="deletebut" name="delete_btn" onclick="delete_order('+value.id+'); return false;"><i class="glyphicon glyphicon-trash"></i></button>';
                             tbody_html +='</td>';
                         tbody_html +='</tr>';
@@ -264,11 +267,13 @@ function delete_order(oid) {
 function del_order() {
     $('#DELfood').modal('hide'); 
     var oid = $('#del-order').val();
+    var token = localStorage.getItem("token_id");
+    var role  = localStorage.getItem("role");
     $('#'+oid).remove();
     $.ajax({
         type: "POST",
         url: "http://localhost/crapi_admin/api/orders/order_delete", // Example 
-        data: { "oid":oid,"token":localStorage.getItem("token_id")},
+        data: { "oid":oid,"token":token,"role":role},
         success: function(result_data){
             console.log(result_data);
             if (result_data.result == 'OK') {
@@ -280,11 +285,11 @@ function del_order() {
                         total_qty = (value.qty + value.qty);
                         total_price = (value.price + value.price);
                         tbody_html +='<tr id="'+value.id+'">';
-                            tbody_html +='<td class="text-left">'+value.food_name+'</td>';
+                            tbody_html +='<td class="text-left">'+value.name+'</td>';
                             tbody_html +='<td class="text-center">'+value.qty+'</td>';
                             tbody_html +='<td class="text-center">P'+value.price.toFixed(2)+'</td>';
                             tbody_html +='<td class="text-right">';
-                                tbody_html +='<button class="editbut" name="edit_btn" onclick="edit_order('+value.id+',\'' + value.food_name + '\'); return false;"><i class="glyphicon glyphicon-edit"></i></button>';
+                                tbody_html +='<button class="editbut" name="edit_btn" onclick="edit_order('+value.id+',\'' + value.name + '\'); return false;"><i class="glyphicon glyphicon-edit"></i></button>';
                                 tbody_html +='<button class="deletebut" name="delete_btn" onclick="delete_order('+value.id+'); return false;"><i class="glyphicon glyphicon-trash"></i></button>';
                             tbody_html +='</td>';
                         tbody_html +='</tr>';
@@ -309,11 +314,13 @@ function del_order() {
 }
 
 $("#fsearch").click(function(){
-    var fsearch = $('input[name="search"]').val();     
+    var fsearch = $('input[name="search"]').val(); 
+    var token = localStorage.getItem("token_id");
+    var role  = localStorage.getItem("role");    
     $.ajax({
         type: "POST",
         url: "http://localhost/crapi_admin/api/orders/order_search", // Example 
-        data: { "search":fsearch,"token":localStorage.getItem("token_id")},
+        data: { "search":fsearch,"token":token,"role":role},
         success: function(result_data){
             console.log(result_data);
             if (result_data.result == 'OK') {
@@ -325,11 +332,11 @@ $("#fsearch").click(function(){
                         total_qty = (value.qty + value.qty);
                         total_price = (value.price + value.price);
                         tbody_html +='<tr id="'+value.id+'">';
-                            tbody_html +='<td class="text-left">'+value.food_name+'</td>';
+                            tbody_html +='<td class="text-left">'+value.name+'</td>';
                             tbody_html +='<td class="text-center">'+value.qty+'</td>';
                             tbody_html +='<td class="text-center">P'+value.price.toFixed(2)+'</td>';
                             tbody_html +='<td class="text-right">';
-                                tbody_html +='<button class="editbut" name="edit_btn" onclick="edit_order('+value.id+',\'' + value.food_name + '\'); return false;"><i class="glyphicon glyphicon-edit"></i></button>';
+                                tbody_html +='<button class="editbut" name="edit_btn" onclick="edit_order('+value.id+',\'' + value.name + '\'); return false;"><i class="glyphicon glyphicon-edit"></i></button>';
                                 tbody_html +='<button class="deletebut" name="delete_btn" onclick="delete_order('+value.id+'); return false;"><i class="glyphicon glyphicon-trash"></i></button>';
                             tbody_html +='</td>';
                         tbody_html +='</tr>';
@@ -357,17 +364,19 @@ $("#fsearch").click(function(){
 // -Add menu data
 function add_order() {
     $('#ADDfood').modal('show');
+    var token = localStorage.getItem("token_id");
+    var role  = localStorage.getItem("role");    
     $.ajax({
         type: "POST",
         url: "http://localhost/crapi_admin/api/products/product_list", // Example 
-        data: { "token":localStorage.getItem("token_id")},
+        data: {"token":token,"role":role},
         success: function(result_data) {
             console.log(result_data);
             if (result_data.result == 'OK') {    
                 var tbody_html = "";
                 $.each( result_data.data, function( key, value ) {
                         tbody_html +='<tr '+value.id+'>';
-                          tbody_html +='<th class="Fname"><a class="Fpick" onclick="menu_order('+value.id+',\'' + value.food_name + '\'); return false;"> '+value.food_name+'</a></th>';
+                          tbody_html +='<th class="Fname"><a class="Fpick" onclick="menu_order('+value.id+',\'' + value.name + '\'); return false;"> '+value.name+'</a></th>';
                           tbody_html +='<th>P '+value.price+'</th>';
                         tbody_html +='</tr>';
                 }); 
@@ -388,18 +397,20 @@ function menu_order(id,fname) {
 }
 
 $("#afsearch").click(function(){
-    var fsearch = $('input[name="search"]').val();     
+    var fsearch = $('input[name="search"]').val();
+    var token = localStorage.getItem("token_id");
+    var role  = localStorage.getItem("role");     
     $.ajax({
         type: "POST",
         url: "http://localhost/crapi_admin/api/products/product_search", // Example 
-        data: { "search":fsearch,"token":localStorage.getItem("token_id")},
+        data: { "search":fsearch,"token":token,"role":role},
         success: function(result_data){
             console.log(result_data);
             if (result_data.result == 'OK') {    
                 var tbody_html = "";
                 $.each( result_data.data, function( key, value ) {
                         tbody_html +='<tr '+value.id+'>';
-                          tbody_html +='<th class="Fname"><a class="Fpick" data-toggle="modal" data-target="#FOODqty"> '+value.food_name+'</a></th>';
+                          tbody_html +='<th class="Fname"><a class="Fpick" data-toggle="modal" data-target="#FOODqty"> '+value.name+'</a></th>';
                           tbody_html +='<th>P '+value.price+'</th>';
                         tbody_html +='</tr>';
                 }); 

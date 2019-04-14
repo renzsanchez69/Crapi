@@ -42,83 +42,83 @@
     <div class="title">
         <h1>Location</h1>
     </div>
-
-    <div class="left">
-        <form action="" method="GET">
-            <input class="search" type="text" placeholder="Search.." name="search">
-            <button type="button" class="btn-light search-btn-light" style="padding: 10px !important;" id="fsearch"><i class="fa fa-search"></i></button>
-        </form>
+    <div class="container-fluid">
+        <div class="left">
+            <form action="#" method="GET">
+                <input class="search" type="text" placeholder="Search.." name="address">
+                <button type="button" class="btn-light search-btn-light" onclick=" codeAddress(); return false;" style="padding: 10px !important;" id="fsearch"><i class="fa fa-search"></i></button>
+            </form>
+        </div>
     </div>
-
-    <div class="t-title">
-        <div class="container-fluid">        
-            <div id="map"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12" id="map" style="height: 300px"></div>
         </div>
     </div>
 
 </div>
-<!-- Add Modal -->
-<div class="modal fade" id="VIEWord" role="dialog">
-    <div class="modal-content">
-        <div class="modal-header">
-            <span class="close" data-dismiss="modal">&times;</span>
-            <h2 id="order_hash">BM3Y4</h2>
-        </div>
-        <div class="modal-body" id="history-details">
-        </div>
-    </div>
-</div>
-  <div class="modal fade" id="VIEWord" role="dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <span class="close" data-dismiss="modal">&times;</span>
-        <h2>BM3Y4</h2>
-      </div>
-      <div class="modal-body">
-       <div class="info">
-      <!-- php -->
-        <p>Customer name: Junas Bangayan</p>
-        <p>Address: Minglanilla</p>
-        <p>Contact number: 09771215342</p>
-        <p>Email address: junasmarcil@gmail.com</p>
-        <p>Date & Time: April 20, 2018 | 4:20 PM</p>
-      <!-- php -->    
-       </div>
-       <div class="order">
-        <table>
-          <tr>
-            <th style="width: 75%; text-align: left;">Product</th>
-            <th style="width: 5%; text-align: center;">Qty</th>
-            <th style="width: 20%; text-align: center;">Price</th>
-          </tr>
-          <!-- php -->
-          <tr>
-            <th style="width: 75%; text-align: left;">Bola-bola Siopao</th>
-            <th style="width: 5%; text-align: center;">4</th>
-            <th style="width: 20%; text-align: left;">P92.00</th> 
-          </tr>
-        </table>
-       </div>
-        <div class="modal-footer">
-          <div class="labelT">TOTAL</div><div class="labelV">(Incl. VAT)</div>
-          <!-- php --><div class="TotalA">P 92.00</div><!-- php -->
-        </div>
-      </div>
-    </div>
-  </div>
 <script src="js/o-main.js"></script>
 <script src="lib/jquery.min.js"></script>
 <script src="lib/bootstrap.min.js"></script>
-   <script>
-      var map;
-      function initMap() {
-        map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: -34.397, lng: 150.644},
-          zoom: 8
-        });
+<script>
+  var map, marker, geocoder;
+  function getDefaultMapCenter() {
+    var defaultLat = parseFloat($('[name=latitude]').val()) ||  10.3157,
+      defaultLng =  parseFloat($('[name=longitude]').val()) ||  123.8854;
+
+    return {
+      lat: defaultLat,
+      lng: defaultLng
+    }
+  }
+
+  function codeAddress() {
+    var address = $('[name=address]').val();
+    geocoder.geocode( { 'address': address}, function(results, status) {
+      if (status == 'OK') {
+        map.setCenter(results[0].geometry.location);
+        // marker.setPosition(results[0].geometry.location);
+      } else {
+        alert('Geocode was not successful for the following reason: ' + status);
       }
-    </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"
-    async defer></script>
+    });
+  }
+
+  function initMap() {
+
+    geocoder = new google.maps.Geocoder;
+
+    map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 14,
+      center: getDefaultMapCenter()
+    });
+
+    marker = new google.maps.Marker({
+      map: map,
+      position: getDefaultMapCenter()
+    });
+
+    map.addListener('click', function (e) {
+      geocoder.geocode({'location': e.latLng}, function(results, status) {
+        if (status === 'OK') {
+          if (results[0]) {
+            marker.setPosition(e.latLng);
+            $('[name=address]').val(results[0].formatted_address)
+            $('[name=latitude]').val(e.latLng.lat())
+            $('[name=longitude]').val(e.latLng.lng())
+          }
+        }
+      })
+    })
+  }
+
+  $('[name=address]').keydown(function (e) {
+    if(e.keyCode === 13){
+      e.preventDefault();
+      codeAddress();
+    }
+  });
+</script>
+<script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBb9gjcZGig7KAgoJC1EmMHA98Rp8Ayz98&amp;callback=initMap"></script>
 </body>
 </html>

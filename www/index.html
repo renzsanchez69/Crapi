@@ -48,7 +48,8 @@
                 if (result_data.result == 'OK') {
 
                     if (typeof(Storage) !== "undefined") {
-                        localStorage.setItem("token_id", result_data.password);
+                        localStorage.setItem("token_id", result_data.token);
+                        localStorage.setItem("role", result_data.role);
                         window.location.href = 'c-main.html';
 
                     } else {

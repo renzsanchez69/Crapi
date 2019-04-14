@@ -36,20 +36,18 @@
         </form>
     </div>
 
-    <div class="t-title">
-        <div class="container-fluid">        
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th id="custname">Restaurant name</th>
-                        <th>Order Date</th>
-                        <th class="text-right">Action</th>
-                    </tr>
-                </thead>
-                <tbody id="product-data">
-                </tbody>
-            </table>
-        </div>
+    <div class="container-fluid">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="text-left"><b>Restaurant name</b></th>
+                    <th class="text-center"><b>Order Date</b></th>
+                    <th class="text-right"><b>Action</b></th>
+                </tr>
+            </thead>
+            <tbody id="tbody-order-list">
+            </tbody>
+        </table>
     </div>
 
 </div>
@@ -107,26 +105,45 @@
 <script src="lib/bootstrap.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function() {
-       $.ajax({
-            url: "http://localhost/cus_order_list.php"
-        }).then(function(data) {
-            console.log(data[0]);
-            var html = "";
-            $.each( data, function( key, value ) {
-                if (value.order_id == undefined) {
-                        return false;
-                }
-                html +='<tr '+value.order_id+'><th id="custname">' + value.full_name  +'</th><th>' +value.order_date +'</th><th class="text-right"><button class="viewbut" name="view_btn" onclick="view_details(\'' + value.order_date + '\',\'' + value.full_name + '\',\'' + value.description + '\',\'' + value.address + '\',\'' + value.email_address + '\',\'' + value.contact_no + '\',\'' + value.food_name + '\','+value.price+','+value.qty+','+value.order_hash+'); return false;"><i class="glyphicon glyphicon-eye-open"></i></th></tr>';
-            });
-            $('#product-data').empty().append(html);
-        });
+        get_data();
     });
-    function view_details(date_order,full_name,description,address,email_address,contact_no,food_name,price,qty,hash) {
+    function get_data(){
+        var token = localStorage.getItem("token_id");
+        var role  = localStorage.getItem("role");
+        $.ajax({
+            type: "POST",
+            url: "http://localhost/crapi_admin/api/customers/order_list", // Example 
+            data: { "token":token,"token":role},
+            success: function(result_data) {
+                console.log(result_data);
+                if (result_data.result == 'OK') {
+                    var tbody_html = "";
+                    $.each( result_data.data, function( key, value ) {
+                            tbody_html +='<tr id="'+value.id+'">';
+                                tbody_html +='<td class="text-left">'+value.resto_name+'</td>';
+                                tbody_html +='<td class="text-center">'+value.created_date+'</td>';
+                                tbody_html +='<td class="text-right">';
+                                    tbody_html +='<button class="editbut" name="edit_btn" onclick="view_details(\'' + value.created_date + '\',\'' + value.full_name + '\',\'' + value.description + '\',\'' + value.address + '\',\'' + value.email_address + '\',\'' + value.contact_no + '\',\'' + value.name + '\','+value.price+','+value.qty+',\'' +value.order_hash+ '\'); return false;"><i class="glyphicon glyphicon-eye-open"></i></button>';
+                                tbody_html +='</td>';
+                            tbody_html +='</tr>';
+
+                    }); 
+                    $('#tbody-order-list').empty().append(tbody_html);
+                }
+            },
+            error: function(e) {
+                $.growl.error({ message: "Connection refused!"});
+                return false;
+            }
+        });
+    }
+
+    function view_details(date_order,full_name,description,address,email_address,contact_no,name,price,qty,hash) {
         $('#VIEWord').modal('show');
-        $('#order_hash').val(hash);
+        $('#order_hash').text(hash);
         var total_vat = (price*.12); 
         var total = (total_vat) + price; 
-        $('#history-details').empty().append('<div class="info"><p id="order_hash">Customer name: <b>'+full_name+'</b></p><p id="address"> Address: <b>'+address+'</b></p><p id="contact_number">Contact number: <b>'+contact_no+'</b></p><p id="email_address">Email address: <b>'+email_address+'</b></p><p id="date_time"> Date & Time: <b>'+date_order+'</b></p></div><div class="order"><table><tr><th> Product </th><th> Qty &nbsp;</th><th class="text-right"> Price </th></tr><tr><th> '+food_name+' </th><th> '+qty+' </th><th class="text-right">P '+price+' </th></tr></table></div><div class="modal-footer"><div class="text-right">TOTAL '+total.toFixed(2)+'</div><div class="text-right">(Incl. VAT)</div><div class="text-right">P '+total_vat.toFixed(2)+' </div></div>');
+        $('#history-details').empty().append('<div class="info"><p id="order_hash">Customer name: <b>'+full_name+'</b></p><p id="address"> Address: <b>'+address+'</b></p><p id="contact_number">Contact number: <b>'+contact_no+'</b></p><p id="email_address">Email address: <b>'+email_address+'</b></p><p id="date_time"> Date & Time: <b>'+date_order+'</b></p></div><div class="order"><table><tr><th> Product </th><th> Qty &nbsp;</th><th class="text-right"> Price </th></tr><tr><th> '+name+' </th><th> '+qty+' </th><th class="text-right">P '+price+' </th></tr></table></div><div class="modal-footer"><div class="text-right">TOTAL '+total.toFixed(2)+'</div><div class="text-right">(Incl. VAT)</div><div class="text-right">P '+total_vat.toFixed(2)+' </div></div>');
     }
 
     $("#fsearch").click(function(){
@@ -142,7 +159,7 @@
                     if (value.id == undefined) {
                         return false;
                     }
-                    html +='<tr '+value.id+'><th id="custname">' + value.order_date +'</th><th>' + value.full_name +'</th><th class="text-right"><button class="viewbut" name="view_btn" onclick="view_details(\'' + value.order_date + '\',\'' + value.full_name + '\',\'' + value.description + '\',\'' + value.address + '\',\'' + value.email_address + '\',\'' + value.contact_no + '\',\'' + value.food_name + '\','+value.price+','+value.qty+','+value.order_hash+'); return false;"><i class="glyphicon glyphicon-eye-open"></i></th></tr>';
+                    html +='<tr '+value.id+'><th id="custname">' + value.order_date +'</th><th>' + value.full_name +'</th><th class="text-right"><button class="viewbut" name="view_btn" onclick="view_details(\'' + value.order_date + '\',\'' + value.full_name + '\',\'' + value.description + '\',\'' + value.address + '\',\'' + value.email_address + '\',\'' + value.contact_no + '\',\'' + value.name + '\','+value.price+','+value.qty+','+value.order_hash+'); return false;"><i class="glyphicon glyphicon-eye-open"></i></th></tr>';
                 });
                 $('#product-data').empty().append(html);
             }
