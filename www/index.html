@@ -60,7 +60,7 @@
                                 window.location.href = 'o-main.html';
                             break;
                             case 'customer':
-                                window.location.href = 'c-main.html';
+                                window.location.href = 'c-locate-resto.html';
                             break;
                             case 'admin':
                                 window.location.href = 'admin.html';
@@ -74,9 +74,9 @@
 
                     }
 
-                    $.growl.notice({ message: result_data.description });
+                    $.growl.notice({ message: result_data.error });
                 } else {
-                    $.growl.error({ message: result_data.description });
+                    $.growl.error({ message: result_data.error });
                     return false;
 
                 }
