@@ -371,12 +371,13 @@ $("#fsearch").click(function(){
 // -Add menu data
 function add_order() {
     $('#ADDfood').modal('show');
-    var token = localStorage.getItem("login_token");
-    var role  = localStorage.getItem("role");    
+    var login_token = localStorage.getItem("login_token");
+    var role  = localStorage.getItem("role");
+    var resto_id  = localStorage.getItem("resto_id");   
     $.ajax({
         type: "POST",
-        url: "http://localhost/crapi_admin/api/products/product_list", // Example 
-        data: {"token":token,"role":role},
+        url: "http://localhost/crapi_admin/api/products/menu_list", // Example 
+        data: {"login_token":login_token,"role":role,"resto_id":resto_id},
         success: function(result_data) {
             console.log(result_data);
             if (result_data.result == 'OK') {    
@@ -405,12 +406,12 @@ function menu_order(id,fname) {
 
 $("#afsearch").click(function(){
     var fsearch = $('input[name="search"]').val();
-    var token = localStorage.getItem("login_token");
-    var role  = localStorage.getItem("role");     
+    var login_token = localStorage.getItem("login_token");
+    var role  = localStorage.getItem("role");       
     $.ajax({
         type: "POST",
         url: "http://localhost/crapi_admin/api/products/product_search", // Example 
-        data: { "search":fsearch,"token":token,"role":role},
+        data: { "search":fsearch,"login_token":login_token,"role":role},
         success: function(result_data){
             console.log(result_data);
             if (result_data.result == 'OK') {    
