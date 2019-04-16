@@ -402,6 +402,7 @@ function add_order() {
 function menu_order(id,fname) {
     $('#FOODqty').modal('show');
     $('#fname-menu-order').text(fname);
+    $('#product-id').val(id);
 }
 
 $("#afsearch").click(function(){
@@ -434,10 +435,28 @@ $("#afsearch").click(function(){
 
 $("#add-order-fname").click(function(){
     $('#FOODqty').modal('hide');
+    var pid = $('#product-id').val();
     var fname = $('#fname-menu-order').text();
     var qty = $('input[name="quantity"]').val();
-    $.growl.notice({ title: qty+" "+fname,message: "Was successfully added!" });
-    return false;
+    var login_token = localStorage.getItem("login_token");
+    var role  = localStorage.getItem("role");       
+    $.ajax({
+        type: "POST",
+        url: "http://localhost/crapi_admin/api/orders/add_orders", // Example 
+        data: { "product_id":pid,"login_token":login_token,"role":role},
+        success: function(result_data){
+            console.log(result_data);
+            if (result_data.result == 'OK') {    
+                $.growl.notice({ title: qty+" "+fname,message: "Was successfully added!" });
+            } else {
+                $.growl.error({ title: qty+" "+fname,message: "Was not successfully added!" });
+            }
+        },
+        error: function(e) {
+            $.growl.error({ message: "Connection refused!"});
+            return false;
+        }
+    });
 });
 
 function wcqib_refresh_quantity_increments() {

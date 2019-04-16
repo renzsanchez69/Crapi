@@ -49,7 +49,7 @@
                 if (result_data.result == 'OK') {
 
                     if (typeof(Storage) !== "undefined") {
-                        localStorage.setItem("login_token", result_data.token);
+                        localStorage.setItem("login_token", result_data.login_token);
                         localStorage.setItem("role", result_data.role);
                         
                         switch(result_data.role) {
