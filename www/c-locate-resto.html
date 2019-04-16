@@ -81,7 +81,7 @@
                 var list_html = "";
                 if (result_data.result == 'OK') {
                     $.each( result_data.data, function( key, value ) {
-                        list_html +='<a href="c-main.html" class="list-group-item" onclick="resto_name('+value.id+',\'' + value.resto_name + '\'); return false;">'+value.resto_name+'</a>';
+                        list_html +='<a href="#" class="list-group-item" onclick="resto_name('+value.id+',\'' + value.resto_name + '\'); return false;">'+value.resto_name+'</a>';
                     }); 
                     $('#resto-list-group').empty().append(list_html);
                 }
