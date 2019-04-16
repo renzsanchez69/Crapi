@@ -130,6 +130,8 @@
 <div class="modal fade" id="FOODqty" role="dialog">
     <div class="modal-content" id="foodqty">
       <div class="modal-header">
+        <input type="hidden" id="product-id">
+        <input type="hidden" id="product-id-price">
         <span class="close" data-dismiss="modal">&times;</span>
         <h2 id="fname-menu-order">JAPANESE SIOMAI</h2>
       </div>
@@ -148,7 +150,7 @@
                 </div>
             </div>
             <div class="col-sm-12 col-md-12 col-lg-12">
-                <div class="text-left">
+                <div class="text-center">
                    <button class="ordbut" id="add-order-fname" data-dismiss="modal">ORDER</button>
                 </div>
             </div>
@@ -163,17 +165,21 @@
     <h2 id="order-name">JAPANESE SIOMAI</h2>
   </div>
   <div class="modal-body" id="qtyFOOD">
-    <div style="width: 100%;vertical-align: middle;text-align:center;">
-    <img class="foodPIC" src="img/sample.jpg">
+    <div class="col-sm-12 col-md-12 col-lg-12  text-center">
+        <img class="foodPIC  text-center" src="img/sample.jpg">
     </div>
-    <textarea class="req" type="text" name="request" placeholder="PUT REQUEST HERE..."></textarea>
+    <div class="col-sm-12 col-md-12 col-lg-12  text-center">
+        <textarea class="req" type="text" name="request" placeholder="PUT REQUEST HERE..." style="resize: vertical;"></textarea>
+    </div>
     <div class="quantity buttons_added">
-       <input type="button" value="-" class="minus">
-       <input type="number" step="1" min="1" max="" name="quantity" value="1" title="Qty" class="input-text qty text" size="4" pattern="" inputmode="">
-       <input type="button" value="+" class="plus">
+       <input type="button" value="-" class="minus search-btn-light btn-danger">
+       <input type="number" step="1" min="1" max="" name="quantity" value="1" title="Qty" class="input-text qty text search-btn-light" size="4" pattern="" inputmode="">
+       <input type="button" value="+" class="plus search-btn-light btn-success">
     </div>
-    <div style="width: 100%;">
-       <button class="ordbut" data-dismiss="modal">ORDER</button>
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="text-center">
+           <button class="ordbut" id="edit-order-fname" data-dismiss="modal">ORDER</button>
+        </div>
     </div>
   </div>
   </div>
@@ -214,38 +220,37 @@ $('#log-out').click(function(e){
 });
 // - Get menu data
 function get_data() {
-    var token = localStorage.getItem("login_token");
+    var login_token = localStorage.getItem("login_token");
     var role  = localStorage.getItem("role");
     $.ajax({
         type: "POST",
-        url: "http://localhost/crapi_admin/api/orders/order_list", // Example 
-        data: { "token":token,"role":role},
+        url: "http://localhost/crapi_admin/api/orders/order_by_customer", // Example 
+        data: { "login_token":login_token,"role":role},
         success: function(result_data) {
             console.log(result_data);
             if (result_data.result == 'OK') {
                 var tbody_html = "";
                 var fbody_html = "";
                 var total_qty = 0;
-                var total_price
+                var sub_total = 0;
                 $.each( result_data.data, function( key, value ) {
-                        total_qty = (value.qty + value.qty);
-                        total_price = (value.price + value.price);
+                        sub_total = parseInt(value.sub_total, 10) + parseInt(value.sub_total, 10);
                         tbody_html +='<tr id="'+value.id+'">';
                             tbody_html +='<td class="text-left">'+value.name+'</td>';
                             tbody_html +='<td class="text-center">'+value.qty+'</td>';
-                            tbody_html +='<td class="text-center">P'+value.price.toFixed(2)+'</td>';
+                            tbody_html +='<td class="text-center">P '+value.price+'</td>';
                             tbody_html +='<td class="text-right">';
                                 tbody_html +='<button class="editbut" name="edit_btn" onclick="edit_order('+value.id+',\'' + value.name + '\'); return false;"><i class="glyphicon glyphicon-edit"></i></button>';
                                 tbody_html +='<button class="deletebut" name="delete_btn" onclick="delete_order('+value.id+'); return false;"><i class="glyphicon glyphicon-trash"></i></button>';
                             tbody_html +='</td>';
                         tbody_html +='</tr>';
+                        console.log(sub_total);
 
                 }); 
-                    var total = (total_qty * total_price);
                     fbody_html +='<tr class="tfoot-bgcolor  font-text-amt">';
                         fbody_html +='<th class="text-left font-text  font-text-amt">TOTAL</th>';
                         fbody_html +='<th class="text-center"></th>';
-                        fbody_html +='<th class="text-center">P '+total.toFixed(2)+'</th>';
+                        fbody_html +='<th class="text-center">P '+sub_total+'</th>';
                         fbody_html +='<th class="text-right font-text-amt"></th>';
                     fbody_html +='</tr>';
                 $('#tbody-order-list').empty().append(tbody_html);
@@ -274,43 +279,20 @@ function delete_order(oid) {
 function del_order() {
     $('#DELfood').modal('hide'); 
     var oid = $('#del-order').val();
-    var token = localStorage.getItem("login_token");
+    var login_token = localStorage.getItem("login_token");
     var role  = localStorage.getItem("role");
     $('#'+oid).remove();
     $.ajax({
         type: "POST",
         url: "http://localhost/crapi_admin/api/orders/order_delete", // Example 
-        data: { "oid":oid,"token":token,"role":role},
+        data: { "order_id":oid,"login_token":login_token,"role":role},
         success: function(result_data){
             console.log(result_data);
             if (result_data.result == 'OK') {
-                var tbody_html = "";
-                var fbody_html = "";
-                var total_qty = 0;
-                var total_price
-                $.each( result_data.data, function( key, value ) {
-                        total_qty = (value.qty + value.qty);
-                        total_price = (value.price + value.price);
-                        tbody_html +='<tr id="'+value.id+'">';
-                            tbody_html +='<td class="text-left">'+value.name+'</td>';
-                            tbody_html +='<td class="text-center">'+value.qty+'</td>';
-                            tbody_html +='<td class="text-center">P'+value.price.toFixed(2)+'</td>';
-                            tbody_html +='<td class="text-right">';
-                                tbody_html +='<button class="editbut" name="edit_btn" onclick="edit_order('+value.id+',\'' + value.name + '\'); return false;"><i class="glyphicon glyphicon-edit"></i></button>';
-                                tbody_html +='<button class="deletebut" name="delete_btn" onclick="delete_order('+value.id+'); return false;"><i class="glyphicon glyphicon-trash"></i></button>';
-                            tbody_html +='</td>';
-                        tbody_html +='</tr>';
-
-                }); 
-                    var total = (total_qty * total_price);
-                    fbody_html +='<tr class="tfoot-bgcolor  font-text-amt">';
-                        fbody_html +='<th class="text-left font-text  font-text-amt">TOTAL</th>';
-                        fbody_html +='<th class="text-center"></th>';
-                        fbody_html +='<th class="text-center">P '+total.toFixed(2)+'</th>';
-                        fbody_html +='<th class="text-right font-text-amt"></th>';
-                    fbody_html +='</tr>';
-                $('#tbody-order-list').empty().append(tbody_html);
-                $('#fbody-order-list').empty().append(fbody_html);
+                $.growl.notice({message: "Order was successfully deleted!" });
+                get_data();
+            } else {
+                $.growl.error({message: "Order was not successfully deleted!" });
             }
         },
         error: function(e) {
@@ -334,14 +316,13 @@ $("#fsearch").click(function(){
                 var tbody_html = "";
                 var fbody_html = "";
                 var total_qty = 0;
-                var total_price
+                var sub_total = 0;
                 $.each( result_data.data, function( key, value ) {
-                        total_qty = (value.qty + value.qty);
-                        total_price = (value.price + value.price);
+                        sub_total += value.sub_total;
                         tbody_html +='<tr id="'+value.id+'">';
                             tbody_html +='<td class="text-left">'+value.name+'</td>';
                             tbody_html +='<td class="text-center">'+value.qty+'</td>';
-                            tbody_html +='<td class="text-center">P'+value.price.toFixed(2)+'</td>';
+                            tbody_html +='<td class="text-center">P'+value.price+'</td>';
                             tbody_html +='<td class="text-right">';
                                 tbody_html +='<button class="editbut" name="edit_btn" onclick="edit_order('+value.id+',\'' + value.name + '\'); return false;"><i class="glyphicon glyphicon-edit"></i></button>';
                                 tbody_html +='<button class="deletebut" name="delete_btn" onclick="delete_order('+value.id+'); return false;"><i class="glyphicon glyphicon-trash"></i></button>';
@@ -349,11 +330,10 @@ $("#fsearch").click(function(){
                         tbody_html +='</tr>';
 
                 }); 
-                    var total = (total_qty * total_price);
                     fbody_html +='<tr class="tfoot-bgcolor  font-text-amt">';
                         fbody_html +='<th class="text-left font-text  font-text-amt">TOTAL</th>';
                         fbody_html +='<th class="text-center"></th>';
-                        fbody_html +='<th class="text-center">P '+total.toFixed(2)+'</th>';
+                        fbody_html +='<th class="text-center">P '+sub_total+'</th>';
                         fbody_html +='<th class="text-right font-text-amt"></th>';
                     fbody_html +='</tr>';
                 $('#tbody-order-list').empty().append(tbody_html);
@@ -384,7 +364,7 @@ function add_order() {
                 var tbody_html = "";
                 $.each( result_data.data, function( key, value ) {
                         tbody_html +='<tr '+value.id+'>';
-                          tbody_html +='<th class="Fname"><a class="Fpick" onclick="menu_order('+value.id+',\'' + value.name + '\'); return false;"> '+value.name+'</a></th>';
+                          tbody_html +='<th class="Fname"><a class="Fpick" onclick="menu_order('+value.id+',\'' + value.name + '\','+value.price+'); return false;"> '+value.name+'</a></th>';
                           tbody_html +='<th>P '+value.price+'</th>';
                         tbody_html +='</tr>';
                 }); 
@@ -399,10 +379,11 @@ function add_order() {
 }
 
 // -Add menu data
-function menu_order(id,fname) {
+function menu_order(id,fname,price) {
     $('#FOODqty').modal('show');
     $('#fname-menu-order').text(fname);
     $('#product-id').val(id);
+    $('#product-id-price').val(price);
 }
 
 $("#afsearch").click(function(){
@@ -435,7 +416,8 @@ $("#afsearch").click(function(){
 
 $("#add-order-fname").click(function(){
     $('#FOODqty').modal('hide');
-    var pid = $('#product-id').val();
+    var product_id = $('#product-id').val();
+    var product_id_price = $('#product-id-price').val();
     var fname = $('#fname-menu-order').text();
     var qty = $('input[name="quantity"]').val();
     var login_token = localStorage.getItem("login_token");
@@ -443,10 +425,11 @@ $("#add-order-fname").click(function(){
     $.ajax({
         type: "POST",
         url: "http://localhost/crapi_admin/api/orders/add_orders", // Example 
-        data: { "product_id":pid,"login_token":login_token,"role":role},
+        data: { "product_id":product_id,"login_token":login_token,"role":role,"qty":qty,"price":product_id_price},
         success: function(result_data){
             console.log(result_data);
             if (result_data.result == 'OK') {    
+                get_data();
                 $.growl.notice({ title: qty+" "+fname,message: "Was successfully added!" });
             } else {
                 $.growl.error({ title: qty+" "+fname,message: "Was not successfully added!" });

@@ -57,6 +57,7 @@ tr{background-color: #f2f2f2;}
   font-size: 13px;
   cursor: pointer;
   margin: 2% auto;
+  width: 150px;
 }
 
 .left {
@@ -432,7 +433,7 @@ tr{background-color: #f2f2f2;}
 }
 
 .quantity.buttons_added {
- text-align: left;
+ text-align: center;
  position: relative;
  white-space: nowrap;
  vertical-align: top; }
@@ -458,9 +459,13 @@ tr{background-color: #f2f2f2;}
  background: green;
  border-left: 0; }
 
-.quantity.buttons_added .minus:hover,
+.quantity.buttons_added .minus:hover {
+ background: #a54c4b; 
+}
+
 .quantity.buttons_added .plus:hover {
- background: #eeeeee; }
+ background: #4ba54e; 
+}
 
 .quantity input::-webkit-outer-spin-button,
 .quantity input::-webkit-inner-spin-button {
