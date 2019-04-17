@@ -224,10 +224,11 @@ $('#log-out').click(function(e){
 function get_data() {
     var login_token = localStorage.getItem("login_token");
     var role  = localStorage.getItem("role");
+    var resto_id  = localStorage.getItem("resto_id");
     $.ajax({
         type: "POST",
         url: "http://localhost/crapi_admin/api/orders/order_by_customer", // Example 
-        data: { "login_token":login_token,"role":role},
+        data: { "login_token":login_token,"role":role,"resto_id":resto_id},
         success: function(result_data) {
             console.log(result_data);
             $('#tbody-order-list').empty();
@@ -440,7 +441,8 @@ $("#add-order-fname").click(function(){
     var fname = $('#fname-menu-order').text();
     var description  = $('#add-order-request').val();
     var login_token = localStorage.getItem("login_token");
-    var role  = localStorage.getItem("role");       
+    var role  = localStorage.getItem("role");   
+    var resto_id  = localStorage.getItem("resto_id");       
     if(qty < 1){
          $.growl.error({ title: qty+" "+fname,message: "Please select atleast 1 order" });
         return false;
@@ -449,7 +451,7 @@ $("#add-order-fname").click(function(){
     $.ajax({
         type: "POST",
         url: "http://localhost/crapi_admin/api/orders/add_orders", // Example 
-        data: { "product_id":product_id,"login_token":login_token,"role":role,"qty":qty,"price":product_id_price,"description":description},
+        data: { "product_id":product_id,"login_token":login_token,"role":role,"qty":qty,"price":product_id_price,"description":description,"resto_id":resto_id},
         success: function(result_data){
             console.log(result_data);
             if (result_data.result == 'OK') {    
