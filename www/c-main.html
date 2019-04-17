@@ -62,7 +62,7 @@
     </table>
   </div>
   <div class="container-fluid">
-      <div class="col-sm-12 col-md-6 col-lg-6">
+      <!-- <div class="col-sm-12 col-md-6 col-lg-6">
           <br>
           <button class="PayMaya" name="order_btn" data-toggle="modal" data-target="#VIEWloc">CREDIT</button> 
       </div>
@@ -71,7 +71,7 @@
           <button class="OnSpot" name="order_btn" data-toggle="modal" data-target="#VIEWloc">CASH</button> 
       </div>
       <br>
-      <br>
+      <br> -->
       <div class="col-sm-12 col-md-4 col-lg-4">
       </div>
       <div class="col-sm-12 col-md-4 col-lg-4">
@@ -142,7 +142,7 @@
             <div class="col-sm-12 col-md-12 col-lg-12  text-center">
                 <textarea class="req" type="text" name="request" placeholder="PUT REQUEST HERE..." style="resize: vertical;"></textarea>
             </div>
-            <div class="col-sm-12 col-md-12 col-lg-12">
+            <div class="col-sm-12 col-md-12 col-lg-12 text-center">
                 <div class="quantity buttons_added">
                    <button type="button" value="-" class="minus search-btn-light btn-danger">-</button>
                    <input type="number" step="1" min="1" max="" name="quantity" value="1" title="Qty" class="input-text qty text search-btn-light" size="4" pattern="" inputmode="">
@@ -171,10 +171,12 @@
     <div class="col-sm-12 col-md-12 col-lg-12  text-center">
         <textarea class="req" type="text" name="request" placeholder="PUT REQUEST HERE..." style="resize: vertical;"></textarea>
     </div>
-    <div class="quantity buttons_added">
-       <input type="button" value="-" class="minus search-btn-light btn-danger">
-       <input type="number" step="1" min="1" max="" name="quantity" value="1" title="Qty" class="input-text qty text search-btn-light" size="4" pattern="" inputmode="">
-       <input type="button" value="+" class="plus search-btn-light btn-success">
+    <div class="col-sm-12 col-md-12 col-lg-12 text-center">
+        <div class="quantity buttons_added">
+           <button type="button" value="-" class="minus search-btn-light btn-danger">-</button>
+           <input type="number" step="1" min="1" max="" name="quantity" value="1" title="Qty" class="input-text qty text search-btn-light" size="4" pattern="" inputmode="">
+           <button type="button" value="+" class="plus search-btn-light btn-success">+</button>
+        </div>
     </div>
     <div class="col-sm-12 col-md-12 col-lg-12">
         <div class="text-center">
@@ -281,10 +283,10 @@ function delete_order(oid) {
 }
 
 function del_order() {
-    $('#DELfood').modal('hide'); 
     var oid = $('#del-order').val();
     var login_token = localStorage.getItem("login_token");
     var role  = localStorage.getItem("role");
+    $('#DELfood').modal('hide'); 
     $('#'+oid).remove();
     $.ajax({
         type: "POST",
@@ -321,6 +323,8 @@ $("#fsearch").click(function(){
                 var fbody_html = "";
                 var total_qty = 0;
                 var sub_total = 0;
+                $('#tbody-order-list').empty();
+                $('#fbody-order-list').empty();
                 $.each( result_data.data, function( key, value ) {
                         if (value.id == undefined) {
                             return false;
@@ -343,8 +347,8 @@ $("#fsearch").click(function(){
                         fbody_html +='<th class="text-center">P '+sub_total+'</th>';
                         fbody_html +='<th class="text-right font-text-amt"></th>';
                     fbody_html +='</tr>';
-                $('#tbody-order-list').empty().append(tbody_html);
-                $('#fbody-order-list').empty().append(fbody_html);
+                $('#tbody-order-list').append(tbody_html);
+                $('#fbody-order-list').append(fbody_html);
             }
         },
         error: function(e) {

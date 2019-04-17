@@ -420,7 +420,6 @@ tr{background-color: #f2f2f2;}
 /*-------------------- BUTTON INCREMENTS -----------------------*/
 
 .quantity {
- width: 100%;
  display: inline-block; }
 
 .quantity .input-text.qty {
@@ -482,8 +481,9 @@ tr{background-color: #f2f2f2;}
   .req{
   height: 350px;
   } 
-  .quantity {
-    margin: 0 45%;
+  .main {
+    height:568px;
+    overflow-y: scroll;
   }
 }
 
@@ -491,8 +491,9 @@ tr{background-color: #f2f2f2;}
   .req{
   height: 250px;
   } 
-  .quantity {
-    margin: 0 43%;
+  .main {
+    height:568px;
+    overflow-y: scroll;
   }
 }
 
@@ -500,8 +501,10 @@ tr{background-color: #f2f2f2;}
   .req{
   height: 220px;
   } 
-  .quantity {
-    margin: 0 37%;
+
+  .main {
+    height:568px;
+    overflow-y: scroll;
   }
 }
 
@@ -509,8 +512,9 @@ tr{background-color: #f2f2f2;}
   .req{
   height: 200px;
   } 
-  .quantity {
-    margin: 0 35%;
+  .main {
+    height:568px;
+    overflow-y: scroll;
   }
 }
 
@@ -524,8 +528,14 @@ tr{background-color: #f2f2f2;}
   .req{
   height: 160px;
   } 
-  .quantity {
-    margin: 0 32%;
+  .main {
+    height:568px;
+    overflow-y: scroll;
+  }
+}
+@media screen and (min-height: 568px){
+  .main {
+    overflow-y: scroll;
   }
 }
 
