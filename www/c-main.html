@@ -228,12 +228,17 @@ function get_data() {
         data: { "login_token":login_token,"role":role},
         success: function(result_data) {
             console.log(result_data);
+            $('#tbody-order-list').empty();
+            $('#fbody-order-list').empty();
             if (result_data.result == 'OK') {
                 var tbody_html = "";
                 var fbody_html = "";
                 var total_qty = 0;
                 var sub_total = 0;
                 $.each( result_data.data, function( key, value ) {
+                        if (value.id == undefined) {
+                            return false;
+                        }
                         sub_total = parseInt(value.sub_total, 10) + parseInt(value.sub_total, 10);
                         tbody_html +='<tr id="'+value.id+'">';
                             tbody_html +='<td class="text-left">'+value.name+'</td>';
@@ -244,7 +249,6 @@ function get_data() {
                                 tbody_html +='<button class="deletebut" name="delete_btn" onclick="delete_order('+value.id+'); return false;"><i class="glyphicon glyphicon-trash"></i></button>';
                             tbody_html +='</td>';
                         tbody_html +='</tr>';
-                        console.log(sub_total);
 
                 }); 
                     fbody_html +='<tr class="tfoot-bgcolor  font-text-amt">';
@@ -253,8 +257,8 @@ function get_data() {
                         fbody_html +='<th class="text-center">P '+sub_total+'</th>';
                         fbody_html +='<th class="text-right font-text-amt"></th>';
                     fbody_html +='</tr>';
-                $('#tbody-order-list').empty().append(tbody_html);
-                $('#fbody-order-list').empty().append(fbody_html);
+                $('#tbody-order-list').append(tbody_html);
+                $('#fbody-order-list').append(fbody_html);
             }
         },
         error: function(e) {
@@ -318,6 +322,9 @@ $("#fsearch").click(function(){
                 var total_qty = 0;
                 var sub_total = 0;
                 $.each( result_data.data, function( key, value ) {
+                        if (value.id == undefined) {
+                            return false;
+                        }
                         sub_total += value.sub_total;
                         tbody_html +='<tr id="'+value.id+'">';
                             tbody_html +='<td class="text-left">'+value.name+'</td>';
@@ -363,6 +370,9 @@ function add_order() {
             if (result_data.result == 'OK') {    
                 var tbody_html = "";
                 $.each( result_data.data, function( key, value ) {
+                        if (value.id == undefined) {
+                            return false;
+                        }
                         tbody_html +='<tr '+value.id+'>';
                           tbody_html +='<th class="Fname"><a class="Fpick" onclick="menu_order('+value.id+',\'' + value.name + '\','+value.price+'); return false;"> '+value.name+'</a></th>';
                           tbody_html +='<th>P '+value.price+'</th>';
@@ -399,6 +409,9 @@ $("#afsearch").click(function(){
             if (result_data.result == 'OK') {    
                 var tbody_html = "";
                 $.each( result_data.data, function( key, value ) {
+                        if (value.id == undefined) {
+                            return false;
+                        }
                         tbody_html +='<tr '+value.id+'>';
                           tbody_html +='<th class="Fname"><a class="Fpick" data-toggle="modal" data-target="#FOODqty"> '+value.name+'</a></th>';
                           tbody_html +='<th>P '+value.price+'</th>';
