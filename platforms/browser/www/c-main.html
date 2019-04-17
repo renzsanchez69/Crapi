@@ -91,7 +91,7 @@
       </div>
       <div class="modal-body" id="addfood">
         <form action="">
-            <input class="search" type="text" placeholder="Search.." name="search">
+            <input class="search" type="text" placeholder="Search.." name="afsearch">
             <button type="button" class="btn-light search-btn-light" style="padding: 10px !important;" id="afsearch"><i class="fa fa-search"></i></button>
         </form>
         <div class="table-responsive">
@@ -358,6 +358,7 @@ $("#fsearch").click(function(){
 // -Add menu data
 function add_order() {
     $('#ADDfood').modal('show');
+    $('input[name="quantity"]').val(0);
     var login_token = localStorage.getItem("login_token");
     var role  = localStorage.getItem("role");
     var resto_id  = localStorage.getItem("resto_id");   
@@ -374,7 +375,7 @@ function add_order() {
                             return false;
                         }
                         tbody_html +='<tr '+value.id+'>';
-                          tbody_html +='<th class="Fname"><a class="Fpick" onclick="menu_order('+value.id+',\'' + value.name + '\','+value.price+'); return false;"> '+value.name+'</a></th>';
+                          tbody_html +='<th class="Fname"><a class="Fpick" onclick="menu_order('+value.product_id+',\'' + value.name + '\','+value.price+'); return false;"> '+value.name+'</a></th>';
                           tbody_html +='<th>P '+value.price+'</th>';
                         tbody_html +='</tr>';
                 }); 
@@ -394,10 +395,11 @@ function menu_order(id,fname,price) {
     $('#fname-menu-order').text(fname);
     $('#product-id').val(id);
     $('#product-id-price').val(price);
+    $('input[name="quantity"]').val(0);
 }
 
 $("#afsearch").click(function(){
-    var fsearch = $('input[name="search"]').val();
+    var fsearch = $('input[name="afsearch"]').val();
     var login_token = localStorage.getItem("login_token");
     var role  = localStorage.getItem("role");       
     $.ajax({
@@ -413,7 +415,7 @@ $("#afsearch").click(function(){
                             return false;
                         }
                         tbody_html +='<tr '+value.id+'>';
-                          tbody_html +='<th class="Fname"><a class="Fpick" data-toggle="modal" data-target="#FOODqty"> '+value.name+'</a></th>';
+                          tbody_html +='<th class="Fname"><a class="Fpick" onclick="menu_order('+value.product_id+',\'' + value.name + '\','+value.price+'); return false;"> '+value.name+'</a></th>';
                           tbody_html +='<th>P '+value.price+'</th>';
                         tbody_html +='</tr>';
                 }); 
