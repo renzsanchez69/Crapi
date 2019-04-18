@@ -242,10 +242,11 @@ function get_data() {
                 var total_qty = 0;
                 var sub_total = 0;
                 $.each( result_data.data, function( key, value ) {
+                        console.log(value.SUB_TOTAL);
                         if (value.id == undefined) {
                             return false;
                         }
-                        sub_total = parseInt(value.sub_total, 10) + parseInt(value.sub_total, 10);
+                        sub_total += parseInt(value.sub_total, 10);
                         tbody_html +='<tr id="'+value.product_id+'">';
                             tbody_html +='<td class="text-left">'+value.name+'</td>';
                             tbody_html +='<td class="text-center">'+value.qty+'</td>';
@@ -475,24 +476,22 @@ function edit_order(oid,qty,price,oname,desc) {
     $('#order-details-qty').val(qty);
     $('#edit-quantity').val(qty);
     $('#order-details-price').val(price);
-    $('#order-details-price').val(desc);
+    $('#order-details-request').text(desc);
 }
 
 $("#edit-order-fname").click(function(){
-    var qty = $('#edit-quantity').val();
     var order_details_id = $('#order-details-id').val();
-    var order_details_qty = $('#order-details-qty').val();
+    var order_details_qty = $('#edit-quantity').val();
     var order_details_price = $('#order-details-price').val();
     var description  = $('#order-details-request').val();
     var fname = $('#order-name').text();
     var login_token = localStorage.getItem("login_token");
     var role  = localStorage.getItem("role");   
     var resto_id  = localStorage.getItem("resto_id");       
-    if(qty < 1){
-         $.growl.error({ title: qty+" "+fname,message: "Please select atleast 1 order" });
+    if(order_details_qty < 1){
+         $.growl.error({ title: order_details_qty+" "+fname,message: "Please select atleast 1 order" });
         return false;
     }
-    return false;
     $('#EDITfood').modal('hide');
     $.ajax({
         type: "POST",
@@ -502,9 +501,9 @@ $("#edit-order-fname").click(function(){
             console.log(result_data);
             if (result_data.result == 'OK') {    
                 get_data();
-                $.growl.notice({ title: qty+" "+fname,message: "Was successfully added!" });
+                $.growl.notice({ title: order_details_qty+" "+fname,message: "Was successfully updated!" });
             } else {
-                $.growl.error({ title: qty+" "+fname,message: "Was not successfully added!" });
+                $.growl.error({ title: order_details_qty+" "+fname,message: "Was not successfully updated!" });
             }
         },
         error: function(e) {
