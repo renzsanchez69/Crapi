@@ -301,7 +301,7 @@ function get_data() {
                     fbody_html +='<tr class="tfoot-bgcolor  font-text-amt">';
                         fbody_html +='<th class="text-left font-text  font-text-amt">TOTAL</th>';
                         fbody_html +='<th class="text-center"></th>';
-                        fbody_html +='<th class="text-center">P '+sub_total+'</th>';
+                        fbody_html +='<th class="text-center">P '+numberWithCommas(sub_total)+'</th>';
                         fbody_html +='<th class="text-right font-text-amt"></th>';
                     fbody_html +='</tr>';
                     fbody_html_orders +='<tr class="tfoot-bgcolor  font-text-amt modal-footer-view-order">';
@@ -365,12 +365,13 @@ function del_order() {
 
 $("#fsearch").click(function(){
     var fsearch = $('input[name="search"]').val(); 
-    var token = localStorage.getItem("login_token");
+    var login_token = localStorage.getItem("login_token");
     var role  = localStorage.getItem("role");    
+    var resto_id  = localStorage.getItem("resto_id");
     $.ajax({
         type: "POST",
         url: "http://localhost/crapi_admin/api/orders/order_search", // Example 
-        data: { "search":fsearch,"token":token,"role":role},
+        data: { "search":fsearch,"login_token":login_token,"role":role,"resto_id":resto_id},
         success: function(result_data){
             console.log(result_data);
             if (result_data.result == 'OK') {
@@ -384,7 +385,7 @@ $("#fsearch").click(function(){
                         if (value.id == undefined) {
                             return false;
                         }
-                        sub_total += value.sub_total;
+                        sub_total += parseInt(value.sub_total, 10);
                         tbody_html +='<tr id="'+value.id+'">';
                             tbody_html +='<td class="text-left">'+value.name+'</td>';
                             tbody_html +='<td class="text-center">'+value.qty+'</td>';
@@ -399,7 +400,7 @@ $("#fsearch").click(function(){
                     fbody_html +='<tr class="tfoot-bgcolor  font-text-amt">';
                         fbody_html +='<th class="text-left font-text  font-text-amt">TOTAL</th>';
                         fbody_html +='<th class="text-center"></th>';
-                        fbody_html +='<th class="text-center">P '+sub_total+'</th>';
+                        fbody_html +='<th class="text-center">P '+numberWithCommas(sub_total)+'</th>';
                         fbody_html +='<th class="text-right font-text-amt"></th>';
                     fbody_html +='</tr>';
                 $('#tbody-order-list').append(tbody_html);
