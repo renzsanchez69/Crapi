@@ -252,6 +252,26 @@ tr{background-color: #f2f2f2;}
   position: fixed;
 }
 
+#viewfood {
+  margin: 0;
+  height: auto;
+  width: 100%;
+  position: fixed;
+}
+
+#myviewfood {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 70px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
 .modal-body {padding: 2px 16px;}
 
 /* Modal Footer */

@@ -62,23 +62,9 @@
     </table>
   </div>
   <div class="container-fluid">
-      <!-- <div class="col-sm-12 col-md-6 col-lg-6">
+      <div class="col-md-4 col-md-offset-4 text-center">
           <br>
-          <button class="PayMaya" name="order_btn" data-toggle="modal" data-target="#VIEWloc">CREDIT</button> 
-      </div>
-      <div class="col-sm-12 col-md-6 col-lg-6">
-          <br>
-          <button class="OnSpot" name="order_btn" data-toggle="modal" data-target="#VIEWloc">CASH</button> 
-      </div>
-      <br>
-      <br> -->
-      <div class="col-sm-12 col-md-4 col-lg-4">
-      </div>
-      <div class="col-sm-12 col-md-4 col-lg-4">
-          <br>
-          <button class="b-order o-btn" name="order_btn" data-toggle="modal" data-target="#VIEWloc">ORDER</button>
-      </div>
-      <div class="col-sm-12 col-md-4 col-lg-4">
+          <button class="b-order o-btn" name="order_btn" onclick="view_order(); return false;">ORDER</button>
       </div>
   </div>
 </div>
@@ -111,18 +97,29 @@
 </div>
 
 <div class="modal fade" id="VIEWloc" role="dialog">
-  <div class="modal-content" id="addfood">
+  <div class="modal-content" id="viewfood">
     <div class="modal-header">
       <span class="close" data-dismiss="modal">&times;</span>
       <h2>LOCATION</h2>
     </div>
-    <div class="modal-body" id="addfood">
-      <div class="loc">
-
-      </div>
-      <div class="price">
-
-      </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h3>Order Details</h3><hr>
+            </div>
+            <div class="col-5">
+                <input name="latitude" type="hidden" value="<?php echo isset($orderInfo['resto_latitude']) ? $orderInfo['resto_latitude'] : ''; ?>">
+                <input name="longitude" type="hidden" value="<?php echo isset($orderInfo['resto_longitude']) ? $orderInfo['resto_longitude'] : ''; ?>">
+                <div class="col-12" id="map" style="height: 300px; position: relative; overflow: hidden;"></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-body" id="history-details">
+    </div>
+    <div class="modal-footer" style="background-color:#ffffff;">
+        <div class="col-md-4 col-md-offset-4 text-center">
+            <button type="button" class="mr-auto" id="myviewfood" >Proceed</button>
+        </div>
     </div>
   </div>
 </div>
@@ -513,6 +510,16 @@ $("#edit-order-fname").click(function(){
     });
 });
 
+function view_order() {
+    //date_order,full_name,description,address,email_address,contact_no,name,price,qty,hash
+    var hash = 'testhas';
+    $('#VIEWloc').modal('show');
+    //$('#order_hash').text(hash);
+    /*var total_vat = (price*.12); 
+    var total = (total_vat) + price; */
+    $('#history-details').empty().append('<div class="info"><p id="order_hash">Customer name: <b>Anuar Delabahan</b></p><p id="address"> Address: <b>Cebu City</b></p><p id="contact_number">Contact number: <b>09173260074</b></p><p id="email_address">Email address: <b>delabahan@gmail.com</b></p><p id="date_time"> Date & Time: <b>April 17,2019</b></p></div><div class="order"><br><br><table><tr><th> Product </th><th> Qty &nbsp;</th><th class="text-right"> Price </th></tr><tr><th> Adobo </th><th> 15 </th><th class="text-right">P 1500 </th></tr></table></div><div class="modal-footer"><div class="text-right">TOTAL 1400</div><div class="text-right">(Incl. VAT)</div><div class="text-right">P 1500 </div></div>');
+}
+
 function wcqib_refresh_quantity_increments() {
     jQuery("div.quantity:not(.buttons_added), td.quantity:not(.buttons_added)").each(function(a, b) {
         var c = jQuery(b);
@@ -536,4 +543,101 @@ String.prototype.getDecimals || (String.prototype.getDecimals = function() {
     b && "" !== b && "NaN" !== b || (b = 0), "" !== c && "NaN" !== c || (c = ""), "" !== d && "NaN" !== d || (d = 0), "any" !== e && "" !== e && void 0 !== e && "NaN" !== parseFloat(e) || (e = 1), jQuery(this).is(".plus") ? c && b >= c ? a.val(c) : a.val((b + parseFloat(e)).toFixed(e.getDecimals())) : d && b <= d ? a.val(d) : b > 0 && a.val((b - parseFloat(e)).toFixed(e.getDecimals())), a.trigger("change")
 });
 </script>
+<script type="text/javascript">
+    $('[type="submit"]').on('click', function(e){
+        e.preventDefault();
+
+        var response = confirm('Update information?');
+        if (response) {
+            $(this).closest('form').submit();
+        };
+    });
+
+    var map, marker, geocoder, searchBox;
+
+    $('#updBtn').on('click', function(e){
+        e.preventDefault();
+
+        var response = confirm('Update information?');
+        if (response) {
+            $('form').submit();
+        };
+    });
+
+    function getDefaultMapCenter() {
+        var defaultLat = parseFloat($('[name=latitude]').val()) ||  10.3157,
+            defaultLng =  parseFloat($('[name=longitude]').val()) ||  123.8854;
+
+        return {
+            lat: defaultLat,
+            lng: defaultLng
+        }
+    }
+
+
+
+    function codeAddress() {
+        var address = $('[name=address]').val();
+        
+        geocoder.geocode( { 'address': address}, function(results, status) {
+            if (status == 'OK') {
+                console.log(results);
+                map.setCenter(results[0].geometry.location);
+                marker.setPosition(results[0].geometry.location);
+            } else {
+                alert('Geocode was not successful for the following reason: ' + status);
+            }
+        });
+    }
+
+    function initMap() {
+
+        // var NEW_ZEALAND_BOUNDS = {
+        //  west: 124.6956015,
+        //  east: 116.3667803,
+        //  south: 4.657837,
+        //  north: 19.366895
+        // };
+
+
+        geocoder = new google.maps.Geocoder;
+
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 14,
+            center: getDefaultMapCenter(),
+            // restriction: {
+            //  latLngBounds: NEW_ZEALAND_BOUNDS,
+            //  strictBounds: false,
+            // },
+        });
+
+        marker = new google.maps.Marker({
+            map: map,
+            position: getDefaultMapCenter()
+        });
+
+        var markers = [];
+
+        // map.addListener('click', function (e) {
+        //  geocoder.geocode({'location': e.latLng}, function(results, status) {
+        //      if (status === 'OK') {
+        //          if (results[0]) {
+        //              marker.setPosition(e.latLng);
+        //              $('[name=address]').val(results[0].formatted_address)
+        //              $('[name=latitude]').val(e.latLng.lat())
+        //              $('[name=longitude]').val(e.latLng.lng())
+        //          }
+        //      }
+        //  })
+        // })
+    }
+
+    $('[name=address]').keydown(function (e) {
+        if(e.keyCode === 13){
+            e.preventDefault();
+            codeAddress();
+        }
+    });
+</script>
+<script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBb9gjcZGig7KAgoJC1EmMHA98Rp8Ayz98&amp;libraries=places&amp;callback=initMap"></script>
 </html>
