@@ -97,24 +97,56 @@
 </div>
 
 <div class="modal fade" id="VIEWloc" role="dialog">
-  <div class="modal-content" id="viewfood">
+  <div class="modal-content" id="">
     <div class="modal-header">
       <span class="close" data-dismiss="modal">&times;</span>
-      <h2>LOCATION</h2>
-    </div>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                <h3>Order Details</h3><hr>
-            </div>
-            <div class="col-5">
-                <input name="latitude" type="hidden" value="<?php echo isset($orderInfo['resto_latitude']) ? $orderInfo['resto_latitude'] : ''; ?>">
-                <input name="longitude" type="hidden" value="<?php echo isset($orderInfo['resto_longitude']) ? $orderInfo['resto_longitude'] : ''; ?>">
-                <div class="col-12" id="map" style="height: 300px; position: relative; overflow: hidden;"></div>
-            </div>
+        <div class="col-12">
+            <h3 class="text-center">ORDER# <b class="order_hash"></b></h3>
         </div>
     </div>
-    <div class="modal-body" id="history-details">
+    <div class="modal-body">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h3>LOCATION</h3><hr>
+                </div>
+                <div class="col-5">
+                    <input name="latitude" type="hidden" value="10.329624">
+                    <input name="longitude" type="hidden" value="123.928752">
+                    <div class="col-12" id="map" style="height: 300px; position: relative; overflow: hidden;"></div>
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="row">
+                <div class="col-12">
+                    <h3>Order Details</h3><hr>
+                </div>
+                <div class="col-12">
+                    <div class="info">
+                        <p> Order #: <b class="order_hash"></b></p>
+                        <p> Customer name: <b>Anuar Delabahan</b></p>
+                        <p> Address: <b id="address">Cebu City</b></p>
+                        <p> Contact number: <b id="contact_number">09173260074</b></p>
+                        <p> Email address: <b id="email_address">delabahan@gmail.com</b></p>
+                        <p> Date & Time: <b id="date_time">April 17,2019</b></p>
+                    </div>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="text-left"><b>Food name</b></th>
+                            <th class="text-center"><b>QTY</b></th>
+                            <th class="text-center"><b>Price</b></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-order-list-view">
+                    </tbody>
+                    <tfoot id="fbody-order-list-view">
+                    </tfoot>
+                </table>
+            </div>
+        </div>
     </div>
     <div class="modal-footer" style="background-color:#ffffff;">
         <div class="col-md-4 col-md-offset-4 text-center">
@@ -212,7 +244,8 @@
 <script>
 $(function(){
     $('#resto-name').text(localStorage.getItem("resto_name"));
-    console.log(localStorage.getItem("resto_id"));
+    $('input[name="latitude"]').val(localStorage.getItem("latitude"));
+    $('input[name="longitude"]').val(localStorage.getItem("longitude"));
     get_data();
 });
 $('#log-out').click(function(e){
@@ -233,11 +266,16 @@ function get_data() {
             console.log(result_data);
             $('#tbody-order-list').empty();
             $('#fbody-order-list').empty();
+            $('#tbody-order-list-view').empty();
+            $('#fbody-order-list-view').empty();
             if (result_data.result == 'OK') {
                 var tbody_html = "";
                 var fbody_html = "";
+                var tbody_html_orders = "";
+                var fbody_html_orders = "";
                 var total_qty = 0;
                 var sub_total = 0;
+                var total_order = 0;
                 $.each( result_data.data, function( key, value ) {
                         console.log(value.SUB_TOTAL);
                         if (value.id == undefined) {
@@ -253,6 +291,11 @@ function get_data() {
                                 tbody_html +='<button class="deletebut" name="delete_btn" onclick="delete_order('+value.id+'); return false;"><i class="glyphicon glyphicon-trash"></i></button>';
                             tbody_html +='</td>';
                         tbody_html +='</tr>';
+                        tbody_html_orders +='<tr id="'+value.product_id+'">';
+                            tbody_html_orders +='<td class="text-left">'+value.name+'</td>';
+                            tbody_html_orders +='<td class="text-center">'+value.qty+'</td>';
+                            tbody_html_orders +='<td class="text-center">P '+value.price+'</td>';
+                        tbody_html_orders +='</tr>';
 
                 }); 
                     fbody_html +='<tr class="tfoot-bgcolor  font-text-amt">';
@@ -261,8 +304,23 @@ function get_data() {
                         fbody_html +='<th class="text-center">P '+sub_total+'</th>';
                         fbody_html +='<th class="text-right font-text-amt"></th>';
                     fbody_html +='</tr>';
+                    fbody_html_orders +='<tr class="tfoot-bgcolor  font-text-amt modal-footer-view-order">';
+                        fbody_html_orders +='<th class="text-left font-text  font-text-amt">TOTAL</th>';
+                        fbody_html_orders +='<th class="text-center"></th>';
+                        total_order = (sub_total*.12) + sub_total;
+                        fbody_html_orders +='<th class="text-center">P '+numberWithCommas(sub_total)+' <br>P '+numberWithCommas(parseInt(total_order, 10))+' (Incl. VAT) </th>';
+                    fbody_html +='</tr>';
+
+                    $('.order_hash').text(result_data.data[0].order_number);
+                    $('#address').text(result_data.data[0].address);
+                    $('#contact_number').text(result_data.data[0].contact_number);
+                    $('#email_address').text(result_data.data[0].email);
+                    $('#date_time').text(result_data.data[0].created_at);
+
                 $('#tbody-order-list').append(tbody_html);
                 $('#fbody-order-list').append(fbody_html);
+                $('#tbody-order-list-view').append(tbody_html_orders);
+                $('#fbody-order-list-view').append(fbody_html_orders);
             }
         },
         error: function(e) {
@@ -511,13 +569,11 @@ $("#edit-order-fname").click(function(){
 });
 
 function view_order() {
-    //date_order,full_name,description,address,email_address,contact_no,name,price,qty,hash
-    var hash = 'testhas';
     $('#VIEWloc').modal('show');
-    //$('#order_hash').text(hash);
-    /*var total_vat = (price*.12); 
-    var total = (total_vat) + price; */
-    $('#history-details').empty().append('<div class="info"><p id="order_hash">Customer name: <b>Anuar Delabahan</b></p><p id="address"> Address: <b>Cebu City</b></p><p id="contact_number">Contact number: <b>09173260074</b></p><p id="email_address">Email address: <b>delabahan@gmail.com</b></p><p id="date_time"> Date & Time: <b>April 17,2019</b></p></div><div class="order"><br><br><table><tr><th> Product </th><th> Qty &nbsp;</th><th class="text-right"> Price </th></tr><tr><th> Adobo </th><th> 15 </th><th class="text-right">P 1500 </th></tr></table></div><div class="modal-footer"><div class="text-right">TOTAL 1400</div><div class="text-right">(Incl. VAT)</div><div class="text-right">P 1500 </div></div>');
+}
+
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 function wcqib_refresh_quantity_increments() {

@@ -51,6 +51,8 @@
                     if (typeof(Storage) !== "undefined") {
                         localStorage.setItem("login_token", result_data.login_token);
                         localStorage.setItem("role", result_data.role);
+                        localStorage.setItem("longitude", result_data.longitude);
+                        localStorage.setItem("latitude", result_data.latitude);
                         
                         switch(result_data.role) {
                             case 'employee':
