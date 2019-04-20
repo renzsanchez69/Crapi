@@ -125,7 +125,7 @@
                 <div class="col-12">
                     <div class="info">
                         <p> Order #: <b class="order_hash"></b></p>
-                        <p> Customer name: <b>Anuar Delabahan</b></p>
+                        <p> Customer name: <b id="customer_name">Anuar Delabahan</b></p>
                         <p> Address: <b id="address">Cebu City</b></p>
                         <p> Contact number: <b id="contact_number">09173260074</b></p>
                         <p> Email address: <b id="email_address">delabahan@gmail.com</b></p>
@@ -241,6 +241,7 @@
 </body>
 <script src="lib/bootstrap.min.js"></script>
 <script src="js/jquery.growl.js" type="text/javascript"></script>
+<script src="common/app.js" type="text/javascript"></script>
 <script>
 $(function(){
     $('#resto-name').text(localStorage.getItem("resto_name"));
@@ -248,11 +249,7 @@ $(function(){
     $('input[name="longitude"]').val(localStorage.getItem("longitude"));
     get_data();
 });
-$('#log-out').click(function(e){
-    localStorage.removeItem("login_token");
-    localStorage.removeItem("role");
-    window.location.href = 'index.html';
-});
+
 // - Get menu data
 function get_data() {
     var login_token = localStorage.getItem("login_token");
@@ -312,6 +309,7 @@ function get_data() {
                     fbody_html +='</tr>';
 
                     $('.order_hash').text(result_data.data[0].order_number);
+                    $('#customer_name').text(result_data.data[0].customer_fullname);
                     $('#address').text(result_data.data[0].address);
                     $('#contact_number').text(result_data.data[0].contact_number);
                     $('#email_address').text(result_data.data[0].email);
@@ -571,10 +569,6 @@ $("#edit-order-fname").click(function(){
 
 function view_order() {
     $('#VIEWloc').modal('show');
-}
-
-function numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 function wcqib_refresh_quantity_increments() {
