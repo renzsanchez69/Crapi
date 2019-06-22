@@ -15,10 +15,15 @@ var CrapiApp = (function() {
 	var obj = {};
 	var element = null;
 	var login_token = null;
+	var login_data = localStorage.getItem('login_data');
 
 	// configuration
 	obj.config = {};
 	obj.broadcast_settings = {};
+
+	if (login_data != null) {
+		obj.config.login_data = JSON.parse(login_data);
+	}
 
 	// embeded swf object
 	obj.embededSwfObj = null;
@@ -28,21 +33,18 @@ var CrapiApp = (function() {
 		element = this;
 
 		var new_params = requestObj.data;
-		
-
-		// Retrieve the login object from storage
-		var login_data = localStorage.getItem('login_data');
 
 		// - if login token is not empty. add token
-		if (login_data != null) {
-			login_data = JSON.parse(login_data);
-			if (typeof login_data.login_token !== 'undefined' && login_data.login_token.length != 0) {
-				var user_data = {
-					login_token: login_data.login_token,
-					role: login_data.role
-				};
-				new_params = extend(user_data, new_params);
-			}
+		if (
+			typeof element.config.login_data != null && 
+			typeof element.config.login_data.login_token !== 'undefined' && 
+			element.config.login_data.login_token.length != 0
+		) {
+			var user_data = {
+				login_token: element.config.login_data.login_token,
+				role: element.config.login_data.role
+			};
+			new_params = extend(user_data, new_params);
 		}
 
 		
@@ -110,5 +112,6 @@ var CrapiApp = (function() {
 		}
 		return obj;
 	}
+
 	return obj;
 })();

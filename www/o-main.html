@@ -26,9 +26,11 @@
 </div>
 
 <div class="main">
+  <br>
   <div class="title">
-  <!-- php --><h1>Restaurant Name*</h1><!-- php -->
+  <!-- php --><h1>My Restaurants</h1><!-- php -->
   </div>
+  <br>
 
   <div class="left">
     <form action="">
@@ -39,18 +41,41 @@
   <div class="right">
     <!-- php --><button class="add" id="myAdd" data-toggle="modal" data-target="#ADDemp">ADD EMPLOYEE</button><!-- php -->
   </div>
-  <div class="t-title">
+
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>Full name</th>
+        <th>Contact number</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="empListResult">
+        <tr class="loader"><td colspan="3"><span class="fa fa-spinner fa-spin"></span> Fetching restaurant list.</td></tr>
+    </tbody>
+
+    <!-- data -->
+    <tr id="masterEmpRow" class="hidden">
+      <th id="empName">Junas Bangayan</th>
+      <th id="empContactNo">09771215342</th>
+      <th>
+        <button id="empEditBtn" name="edit_btn" data-toggle="modal" data-target="#EDITemp"><i class="glyphicon glyphicon-edit"></i></button>
+        <button class="empDeleteBtn" name="delete_btn" data-toggle="modal" data-target="#DELemp"><i class="glyphicon glyphicon-trash"></i></button>
+      </th>
+    </tr>
+  </table>
+
+<!--   <div class="t-title">
     <table>
       <tr>
         <th id="custname">Full name</th>
-        <th>Contact number</th>
+        <th>contact number</th>
         <th>Action</th>
       </tr>
     </table>
   </div>
   <div class="t-cust">
-    <table>
-      <!-- php -->
+    <table class="table">
       <tr>
         <th id="custname">Junas Bangayan</th>
         <th>09771215342</th>
@@ -59,9 +84,8 @@
           <button class="deletebut" name="delete_btn" data-toggle="modal" data-target="#DELemp"><i class="glyphicon glyphicon-trash"></i></button>
         </th>
       </tr>
-      <!-- php -->
     </table>
-  </div>
+  </div> -->
 
 <!-- Add Modal -->
 <div class="modal fade" id="ADDemp" role="dialog">
@@ -129,4 +153,46 @@
 </div>
 
 </body>
+<script src="common/constants.js"></script>
+<script src="common/app.js"></script>
+<script>
+  $(document).ready(function(){
+    
+    var empRow = $('#masterEmpRow').clone();
+    empRow.removeClass('hidden');
+
+    $('#empListResult').append(empRow);
+    console.log(empRow);
+    loadRestaurants();
+  });
+
+  function loadRestaurants(){
+    var search = $('[name="search"]').val();
+    CrapiApp.searchResto({
+      search: search, 
+      owner_id: CrapiApp.config.login_data.user_id
+    })
+    .then(function(res){
+
+      $('.loader').remove();
+      if (res.result === 'OK') {
+        for (var key in validation_messages) {
+          // skip loop if the property is from prototype
+          if (!validation_messages.hasOwnProperty(key)) continue;
+
+          var obj = validation_messages[key];
+          for (var prop in obj) {
+              // skip loop if the property is from prototype
+              if(!obj.hasOwnProperty(prop)) continue;
+
+              // your code
+              alert(prop + " = " + obj[prop]);
+          }
+        }
+        var empRow = $('#masterEmpRow').clone();
+      }
+      console.log(result_data);
+    });
+  }
+</script>
 </html>
