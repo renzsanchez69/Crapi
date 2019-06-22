@@ -1,22 +1,20 @@
 
-// $('#log-out').click(function(e){
-//     localStorage.removeItem("login_token");
-//     localStorage.removeItem("role");
-//     localStorage.removeItem("resto_id");
-//     localStorage.removeItem("longitude");
-//     localStorage.removeItem("latitude");
-//     window.location.href = 'index.html';
-// });
+$('#log-out').click(function(e){
+    localStorage.removeItem("login_token");
+    localStorage.removeItem("login_data");
+    window.location.href = 'index.html';
+});
 
-// function numberWithCommas(x) {
-//     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-// }
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
 var CrapiApp = (function() {
 
 	// return handlers
 	var obj = {};
 	var element = null;
+	var login_token = null;
 
 	// configuration
 	obj.config = {};
@@ -28,25 +26,32 @@ var CrapiApp = (function() {
 
 	obj.ajaxRestAction = function(requestObj) {
 		element = this;
-		var new_params = {};
-		// var new_params = _.extend({
-		// 	member_type: TALK_GENERAL.member_type,
-		// 	terminal_type: TALK_GENERAL.terminal_type,
-		// 	idfa: defaultIDFA
-		// }, obj.data);
+
+		var new_params = requestObj.data;
 		
-		// - if login token is not empty.
-		if (typeof loginToken !== 'undefined' && loginToken.length != 0) {
-			new_params = _.extend({login_token: loginToken}, new_params);
+
+		// Retrieve the login object from storage
+		var login_data = localStorage.getItem('login_data');
+
+		// - if login token is not empty. add token
+		if (login_data != null) {
+			login_data = JSON.parse(login_data);
+			if (typeof login_data.login_token !== 'undefined' && login_data.login_token.length != 0) {
+				var user_data = {
+					login_token: login_data.login_token,
+					role: login_data.role
+				};
+				new_params = extend(user_data, new_params);
+			}
 		}
+
 		
 		// - set to parameters
 		requestObj.data = new_params;
-		
-		// - warn
+
 		console.warn("=== REQUEST PARAMS ===");
 		console.log(JSON.stringify(requestObj));
-		console.log("=== ============== ===");
+		console.log("-------------------------------");
 
 		// - execute delete request
 		return $.ajax({
@@ -77,7 +82,7 @@ var CrapiApp = (function() {
 		// - set request data
 		var params = {
 			url: ENVIRONMENT_URL.customer_list_url,
-			method: 'GET',
+			method: 'POST',
 			data: params
 		};
 		
@@ -85,5 +90,25 @@ var CrapiApp = (function() {
 		return element.ajaxRestAction(params)
 	}
 
+	obj.searchResto = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.resto_search_url,
+			method: 'POST',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+
+	function extend(obj, src) {
+		for (var key in src) {
+			if (src.hasOwnProperty(key)) obj[key] = src[key];
+		}
+		return obj;
+	}
 	return obj;
 })();

@@ -42,15 +42,14 @@
 			$.growl.error({ message: "Password must not be empty!" });
 			return false;
 		}
-		// CrapiApp.loginUser({ "email":mail, "password": pw })
-		CrapiApp.getCustomerList({})
+
+		CrapiApp.loginUser({"email": mail, "password": pw})
 		.then(function(result_data) {
-			if (result_data.result == 'OK') {
+			if (result_data.result == TALK_GENERAL.api_result_success) {
 				if (typeof(Storage) !== "undefined") {
-					localStorage.setItem("login_token", result_data.login_token);
-					localStorage.setItem("role", result_data.role);
-					localStorage.setItem("longitude", result_data.longitude);
-					localStorage.setItem("latitude", result_data.latitude);
+
+					localStorage.setItem('login_data', JSON.stringify(result_data));
+					localStorage.setItem('login_token', JSON.stringify(result_data.login_token));
 					
 					switch(result_data.role) {
 						case 'employee':
