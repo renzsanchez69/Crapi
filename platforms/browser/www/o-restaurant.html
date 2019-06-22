@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WELCOME</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="js/o-main.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/o-main.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="lib/jquery.min.js"></script>
+    <script src="lib/bootstrap.min.js"></script>
+</head>
+<body>
+
+<!-- Top Navigation Menu -->
+<div class="topnav" id="myTopnav">
+  <a href="o-main.html" class="active">Employee</a>
+  <a href="o-menu.html">Food Menu</a>
+  <a href="o-sub.html">Subscription</a>
+  <a href="o-hist.html">Order History</a>
+  <a href="index.html">Logout</a>
+  <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+    <i class="fa fa-bars"></i>
+  </a>
+</div>
+
+<div class="main">
+  <div class="title">
+  <!-- php --><h1>Restaurant Name*</h1><!-- php -->
+  </div>
+
+  <div class="left">
+    <form action="">
+        <input class="search" type="text" placeholder="Search.." name="search">
+        <button type="submit"><i class="fa fa-search"></i></button>
+    </form>
+  </div>
+  <div class="right">
+    <!-- php --><button class="add" id="myAdd" data-toggle="modal" data-target="#ADDemp">ADD EMPLOYEE</button><!-- php -->
+  </div>
+  <div class="t-title">
+    <table>
+      <tr>
+        <th id="custname">Full name</th>
+        <th>Contact number</th>
+        <th>Action</th>
+      </tr>
+    </table>
+  </div>
+  <div class="t-cust">
+    <table>
+      <!-- php -->
+      <tr>
+        <th id="custname">Junas Bangayan</th>
+        <th>09771215342</th>
+        <th>
+          <button class="editbut" name="edit_btn" data-toggle="modal" data-target="#EDITemp"><i class="glyphicon glyphicon-edit"></i></button>
+          <button class="deletebut" name="delete_btn" data-toggle="modal" data-target="#DELemp"><i class="glyphicon glyphicon-trash"></i></button>
+        </th>
+      </tr>
+      <!-- php -->
+    </table>
+  </div>
+
+<!-- Add Modal -->
+<div class="modal fade" id="ADDemp" role="dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close" data-dismiss="modal">&times;</span>
+      <h2>Employee Registration</h2>
+    </div>
+    <div class="modal-body">
+      <div class="regbox">
+        <form class="reg" action="">
+          <input type="text" placeholder="Full name" name="name" required>
+          <input type="text" placeholder="Address" name="address" required>
+          <input type="text" placeholder="Contact number" name="contact" required>
+          <input type="email" placeholder="Email address" name="email" required>
+          <input type="password" placeholder="Password" name="password" required>
+          <button class="submit" name="submit_btn">SUBMIT</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="EDITemp" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="close" data-dismiss="modal">&times;</span>
+        <h2>Edit Employee</h2>
+      </div>
+      <div class="modal-body">
+        <div class="regbox">
+          <form class="reg" action="">
+           <input type="text" placeholder="Full name" name="name" value="Junas Bangayan" required>
+           <input type="text" placeholder="Address" name="address" value="Minglanilla, Cebu" required>
+           <input type="text" placeholder="Contact number" name="contact" value="09771215342" required>
+           <input type="email" placeholder="Email address" name="email" value="junasmarcil@gmail.com" required>
+           <input type="password" placeholder="Password" name="password" value="**********" required>
+           <button class="save" name="edit_btn">SAVE</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="DELemp" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="close" data-dismiss="modal">&times;</span>
+        <h2>Delete Employee</h2>
+      </div>
+      <div class="modal-body">
+      <div class="regbox">
+        <p>Are you sure you want to delete this account?</p>
+        <button class="delete" name="del_btn">DELETE</button>
+        <button data-dismiss="modal">NO</button>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+</body>
+</html>
