@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OWNERS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/o-main.css">
+    <link rel="stylesheet" href="css/style.css" type="text/css" >
+    <link rel="stylesheet" href="css/a-style.css" type="text/css" >
+    <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css" >
+    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" >
+    <link href="css/jquery.growl.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+<div class="sidenav">
+  <h1>CRAPI APPLICATION</h1>
+  <a href="a-main.html">OWNERS</a>
+  <a href="a-pend.html">PENDING ACCOUNTS</a>
+  <a href="a-emp.html">EMPLOYEES</a>
+  <a href="a-cust.html" class="active">CUSTOMERS</a>
+  <a href="a-hist.html">ORDER HISTORY</a>
+</div>
+
+<div class="main">
+  <div class="top">
+    <div class="left mt-5">
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <form action="" method="GET">
+                    <input class="search" type="text" placeholder="Search.." name="search">
+                    <button type="button" class="btn-light search-btn-light" style="padding: 10px !important;" id="fsearch"><i class="fa fa-search"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="right">
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <button class="add" data-toggle="modal" data-target="#ADDcust">ADD CUSTOMER</button>
+            </div>
+        </div>
+    </div>
+  </div>
+
+    <div class="container-fluid">        
+        <table class="table">
+            <thead>
+              <tr>
+                <th id="custname">Full name</th>
+                <th>Address</th>
+                <th>Contact number</th>
+                <th class="text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody id="product-data">
+            </tbody>
+        </table>
+    </div>
+  </div>
+</div>
+
+<!-- Add Modal -->
+<div class="modal fade" id="ADDcust" role="dialog">
+	<div class="modal-content">
+	  <div class="modal-header">
+	    <span class="close" data-dismiss="modal">&times;</span>
+	    <h2>Customer Registration</h2>
+	  </div>
+	  <div class="modal-body">
+	  <div class="regbox">
+	    <form class="reg" action="">
+	    <input type="text" placeholder="Full name" name="name" required>
+	    <input type="text" placeholder="Address" name="address" required>
+	    <input type="text" placeholder="Contact number" name="contact" required>
+	    <input type="email" placeholder="Email address" name="email" required>
+	    <input type="password" placeholder="Password" name="password" required>
+	    <button class="submit" name="submit_btn">SUBMIT</button>
+	  </form>
+	  </div>
+	  </div>
+	</div>
+</div>
+
+<div class="modal fade" id="EDITcust" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="close" data-dismiss="modal">&times;</span>
+        <h2>Edit Customer's Account</h2>
+      </div>
+      <div class="modal-body">
+        <div class="regbox">
+          <form class="reg" action="">
+           <input type="text" placeholder="Full name" name="name" required>       
+           <input type="text" placeholder="Home address" name="address" required>
+           <input type="text" placeholder="Contact number" name="contact" required>
+           <input type="email" placeholder="Email address" name="email" required>
+           <input type="password" placeholder="Password" name="password" required>
+           <button class="save" name="edit_btn">SAVE</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="DELcust" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content" >
+		  <div class="modal-header">
+		    <span class="close" data-dismiss="modal">&times;</span>
+            <input type="hidden" name="cus_id" id="cus_id">
+		    <h2>Delete Customer's Account</h2>
+		  </div>
+		  <div class="modal-body">
+		  <div class="regbox" id="deleteOWN">
+		    <p>Are you sure you want to delete this account?</p>
+		    <button class="delete" name="del_btn" id="del_btn">DELETE</button>
+		    <button data-dismiss="modal">NO</button>
+		  </div>
+		  </div>
+		</div>
+	</div>
+</div>
+
+<script src="lib/jquery.min.js"></script>
+<script src="lib/bootstrap.min.js"></script>
+<script src="js/jquery.growl.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        get_data();
+    });
+    function get_data () {
+        $.ajax({
+            url: "http://localhost/order_list.php"
+        }).then(function(data) {
+            console.log(data[0]);
+            var html = "";
+            $.each( data, function( key, value ) {
+                if (value.id == undefined) {
+                        return false;
+                }
+                html +='<tr '+value.id+'><th>' + value.full_name +'</th><th>' + value.address +'</th><th>' + value.contact_no +'</th><th class="text-right"><button class="editbut" onclick="edit_details(\'' + value.full_name + '\',\'' + value.address + '\',\'' + value.email_address + '\',\'' + value.contact_no + '\'); return false;" name="edit_btn" data-toggle="modal" data-target="#EDITcust"><i class="glyphicon glyphicon-edit"></i></button><button class="deletebut" name="delete_btn" data-toggle="modal" data-target="#DELcust" onclick="delete_details(' +value.id + '); return false;"><i class="glyphicon glyphicon-trash"></i></button></th></tr>';
+            });
+            $('#product-data').empty().append(html);
+        });
+    }
+    function edit_details(full_name,address,email_address,contact_no) {
+        $('input[name="name"]').val(full_name);
+        $('input[name="address"]').val(address);
+        $('input[name="contact"]').val(contact_no);
+        $('input[name="email"]').val(email_address);
+        $('input[name="password"]').val('*****');
+    }
+    function delete_details(id) {
+        $('input[name="cus_id"]').val(id);
+    }
+
+    $("#del_btn").click(function(){
+        var cus_id = $('input[name="cus_id"]').val();     
+        $.ajax({
+            type: "GET",
+            data: {cus_id:cus_id},
+            contentType: "application/json; charset=utf-8",
+            url: "http://localhost/del_cus.php",
+            success: function(data){
+                get_data();
+                $.growl.notice({ title: "Success", message: "Data has been successfully deleted!" });
+            }
+        });
+    });
+
+    $("#fsearch").click(function(){
+        var fsearch = $('input[name="search"]').val();     
+        $.ajax({
+            type: "GET",
+            data: {fsearch:fsearch},
+            contentType: "application/json; charset=utf-8",
+            url: "http://localhost/search_list.php",
+            success: function(data){
+                var html = "";
+                $.each( data, function( key, value ) {
+                    if (value.id == undefined) {
+                        return false;
+                    }
+                    html +='<tr '+value.id+'><th>' + value.full_name +'</th><th>' + value.address +'</th><th>' + value.contact_no +'</th><th class="text-right"><button class="editbut" name="edit_btn" data-toggle="modal" data-target="#EDITcust"><i class="glyphicon glyphicon-edit"></i></button><button class="deletebut" name="delete_btn" data-toggle="modal" data-target="#DELcust"><i class="glyphicon glyphicon-trash"></i></button></th></tr>';
+                });
+                $('#product-data').empty().append(html);
+            }
+        });
+    });
+</script>
+</body>
+</html>

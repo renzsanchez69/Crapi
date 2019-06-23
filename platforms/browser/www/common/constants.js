@@ -8,9 +8,14 @@ const ENVIRONMENT_URL = {
 	// - login url
 	login_url : BASE_URL+"/api/login/login",
 
-	// - customer list url
+	// - customers url
 	customer_list_url : BASE_URL+"/api/customers",
+
+	// - restaurants url
 	resto_search_url : BASE_URL+"/api/restaurants/resto_search",
+
+	// - employees url
+	employees_search_url : BASE_URL+"/api/employees",
 
 };
 

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ORDER HISTORY</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="js/o-main.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/o-main.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="lib/jquery.min.js"></script>
+    <script src="lib/bootstrap.min.js"></script>
+</head>
+<body>
+
+<!-- Top Navigation Menu -->
+<div class="topnav" id="myTopnav">
+  <a href="o-hist.html" class="active">Order History</a>
+  <a href="o-main.html">Employee</a>
+  <a href="o-menu.html">Food Menu</a>
+  <a href="o-sub.html">Subscription</a>
+  <a href="index.html">Logout</a>
+  <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+    <i class="fa fa-bars"></i>
+  </a>
+</div>
+
+<div class="main">
+  <div class="title">
+  <h1>Order History</h1>
+  </div>
+
+  <div class="left">
+    <form action="">
+        <input class="search" type="text" placeholder="Search.." name="search">
+        <button type="submit"><i class="fa fa-search"></i></button>
+    </form>
+  </div>
+
+  <div class="t-title">
+    <table>
+      <tr>
+        <th>Order Date</th>
+        <th id="custname">Full name</th>
+        <th>Action</th>
+      </tr>
+    </table>
+  </div>
+  <div class="t-cust">
+    <table>
+      <!-- php -->
+      <tr>
+        <th>April 20, 2018</th>
+        <th id="custname">Junas Bangayan</th>
+        <th>
+          <button class="viewbut" name="view_btn" data-toggle="modal" data-target="#VIEWord"><i class="glyphicon glyphicon-eye-open"></i></button>
+        </th>
+      </tr>
+      <!-- php -->
+    </table>
+  </div>
+
+  <!-- Add Modal -->
+  <div class="modal fade" id="VIEWord" role="dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="close" data-dismiss="modal">&times;</span>
+        <h2>BM3Y4</h2>
+      </div>
+      <div class="modal-body">
+       <div class="info">
+      <!-- php -->
+        <p>Customer name: Junas Bangayan</p>
+        <p>Address: Minglanilla</p>
+        <p>Contact number: 09771215342</p>
+        <p>Email address: junasmarcil@gmail.com</p>
+        <p>Date & Time: April 20, 2018 | 4:20 PM</p>
+      <!-- php -->    
+       </div>
+       <div class="order">
+        <table>
+          <tr>
+            <th style="width: 75%; text-align: left;">Product</th>
+            <th style="width: 5%; text-align: center;">Qty</th>
+            <th style="width: 20%; text-align: center;">Price</th>
+          </tr>
+          <!-- php -->
+          <tr>
+            <th style="width: 75%; text-align: left;">Bola-bola Siopao</th>
+            <th style="width: 5%; text-align: center;">4</th>
+            <th style="width: 20%; text-align: left;">P92.00</th> 
+          </tr>
+        </table>
+       </div>
+        <div class="modal-footer">
+          <div class="labelT">TOTAL</div><div class="labelV">(Incl. VAT)</div>
+          <!-- php --><div class="TotalA">P 92.00</div><!-- php -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+</body>
+</html>

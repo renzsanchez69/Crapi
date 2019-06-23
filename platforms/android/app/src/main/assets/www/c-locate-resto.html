@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Restaurants</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="css/o-main.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/c-hist.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="lib/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            if (localStorage.getItem("login_token") === null) {
+              window.location.href = 'index.html';
+              return false;
+            }
+        });
+    </script>
+</head>
+<body>
+
+<!-- Top Navigation Menu -->
+<div class="topnav" id="myTopnav">
+  <a href="c-locate-resto.html" class="active">Locate</a>
+  <a href="c-hist.html">Order History</a>
+  <a href="c-main.html">Orders</a>
+  <a href="index.html"  id="log-out">Logout</a>
+  <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+    <i class="fa fa-bars"></i>
+  </a>
+</div>
+
+<div class="main">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Restaurants</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="text-left">
+                    <input class="search" type="text" placeholder="Search.." name="resto-locate">
+                    <button type="button" class="btn-light search-btn-light" style="padding: 10px !important;" id="resto-search"><i class="fa fa-search"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="list-group text-left" id="resto-list-group">
+                    <p><span class="fa fa-spinner fa-spin"></span> Fetching </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="lib/bootstrap.min.js"></script>
+<script src="common/constants.js"></script>
+<script src="common/app.js"></script>
+<script src="js/o-main.js"></script>
+<script type="text/javascript">
+    $(function(){
+        get_data();
+    });
+
+    // - Get menu data
+    function get_data() {
+        var restolocate = $('input[name="resto-locate"]').val();
+        CrapiApp.searchResto({"search":restolocate})
+        .then(function(result_data) {
+            var list_html = "";
+            if (result_data.result == 'OK') {
+                $.each( result_data.data, function( key, value ) {
+                    list_html +='<a href="#" class="list-group-item" onclick="resto_name('+value.id+',\'' + value.resto_name + '\'); return false;">'+value.resto_name+'</a>';
+                }); 
+                $('#resto-list-group').empty().append(list_html);
+            }
+        })
+        .catch(function(e) {
+            $.growl.error({ message: "Connection refused!"});
+            return false;
+        });
+    }
+    $("#resto-search").click(function(){
+        get_data();
+    });
+
+
+    function resto_name(id,restoname) {
+        localStorage.setItem("resto_id", id);
+        localStorage.setItem("resto_name", restoname);
+        window.location.href = 'c-main.html';
+    }
+
+</script>
+</body>
+</html>

@@ -15,31 +15,30 @@ var CrapiApp = (function() {
 	var obj = {};
 	var element = null;
 	var login_token = null;
-	var login_data = localStorage.getItem('login_data');
 
 	// configuration
 	obj.config = {};
 	obj.broadcast_settings = {};
 
+	// Retrieve the login object from storage
+	var login_data = localStorage.getItem('login_data');
 	if (login_data != null) {
 		obj.config.login_data = JSON.parse(login_data);
 	}
 
 	// embeded swf object
 	obj.embededSwfObj = null;
+	obj.loaderElement = '<div class="modal-backdrop fade in loaderElement"><center><span class="fa fa-spinner fa-spin" style="font-size: 80px; line-height: 50vh; color: #eee"></span></center></div>';
 
 
 	obj.ajaxRestAction = function(requestObj) {
 		element = this;
 
 		var new_params = requestObj.data;
+		
 
 		// - if login token is not empty. add token
-		if (
-			typeof element.config.login_data != null && 
-			typeof element.config.login_data.login_token !== 'undefined' && 
-			element.config.login_data.login_token.length != 0
-		) {
+		if (typeof element.config.login_data !== 'undefined' && typeof element.config.login_data.login_token !== 'undefined' && element.config.login_data.login_token.length != 0) {
 			var user_data = {
 				login_token: element.config.login_data.login_token,
 				role: element.config.login_data.role
@@ -57,9 +56,10 @@ var CrapiApp = (function() {
 
 		// - execute delete request
 		return $.ajax({
-			url: requestObj.url,
+			url: encodeURI(requestObj.url),
 			type: requestObj.method,
 			data: requestObj.data,
+			crossDomain: true,
 			dataType: "json"
 		});
 	}
@@ -106,12 +106,51 @@ var CrapiApp = (function() {
 		return element.ajaxRestAction(params)
 	}
 
+	obj.searchEmployees = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.employees_search_url,
+			method: 'GET',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+
+	obj.deleteEmployee = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.employees_search_url+'/'+params.id,
+			method: 'DELETE',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+
+	obj.showCommonLoader = function(){
+		if ($('.loaderElement').length > 0) {
+			return;
+		}
+
+		$('body').append(obj.loaderElement);
+	}
+
+	obj.removeCommonLoader = function(){
+		$('.loaderElement').remove();
+	}
+
 	function extend(obj, src) {
 		for (var key in src) {
 			if (src.hasOwnProperty(key)) obj[key] = src[key];
 		}
 		return obj;
 	}
-
 	return obj;
 })();

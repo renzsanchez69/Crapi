@@ -3,6 +3,7 @@
 <head>
 	<title>CRAPI</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1,connect-src *">
+	<meta http-equiv="Content-Security-Policy" content="default-src *; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data:">
 	<link rel="stylesheet" type="text/css" href="css/login.css">
 	<link href="css/jquery.growl.css" rel="stylesheet" type="text/css" />
 </head>
@@ -74,6 +75,7 @@
 
 				$.growl.notice({ message: result_data.error });
 			} else {
+				console.warn(result_data);
 				$.growl.error({ message: result_data.error });
 				return false;
 			}
