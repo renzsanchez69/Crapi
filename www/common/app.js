@@ -134,6 +134,20 @@ var CrapiApp = (function() {
 		return element.ajaxRestAction(params)
 	}
 
+	obj.createEmployee = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.employees_search_url,
+			method: 'POST',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+
 	obj.showCommonLoader = function(){
 		if ($('.loaderElement').length > 0) {
 			return;
@@ -144,6 +158,16 @@ var CrapiApp = (function() {
 
 	obj.removeCommonLoader = function(){
 		$('.loaderElement').remove();
+	}
+
+	obj.getCleanFormData = function(obj){
+		var newObj = {};
+		for (var key in obj) {
+			if (typeof obj[key].name !== 'undefined' && typeof obj[key].value !== 'undefined') {
+				newObj[obj[key].name] = obj[key].value;
+			}
+		}
+		return newObj;
 	}
 
 	function extend(obj, src) {
