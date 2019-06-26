@@ -106,6 +106,28 @@ var CrapiApp = (function() {
 		return element.ajaxRestAction(params)
 	}
 
+	/*---------------------------------------------------
+		PRODUCTS - API REQUESTS
+	-----------------------------------------------------*/	
+	obj.searchProducts = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.products_search_url,
+			method: 'POST',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+	/*---------------------------------------------------
+		END OF PRODUCTS - API REQUESTS
+	-----------------------------------------------------*/
+	/*---------------------------------------------------
+		EMPLOYEES - API REQUESTS
+	-----------------------------------------------------*/
 	obj.searchEmployees = function(params){
 		element = this;
 
@@ -147,6 +169,9 @@ var CrapiApp = (function() {
 		// - perform ajax for login
 		return element.ajaxRestAction(params)
 	}
+	/*---------------------------------------------------
+		END OF EMPLOYEES - API REQUESTS
+	-----------------------------------------------------*/
 
 	obj.showCommonLoader = function(){
 		if ($('.loaderElement').length > 0) {

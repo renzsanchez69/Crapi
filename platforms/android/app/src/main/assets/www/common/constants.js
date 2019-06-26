@@ -17,6 +17,9 @@ const ENVIRONMENT_URL = {
 	// - employees url
 	employees_search_url : BASE_URL+"/api/employees",
 
+	// - products url
+	products_search_url : BASE_URL+"/api/products/menu_list",
+
 };
 
 // - general information
