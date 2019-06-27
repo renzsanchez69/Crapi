@@ -20,6 +20,12 @@ const ENVIRONMENT_URL = {
 	// - products url
 	products_search_url : BASE_URL+"/api/products/menu_list",
 
+	// - order by customer url
+	order_by_customer_url : BASE_URL+"/api/orders/order_by_customer",
+
+	// - order list url
+	order_list_url : BASE_URL+"/api/orders/order_list",
+
 };
 
 // - general information

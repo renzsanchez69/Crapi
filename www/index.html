@@ -46,6 +46,7 @@
 
 		CrapiApp.loginUser({"email": mail, "password": pw})
 		.then(function(result_data) {
+			console.log(result_data);
 			if (result_data.result == TALK_GENERAL.api_result_success) {
 				if (typeof(Storage) !== "undefined") {
 

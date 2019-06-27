@@ -172,6 +172,39 @@ var CrapiApp = (function() {
 	/*---------------------------------------------------
 		END OF EMPLOYEES - API REQUESTS
 	-----------------------------------------------------*/
+	/*---------------------------------------------------
+			ORDER BY CUSTOMER - API REQUESTS
+	-----------------------------------------------------*/
+	obj.orderByCustomer = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.order_by_customer_url,
+			method: 'POST',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+
+	obj.orderListUrl = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.order_list_url,
+			method: 'POST',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+	/*---------------------------------------------------
+		END OF EMPLOYEES - API REQUESTS
+	-----------------------------------------------------*/
 
 	obj.showCommonLoader = function(){
 		if ($('.loaderElement').length > 0) {
