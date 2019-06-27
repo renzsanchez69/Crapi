@@ -2,6 +2,7 @@
 $('#log-out').click(function(e){
     localStorage.removeItem("login_token");
     localStorage.removeItem("login_data");
+    delete CrapiApp.config.login_data;
     window.location.href = 'index.html';
 });
 
@@ -142,6 +143,20 @@ var CrapiApp = (function() {
 		return element.ajaxRestAction(params)
 	}
 
+	obj.getEmployeeInfo = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.employees_search_url+'/'+params.id,
+			method: 'GET',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+
 	obj.deleteEmployee = function(params){
 		element = this;
 
@@ -169,6 +184,21 @@ var CrapiApp = (function() {
 		// - perform ajax for login
 		return element.ajaxRestAction(params)
 	}
+
+	obj.updateEmployee = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.employees_search_url+'/'+params.id,
+			method: 'PUT',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+
 	/*---------------------------------------------------
 		END OF EMPLOYEES - API REQUESTS
 	-----------------------------------------------------*/
