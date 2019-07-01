@@ -65,6 +65,33 @@ var CrapiApp = (function() {
 		});
 	}
 
+	obj.uploadImage = function(form) {
+		if (typeof form[0] === 'undefined') {
+			console.warn("FORM NOT FOUND.");
+			return;
+		}
+		var formData = new FormData(form[0]);
+		var url = BASE_URL+'/api/uploads/upload_image/';
+
+        return $.ajax({
+            type:'POST',
+            url: url,
+            data: formData,
+            enctype: 'multipart/form-data',
+            cache: false,
+            contentType: false,
+            processData: false,
+            success:function(data){
+                console.log("success");
+                console.log(data);
+            },
+            error: function(data){
+                console.log("error");
+                console.log(data);
+            }
+        });
+	}
+
 	obj.loginUser = function(params){
 		element = this;
 
@@ -117,6 +144,46 @@ var CrapiApp = (function() {
 		var params = {
 			url: ENVIRONMENT_URL.products_search_url,
 			method: 'POST',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+	obj.deleteProduct = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.products_base_url+'/'+params.id,
+			method: 'DELETE',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+	obj.getProductInfo = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.products_base_url+'/'+params.id,
+			method: 'GET',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+
+	obj.updateProduct = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.products_base_url+'/'+params.id,
+			method: 'PUT',
 			data: params
 		};
 		
