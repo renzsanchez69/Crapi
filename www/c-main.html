@@ -253,80 +253,81 @@ $(function(){
 
 // - Get menu data
 function get_data() {
-    var login_token = localStorage.getItem("login_token");
-    var role  = localStorage.getItem("role");
-    var resto_id  = localStorage.getItem("resto_id");
-    $.ajax({
-        type: "POST",
-        url: "http://localhost/crapi_admin/api/orders/order_by_customer", // Example 
-        data: { "login_token":login_token,"role":role,"resto_id":resto_id},
-        success: function(result_data) {
-            console.log(result_data);
-            $('#tbody-order-list').empty();
-            $('#fbody-order-list').empty();
-            $('#tbody-order-list-view').empty();
-            $('#fbody-order-list-view').empty();
-            if (result_data.result == 'OK') {
-                var tbody_html = "";
-                var fbody_html = "";
-                var tbody_html_orders = "";
-                var fbody_html_orders = "";
-                var total_qty = 0;
-                var sub_total = 0;
-                var total_order = 0;
-                $.each( result_data.data, function( key, value ) {
-                        console.log(value.SUB_TOTAL);
-                        if (value.id == undefined) {
-                            return false;
-                        }
-                        sub_total += parseInt(value.sub_total, 10);
-                        tbody_html +='<tr id="'+value.product_id+'">';
-                            tbody_html +='<td class="text-left">'+value.name+'</td>';
-                            tbody_html +='<td class="text-center">'+value.qty+'</td>';
-                            tbody_html +='<td class="text-center">P '+value.price+'</td>';
-                            tbody_html +='<td class="text-right">';
-                                tbody_html +='<button class="editbut" name="edit_btn" onclick="edit_order('+value.product_id+','+value.qty+','+value.price+',\'' + value.name + '\'); return false;"><i class="glyphicon glyphicon-edit"></i></button>';
-                                tbody_html +='<button class="deletebut" name="delete_btn" onclick="delete_order('+value.id+'); return false;"><i class="glyphicon glyphicon-trash"></i></button>';
-                            tbody_html +='</td>';
-                        tbody_html +='</tr>';
-                        tbody_html_orders +='<tr id="'+value.product_id+'">';
-                            tbody_html_orders +='<td class="text-left">'+value.name+'</td>';
-                            tbody_html_orders +='<td class="text-center">'+value.qty+'</td>';
-                            tbody_html_orders +='<td class="text-center">P '+value.price+'</td>';
-                        tbody_html_orders +='</tr>';
+	var formData = {
+		"login_token":localStorage.getItem("login_token").replace(/"(.+)"/g, '$1'),
+		"role":'customer',
+		"resto_id": localStorage.getItem("resto_id")
+	};
+	CrapiApp.showCommonLoader();
+	CrapiApp.orderByCustomer(formData)
+	.then(function(result_data){
+		$('#tbody-order-list').empty();
+		$('#fbody-order-list').empty();
+		$('#tbody-order-list-view').empty();
+		$('#fbody-order-list-view').empty();
+		if (result_data.result == 'OK') {
+		    var tbody_html = "";
+		    var fbody_html = "";
+		    var tbody_html_orders = "";
+		    var fbody_html_orders = "";
+		    var total_qty = 0;
+		    var sub_total = 0;
+		    var total_order = 0;
+		    $.each( result_data.data, function( key, value ) {
+	            console.log(value.SUB_TOTAL);
+	            if (value.id == undefined) {
+	                return false;
+	            }
+	            sub_total += parseInt(value.sub_total, 10);
+	            tbody_html +='<tr id="'+value.product_id+'">';
+	                tbody_html +='<td class="text-left">'+value.name+'</td>';
+	                tbody_html +='<td class="text-center">'+value.qty+'</td>';
+	                tbody_html +='<td class="text-center">P '+value.price+'</td>';
+	                tbody_html +='<td class="text-right">';
+	                    tbody_html +='<button class="editbut" name="edit_btn" onclick="edit_order('+value.product_id+','+value.qty+','+value.price+',\'' + value.name + '\'); return false;"><i class="glyphicon glyphicon-edit"></i></button>';
+	                    tbody_html +='<button class="deletebut" name="delete_btn" onclick="delete_order('+value.order_details_id+'); return false;"><i class="glyphicon glyphicon-trash"></i></button>';
+	                tbody_html +='</td>';
+	            tbody_html +='</tr>';
+	            tbody_html_orders +='<tr id="'+value.product_id+'">';
+	                tbody_html_orders +='<td class="text-left">'+value.name+'</td>';
+	                tbody_html_orders +='<td class="text-center">'+value.qty+'</td>';
+	                tbody_html_orders +='<td class="text-center">P '+value.price+'</td>';
+	            tbody_html_orders +='</tr>';
 
-                }); 
-                    fbody_html +='<tr class="tfoot-bgcolor  font-text-amt">';
-                        fbody_html +='<th class="text-left font-text  font-text-amt">TOTAL</th>';
-                        fbody_html +='<th class="text-center"></th>';
-                        fbody_html +='<th class="text-center">P '+numberWithCommas(sub_total)+'</th>';
-                        fbody_html +='<th class="text-right font-text-amt"></th>';
-                    fbody_html +='</tr>';
-                    fbody_html_orders +='<tr class="tfoot-bgcolor  font-text-amt modal-footer-view-order">';
-                        fbody_html_orders +='<th class="text-left font-text  font-text-amt">TOTAL</th>';
-                        fbody_html_orders +='<th class="text-center"></th>';
-                        total_order = (sub_total*.12) + sub_total;
-                        fbody_html_orders +='<th class="text-center">P '+numberWithCommas(sub_total)+' <br>P '+numberWithCommas(parseInt(total_order, 10))+' (Incl. VAT) </th>';
-                    fbody_html +='</tr>';
+	    }); 
+	        fbody_html +='<tr class="tfoot-bgcolor  font-text-amt">';
+	            fbody_html +='<th class="text-left font-text  font-text-amt">TOTAL</th>';
+	            fbody_html +='<th class="text-center"></th>';
+	            fbody_html +='<th class="text-center">P '+numberWithCommas(sub_total)+'</th>';
+	            fbody_html +='<th class="text-right font-text-amt"></th>';
+	        fbody_html +='</tr>';
+	        fbody_html_orders +='<tr class="tfoot-bgcolor  font-text-amt modal-footer-view-order">';
+	            fbody_html_orders +='<th class="text-left font-text  font-text-amt">TOTAL</th>';
+	            fbody_html_orders +='<th class="text-center"></th>';
+	            total_order = (sub_total*.12) + sub_total;
+	            fbody_html_orders +='<th class="text-center">P '+numberWithCommas(sub_total)+' <br>P '+numberWithCommas(parseInt(total_order, 10))+' (Incl. VAT) </th>';
+	        fbody_html +='</tr>';
 
-                    $('.order_hash').text(result_data.data[0].order_number);
-                    $('#customer_name').text(result_data.data[0].customer_fullname);
-                    $('#address').text(result_data.data[0].address);
-                    $('#contact_number').text(result_data.data[0].contact_number);
-                    $('#email_address').text(result_data.data[0].email);
-                    $('#date_time').text(result_data.data[0].created_at);
+	        $('.order_hash').text(result_data.data[0].order_number);
+	        $('#customer_name').text(result_data.data[0].customer_fullname);
+	        $('#address').text(result_data.data[0].address);
+	        $('#contact_number').text(result_data.data[0].contact_number);
+	        $('#email_address').text(result_data.data[0].email);
+	        $('#date_time').text(result_data.data[0].created_at);
 
-                $('#tbody-order-list').append(tbody_html);
-                $('#fbody-order-list').append(fbody_html);
-                $('#tbody-order-list-view').append(tbody_html_orders);
-                $('#fbody-order-list-view').append(fbody_html_orders);
-            }
-        },
-        error: function(e) {
-            $.growl.error({ message: "Connection refused!"});
-            return false;
-        }
-    });
+	    $('#tbody-order-list').append(tbody_html);
+	    $('#fbody-order-list').append(fbody_html);
+	    $('#tbody-order-list-view').append(tbody_html_orders);
+	    $('#fbody-order-list-view').append(fbody_html_orders);
+		}
+	})
+	.catch(function(result_data){
+		console.log(result_data);
+		// $.growl.notice({ message: res.error });
+	})
+	.always(function(){
+		CrapiApp.removeCommonLoader();
+	});
 }
 
 
@@ -337,29 +338,31 @@ function delete_order(oid) {
 }
 
 function del_order() {
-    var oid = $('#del-order').val();
-    var login_token = localStorage.getItem("login_token");
-    var role  = localStorage.getItem("role");
-    $('#DELfood').modal('hide'); 
-    $('#'+oid).remove();
-    $.ajax({
-        type: "POST",
-        url: "http://localhost/crapi_admin/api/orders/order_delete", // Example 
-        data: { "order_id":oid,"login_token":login_token,"role":role},
-        success: function(result_data){
-            console.log(result_data);
-            if (result_data.result == 'OK') {
-                $.growl.notice({message: "Order was successfully deleted!" });
-                get_data();
-            } else {
-                $.growl.error({message: "Order was not successfully deleted!" });
-            }
-        },
-        error: function(e) {
-            $.growl.error({ message: "Connection refused!"});
-            return false;
-        }
-    });
+	$('#DELfood').modal('hide'); 
+	var formData = {
+		"order_id": $('#del-order').val(),
+		"login_token":localStorage.getItem("login_token").replace(/"(.+)"/g, '$1'),
+		"role":'customer'
+	};
+	CrapiApp.showCommonLoader();
+	CrapiApp.orderDeleteUrl(formData)
+	.then(function(res){
+		console.log(res);
+		if (res.result === 'OK') {
+			$.growl.notice({message: "Order was successfully deleted!" });
+			get_data();
+		} else {
+			$.growl.error({message: "Order was not successfully deleted!" });
+		}
+	})
+	.catch(function(res){
+		console.log(res);
+		// $.growl.notice({ message: res.error });
+	})
+	.always(function(){
+		CrapiApp.removeCommonLoader();
+		$('#DELfood').modal('hide');
+	});
 }
 
 $("#fsearch").click(function(){
@@ -418,15 +421,14 @@ $("#fsearch").click(function(){
 function add_order() {
     $('#ADDfood').modal('show');
     $('input[name="quantity"]').val(0);
-    var login_token = localStorage.getItem("login_token");
-    var role  = localStorage.getItem("role");
+    var login_token = localStorage.getItem("login_token").replace(/"(.+)"/g, '$1');
+    var role  = 'customer';
     var resto_id  = localStorage.getItem("resto_id");   
     $.ajax({
         type: "POST",
         url: "http://localhost/crapi_admin/api/products/menu_list", // Example 
         data: {"login_token":login_token,"role":role,"resto_id":resto_id},
         success: function(result_data) {
-            console.log(result_data);
             if (result_data.result == 'OK') {    
                 var tbody_html = "";
                 $.each( result_data.data, function( key, value ) {
@@ -434,7 +436,7 @@ function add_order() {
                             return false;
                         }
                         tbody_html +='<tr '+value.id+'>';
-                          tbody_html +='<th class="Fname"><a class="Fpick" onclick="menu_order('+value.product_id+',\'' + value.name + '\','+value.price+'); return false;"> '+value.name+'</a></th>';
+                          tbody_html +='<th class="Fname"><a class="Fpick" onclick="menu_order('+value.id+',\'' + value.name + '\','+value.price+'); return false;"> '+value.name+'</a></th>';
                           tbody_html +='<th>P '+value.price+'</th>';
                         tbody_html +='</tr>';
                 }); 
@@ -489,37 +491,41 @@ $("#afsearch").click(function(){
 });
 
 $("#add-order-fname").click(function(){
-    var qty = $('input[name="quantity"]').val();
-    var product_id = $('#product-id').val();
-    var product_id_price = $('#product-id-price').val();
-    var fname = $('#fname-menu-order').text();
-    var description  = $('#add-order-request').val();
-    var login_token = localStorage.getItem("login_token");
-    var role  = localStorage.getItem("role");   
-    var resto_id  = localStorage.getItem("resto_id");       
-    if(qty < 1){
-         $.growl.error({ title: qty+" "+fname,message: "Please select atleast 1 order" });
-        return false;
-    }
-    $('#FOODqty').modal('hide');
-    $.ajax({
-        type: "POST",
-        url: "http://localhost/crapi_admin/api/orders/add_orders", // Example 
-        data: { "product_id":product_id,"login_token":login_token,"role":role,"qty":qty,"price":product_id_price,"description":description,"resto_id":resto_id},
-        success: function(result_data){
-            console.log(result_data);
-            if (result_data.result == 'OK') {    
-                get_data();
-                $.growl.notice({ title: qty+" "+fname,message: "Was successfully added!" });
-            } else {
-                $.growl.error({ title: qty+" "+fname,message: "Was not successfully added!" });
-            }
-        },
-        error: function(e) {
-            $.growl.error({ message: "Connection refused!"});
-            return false;
-        }
-    });
+	var qty = $('input[name="quantity"]').val();
+	var fname = $('#fname-menu-order').text();
+	if (qty < 1) {
+		$.growl.error({ title: qty+" "+fname,message: "Please select atleast 1 order" });
+		return false;
+	}
+	$('#FOODqty').modal('hide');
+	var formData = {
+		"product_id": $('#product-id').val(),
+		"login_token":localStorage.getItem("login_token").replace(/"(.+)"/g, '$1'),
+		"role":'customer',
+		"qty": qty,
+		"price": $('#product-id-price').val(),
+		"description": $('#add-order-request').val(),
+		"resto_id": localStorage.getItem("resto_id")
+	};
+	CrapiApp.showCommonLoader();
+	CrapiApp.orderAddUrl(formData)
+	.then(function(res){
+		console.log(res);
+		if (res.result === 'OK') {
+			$.growl.notice({ title: qty+" "+fname,message: "Was successfully added!" });
+		} else {
+			$.growl.error({ title: qty+" "+fname,message: "Was not successfully added!" });
+		}
+	})
+	.catch(function(res){
+		console.log(res);
+		// $.growl.notice({ message: res.error });
+	})
+	.always(function(){
+		get_data();
+		CrapiApp.removeCommonLoader();
+		$('#FOODqty').modal('hide');
+	});
 });
 
 
