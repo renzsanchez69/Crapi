@@ -2,6 +2,8 @@
 'use strict'
 
 const BASE_URL = "http://localhost/crapi_admin";
+const UPLOADS_URL = BASE_URL+"/assets/uploads/";
+const IMAGE_PLACEHOLDER_URL = BASE_URL+"/assets/images/image_placeholder.png";
 
 // - environment urls
 const ENVIRONMENT_URL = {
@@ -18,7 +20,20 @@ const ENVIRONMENT_URL = {
 	employees_search_url : BASE_URL+"/api/employees",
 
 	// - products url
+	products_base_url : BASE_URL+"/api/products",
 	products_search_url : BASE_URL+"/api/products/menu_list",
+
+	// - order by customer url
+	order_by_customer_url : BASE_URL+"/api/orders/order_by_customer",
+
+	// - order list url
+	order_list_url : BASE_URL+"/api/orders/order_list",
+
+	// - order list url
+	add_order_url : BASE_URL+"/api/orders/add_orders",
+
+	// - order delete url
+	order_delete_url : BASE_URL+"/api/orders/order_delete_by_item"
 
 };
 

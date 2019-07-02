@@ -51,7 +51,7 @@
 				if (typeof(Storage) !== "undefined") {
 					var login_data = result_data.data;
 					localStorage.setItem('login_data', JSON.stringify(login_data));
-					localStorage.setItem('login_token', JSON.stringify(login_data.login_token));
+					localStorage.setItem('login_token', login_data.login_token);
 					
 					switch(login_data.role) {
 						case 'employee':
@@ -77,8 +77,8 @@
 			}
 		})
 		.catch(function(err) {
-			$.growl.error({ message: "Connection refused!"});
-			return false;
+			// $.growl.error({ message: "Connection refused!"});
+			// return false;
 		})
 		.always(function() {
 		});

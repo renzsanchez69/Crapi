@@ -19,7 +19,7 @@
 		});
 	</script> -->
 </head>
-<body>
+<body>	
 
 <!-- Top Navigation Menu -->
 <div class="topnav" id="myTopnav">
@@ -33,7 +33,7 @@
 </div>
 <div class="main">
   <div class="title">
-	<h1 id="resto-name">Restaurant Name*</h1>
+	<h1 id="restoName">--</h1>
   </div>
 
   <div class="left">
@@ -246,18 +246,43 @@
 <script src="common/constants.js"></script>
 <script src="common/app.js"></script>
 <script>
+var resto_latitude = null;
+var resto_longitude = null;
 $(function(){
-	// $('#resto-name').text(localStorage.getItem("resto_name"));
-	// $('input[name="latitude"]').val(localStorage.getItem("latitude"));
-	// $('input[name="longitude"]').val(localStorage.getItem("longitude"));
+	loadRestaurantInfo();
 	get_data();
 });
+
+
+function loadRestaurantInfo(){
+	var resto_id  = localStorage.getItem("resto_id");
+	CrapiApp.searchResto({
+		id: resto_id
+	})
+	.then(function(res){
+		$('.loader').remove();
+
+		if (res.result === 'OK') {
+			if (typeof res.data[0] !== 'undefined') {
+
+				console.warn(res.data[0]);
+				var obj = res.data[0];
+				resto_latitude = obj.latitude;
+				resto_longitude = obj.longitude;
+				$('#restoName').html(obj.resto_name);
+			}
+		}
+	})
+	.catch(function(err){
+		console.warn(err);
+	});
+}
 
 // - Get menu data
 function get_data() {
 	CrapiApp.showCommonLoader();
 	var resto_id  = localStorage.getItem("resto_id");
-	CrapiApp.customerOrders({
+	CrapiApp.orderByCustomer({
 		resto_id: resto_id
 	})
 	.then(function(result_data){
@@ -581,6 +606,7 @@ function wcqib_refresh_quantity_increments() {
 		c.addClass("buttons_added"), c.children().first().before('<input type="button" value="-" class="minus" />'), c.children().last().after('<input type="button" value="+" class="plus" />')
 	})
 }
+
 String.prototype.getDecimals || (String.prototype.getDecimals = function() {
 	var a = this,
 		b = ("" + a).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
@@ -619,15 +645,15 @@ String.prototype.getDecimals || (String.prototype.getDecimals = function() {
 		};
 	});
 
-	// function getDefaultMapCenter() {
-	// 	var defaultLat = parseFloat($('[name=latitude]').val()) ||  10.3157,
-	// 		defaultLng =  parseFloat($('[name=longitude]').val()) ||  123.8854;
+	function getDefaultMapCenter() {
+		var defaultLat = resto_latitude ||  10.3157,
+			defaultLng =  resto_longitude ||  123.8854;
 
-	// 	return {
-	// 		lat: defaultLat,
-	// 		lng: defaultLng
-	// 	}
-	// }
+		return {
+			lat: defaultLat,
+			lng: defaultLng
+		}
+	}
 
 
 
@@ -645,33 +671,21 @@ String.prototype.getDecimals || (String.prototype.getDecimals = function() {
 	// 	});
 	// }
 
-	// function initMap() {
-
-		// var NEW_ZEALAND_BOUNDS = {
-		//  west: 124.6956015,
-		//  east: 116.3667803,
-		//  south: 4.657837,
-		//  north: 19.366895
-		// };
-
+	function initMap() {
 
 		// geocoder = new google.maps.Geocoder;
 
-		// map = new google.maps.Map(document.getElementById('map'), {
-		// 	zoom: 14,
-		// 	center: getDefaultMapCenter(),
-			// restriction: {
-			//  latLngBounds: NEW_ZEALAND_BOUNDS,
-			//  strictBounds: false,
-			// },
-		// });
+		map = new google.maps.Map(document.getElementById('map'), {
+			zoom: 14,
+			center: getDefaultMapCenter()
+		});
 
-		// marker = new google.maps.Marker({
-		// 	map: map,
-		// 	position: getDefaultMapCenter()
-		// });
+		marker = new google.maps.Marker({
+			map: map,
+			position: getDefaultMapCenter()
+		});
 
-		// var markers = [];
+		var markers = [];
 
 		// map.addListener('click', function (e) {
 		//  geocoder.geocode({'location': e.latLng}, function(results, status) {
@@ -685,7 +699,7 @@ String.prototype.getDecimals || (String.prototype.getDecimals = function() {
 		//      }
 		//  })
 		// })
-	// } 
+	} 
 
 	// $('[name=address]').keydown(function (e) {
 	// 	if(e.keyCode === 13){
@@ -699,45 +713,45 @@ String.prototype.getDecimals || (String.prototype.getDecimals = function() {
 	// prompted by your browser. If you see the error "The Geolocation service
 	// failed.", it means you probably did not give permission for the browser to
 	// locate you.
-	var map, infoWindow;
-	function initMap() {
-		map = new google.maps.Map(document.getElementById('map'), {
-			center: {lat: -34.397, lng: 150.644},
-			zoom: 6
-		});
-		infoWindow = new google.maps.InfoWindow;
+	// var map, infoWindow;
+	// function initMap() {
+	// 	map = new google.maps.Map(document.getElementById('map'), {
+	// 		center: {lat: -34.397, lng: 150.644},
+	// 		zoom: 6
+	// 	});
+	// 	infoWindow = new google.maps.InfoWindow;
 
-		// Try HTML5 geolocation.
-		if (navigator.geolocation) {
-			navigator.geolocation.getCurrentPosition(function(position) {
-				var pos = {
-					lat: position.coords.latitude,
-					lng: position.coords.longitude
-				};
+	// 	// Try HTML5 geolocation.
+	// 	if (navigator.geolocation) {
+	// 		navigator.geolocation.getCurrentPosition(function(position) {
+	// 			var pos = {
+	// 				lat: position.coords.latitude,
+	// 				lng: position.coords.longitude
+	// 			};
 
-				$('[name=latitude]').val(pos.lat);
-				$('[name=longitude]').val(pos.lng);
+	// 			$('[name=latitude]').val(pos.lat);
+	// 			$('[name=longitude]').val(pos.lng);
 
-				infoWindow.setPosition(pos);
-				infoWindow.setContent('Location found.');
-				infoWindow.open(map);
-				map.setCenter(pos);
-			}, function() {
-				handleLocationError(true, infoWindow, map.getCenter());
-			});
-		} else {
-		  // Browser doesn't support Geolocation
-		  handleLocationError(false, infoWindow, map.getCenter());
-		}
-	}
+	// 			infoWindow.setPosition(pos);
+	// 			infoWindow.setContent('Location found.');
+	// 			infoWindow.open(map);
+	// 			map.setCenter(pos);
+	// 		}, function() {
+	// 			handleLocationError(true, infoWindow, map.getCenter());
+	// 		});
+	// 	} else {
+	// 	  // Browser doesn't support Geolocation
+	// 	  handleLocationError(false, infoWindow, map.getCenter());
+	// 	}
+	// }
 
-	function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-		infoWindow.setPosition(pos);
-		infoWindow.setContent(browserHasGeolocation ?
-			'Error: The Geolocation service failed.' :
-			'Error: Your browser doesn\'t support geolocation.');
-		infoWindow.open(map);
-	}
+	// function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+	// 	infoWindow.setPosition(pos);
+	// 	infoWindow.setContent(browserHasGeolocation ?
+	// 		'Error: The Geolocation service failed.' :
+	// 		'Error: Your browser doesn\'t support geolocation.');
+	// 	infoWindow.open(map);
+	// }
 </script>
 <script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBb9gjcZGig7KAgoJC1EmMHA98Rp8Ayz98&amp;libraries=places&amp;callback=initMap"></script>
 </html>

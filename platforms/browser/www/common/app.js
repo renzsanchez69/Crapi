@@ -2,6 +2,7 @@
 $('#log-out').click(function(e){
     localStorage.removeItem("login_token");
     localStorage.removeItem("login_data");
+    delete CrapiApp.config.login_data;
     window.location.href = 'index.html';
 });
 
@@ -22,7 +23,7 @@ var CrapiApp = (function() {
 
 	// Retrieve the login object from storage
 	var login_data = localStorage.getItem('login_data');
-	if (login_data != null) {
+	if (typeof login_data != 'undefined' && login_data != null && login_data != 'undefined') {
 		obj.config.login_data = JSON.parse(login_data);
 	}
 
@@ -62,6 +63,33 @@ var CrapiApp = (function() {
 			crossDomain: true,
 			dataType: "json"
 		});
+	}
+
+	obj.uploadImage = function(form) {
+		if (typeof form[0] === 'undefined') {
+			console.warn("FORM NOT FOUND.");
+			return;
+		}
+		var formData = new FormData(form[0]);
+		var url = BASE_URL+'/api/uploads/upload_image/';
+
+        return $.ajax({
+            type:'POST',
+            url: url,
+            data: formData,
+            enctype: 'multipart/form-data',
+            cache: false,
+            contentType: false,
+            processData: false,
+            success:function(data){
+                console.log("success");
+                console.log(data);
+            },
+            error: function(data){
+                console.log("error");
+                console.log(data);
+            }
+        });
 	}
 
 	obj.loginUser = function(params){
@@ -122,6 +150,60 @@ var CrapiApp = (function() {
 		// - perform ajax for login
 		return element.ajaxRestAction(params)
 	}
+	obj.deleteProduct = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.products_base_url+'/'+params.id,
+			method: 'DELETE',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+	obj.getProductInfo = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.products_base_url+'/'+params.id,
+			method: 'GET',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+
+	obj.updateProduct = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.products_base_url+'/'+params.id,
+			method: 'PUT',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+
+	obj.createProduct = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.products_base_url,
+			method: 'POST',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
 	/*---------------------------------------------------
 		END OF PRODUCTS - API REQUESTS
 	-----------------------------------------------------*/
@@ -134,6 +216,20 @@ var CrapiApp = (function() {
 		// - set request data
 		var params = {
 			url: ENVIRONMENT_URL.employees_search_url,
+			method: 'GET',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+
+	obj.getEmployeeInfo = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.employees_search_url+'/'+params.id,
 			method: 'GET',
 			data: params
 		};
@@ -169,8 +265,84 @@ var CrapiApp = (function() {
 		// - perform ajax for login
 		return element.ajaxRestAction(params)
 	}
+
+	obj.updateEmployee = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.employees_search_url+'/'+params.id,
+			method: 'PUT',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+
 	/*---------------------------------------------------
 		END OF EMPLOYEES - API REQUESTS
+	-----------------------------------------------------*/
+	/*---------------------------------------------------
+		ORDERS - API REQUESTS
+	-----------------------------------------------------*/
+	obj.orderByCustomer = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.order_by_customer_url,
+			method: 'POST',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+
+	obj.orderAddUrl = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.add_order_url,
+			method: 'POST',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+
+	obj.orderListUrl = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.customer_order_list_url,
+			method: 'POST',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+
+	obj.orderDeleteUrl = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.order_delete_url,
+			method: 'POST',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+	/*---------------------------------------------------
+		END OF ORDERS - API REQUESTS
 	-----------------------------------------------------*/
 
 	obj.showCommonLoader = function(){

@@ -9,8 +9,7 @@
 	<link rel="stylesheet" type="text/css" href="css/o-menu.css">
 	<link rel="stylesheet" href="css/font-awesome.min.css">
 	<link rel="stylesheet" href="css/bootstrap.min.css">
-	<script src="lib/jquery.min.js"></script>
-	<script src="lib/bootstrap.min.js"></script>
+	<link href="css/jquery.growl.css" rel="stylesheet" type="text/css" />
 <body>
 
 <!-- Top Navigation Menu -->
@@ -40,7 +39,7 @@
 	</div>
 
 	<div class="right">
-		<!-- php --><button class="add" id="myAdd" data-toggle="modal" data-target="#ADDfood">ADD FOOD</button><!-- php -->
+		<button class="add showModalAddForm" data-toggle="modal" data-target="#ADDprod">ADD FOOD</button>
 	</div>
 	<div class="t-title">
 		<table class="table table-condensed">
@@ -58,8 +57,8 @@
 				<th class="prodName">--</th>
 				<th class="prodPrice">--</th>
 				<th>
-					<button class="prodEditBtn" name="edit_btn" data-toggle="modal" data-target="#EDITprod"><i class="glyphicon glyphicon-edit"></i></button>
-					<button class="prodDeleteBtn" name="delete_btn" data-toggle="modal" data-target="#DELprod"><i class="glyphicon glyphicon-trash"></i></button>
+					<button class="prodEditBtn"><i class="glyphicon glyphicon-edit"></i></button>
+					<button class="prodDeleteBtn" data-toggle="modal" data-target="#DELprod"><i class="glyphicon glyphicon-trash"></i></button>
 				</th>
 			</tr>
 		</table>
@@ -68,49 +67,55 @@
 
 
 <!-- Add Modal -->
-<div class="modal fade" id="ADDfood" role="dialog">
-<div class="modal-content">
-  <div class="modal-header">
-	<span class="close" data-dismiss="modal">&times;</span>
-	<h2>ADD FOOD</h2>
-  </div>
-  <div class="modal-body">
-   <div class="regbox">
-	 <form class="reg" action="">
-	   <label for="image">Select image of food</label>
-	   <input type="file" name="image" id="image">
-	   <input type="text" placeholder="Food name" name="fname" required>
-	   <input type="text" placeholder="Food description" name="fdesc" required>
-	   <input type="text" placeholder="Food price" name="fprice" required>
-	   <button class="submit" name="submit_btn">SUBMIT</button>
-	 </form>
-   </div>
-  </div>
-</div>
-</div>
-
-<div class="modal fade" id="EDITfood" role="dialog">
-  <div class="modal-dialog modal-lg">
+<div class="modal fade" id="ADDprod" role="dialog">
 	<div class="modal-content">
-	  <div class="modal-header">
-		<span class="close" data-dismiss="modal">&times;</span>
-		<h2>EDIT FOOD</h2>
-	  </div>
-	  <div class="modal-body">
-		<div class="regbox">
-		  <form class="reg" action="">
-		   <input type="text" placeholder="Food name" name="fname" value="Japanese Siomai" required>
-		   <input type="text" placeholder="Food description" name="fdesc" value="Not your ordinary siomai" required>
-		   <input type="text" placeholder="Food price" name="fprice" value="P 8.00" required>
-		   <button class="save" name="edit_btn">SAVE</button>
-		  </form>
+		<div class="modal-header">
+			<span class="close" data-dismiss="modal">&times;</span>
+			<h2>ADD FOOD</h2>
 		</div>
-	  </div>
+		<div class="modal-body">
+			<div class="regbox">
+				<form class="reg" id="createForm" enctype="multipart/form-data">
+					<img src="http://placehold.it/150x150/FFC107/000000" class="img-responsive img-thumbnail img-upload-preview" style="margin-bottom: 20px; max-height: 150px;">
+					<p for="image">Select image of food</p>
+					<input type="file" name="product_image" class="img-input" required>
+					<input type="hidden" name="image_category" value="product_image" required>
+					<input type="text" placeholder="Food name" name="name" required>
+					<input type="text" placeholder="Food description" name="details" required>
+					<input type="text" placeholder="Food price" name="price" required>
+					<button class="submit" id="create_btn">SUBMIT</button>
+				</form>
+			</div>
+		</div>
 	</div>
-  </div>
 </div>
 
-<div class="modal fade" id="DELfood" role="dialog">
+<div class="modal fade" id="EDITprod" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<span class="close" data-dismiss="modal">&times;</span>
+				<h2>EDIT FOOD</h2>
+			</div>
+			<div class="modal-body">
+				<div class="regbox">
+					<form class="reg" id="updateForm" enctype="multipart/form-data">
+						<img class="img-responsive img-thumbnail img-upload-preview" style="margin-bottom: 20px; max-height: 150px;">
+						<input type="hidden" name="id">
+						<input type="file" name="product_image" class="img-input">
+						<input type="hidden" name="image_category" value="product_image" required>
+						<input type="text" placeholder="Food name" name="name" required>
+						<input type="text" placeholder="Food description" name="details" required>
+						<input type="text" placeholder="Food price" name="price" required>
+						<button class="submit" id="edit_btn">SAVE</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="DELprod" role="dialog">
   <div class="modal-dialog modal-lg">
    <div class="modal-content">
 	<div class="modal-header">
@@ -131,9 +136,12 @@
 </div>
 
 </body>
+<script src="lib/jquery.min.js"></script>
+<script src="lib/bootstrap.min.js"></script>
 <script src="js/jquery.growl.js" type="text/javascript"></script>
 <script src="common/constants.js"></script>
 <script src="common/app.js"></script>
+<script src="common/common.js"></script>
 <script>
 	var restoid = null;
 	var prodid = null;
@@ -145,22 +153,40 @@
 			loadProducts();
 		});
 
-		// $(document).on('click', '.empDeleteBtn', function(e){
-		// 	e.preventDefault();
-		// 	empid = $(this).data('empid');
-		// });
+		$(document).on('click', '.prodDeleteBtn', function(e){
+			e.preventDefault();
+			prodid = $(this).data('prodid');
+		});
 
-		// $(document).on('click', '[name="del_btn"]', function(e){
-		// 	e.preventDefault();
-		// 	deleteEmployee(empid);
-		// });
+		$(document).on('click', '[name="del_btn"]', function(e){
+			e.preventDefault();
+			deleteProduct(prodid);
+		});
 
-		// $(document).on('click', '[name="create_btn"]', function(e){
-		// 	e.preventDefault();
-		// 	// empid = $(this).data('empid');
-		// 	createEmployee()
-		// });
+		$(document).on('click', '.prodEditBtn', function(e){
+			e.preventDefault();
+			$('#updateForm')[0].reset();
+			prodid = $(this).data('prodid');
 
+			showProductEditModal(prodid, function(){
+				 $('#EDITprod').modal('show');
+			});
+		});
+
+		$(document).on('click', '#edit_btn', function(e){
+			e.preventDefault();
+			updateProduct();
+		});
+
+		$(document).on('click', '#create_btn', function(e){
+			e.preventDefault();
+			createProduct();
+		});
+
+		$(document).on('click', '.showModalAddForm', function(){
+			$('#createForm')[0].reset();
+			$('#createForm .img-upload-preview').attr('src', IMAGE_PLACEHOLDER_URL);
+		});
 	});
 
 	function loadProducts(){
@@ -214,6 +240,134 @@
 		});
 	}
 
+	function deleteProduct(prodid){
+	  	CrapiApp.showCommonLoader();
+		CrapiApp.deleteProduct({
+			id: prodid
+		})
+		.then(function(res){
+			console.log(res);
+			if (res.result === 'OK') {
+				$.growl.notice({ message: "Successfully deleted." });
+			}
+		})
+		.catch(function(err){
+			console.warn(err);
+		})
+		.always(function(){
+			loadProducts();
+			CrapiApp.removeCommonLoader();
+			$('#DELprod').modal('hide');
+		});
+	}
 
+	function showProductEditModal(prodid, callback){
+		CrapiApp.showCommonLoader();
+		CrapiApp.getProductInfo({
+			id: prodid
+		})
+		.then(function(res){
+			console.log(res);
+			if (res.result === 'OK' && !$.isEmptyObject(res.data)) {
+				var obj = res.data;
+
+				$('#updateForm [name="id"]').val(obj.id);
+				$('#updateForm [name="name"]').val(obj.name);
+				$('#updateForm [name="details"]').val(obj.details);
+				$('#updateForm [name="price"]').val(obj.price);
+				if (typeof obj.image_url != undefined && obj.image_url != null && obj.image_url.length > 0) {
+					$('#updateForm .img-upload-preview').attr('src', UPLOADS_URL+obj.image_url);
+				} else {
+					$('#updateForm .img-upload-preview').attr('src', IMAGE_PLACEHOLDER_URL);
+				}
+				
+				if (typeof callback === 'function') {
+					callback();
+				}
+			}
+		})
+		.catch(function(err){
+			console.warn(err);
+		})
+		.always(function(){
+			CrapiApp.removeCommonLoader();
+		});
+	}
+
+	function updateProduct(){
+		CrapiApp.showCommonLoader();
+		var formData = $('#updateForm').serializeArray();
+		var newFormData = CrapiApp.getCleanFormData(formData);
+
+		uploadProductImage($('#updateForm'), function(data){
+			console.log(data);
+			if (typeof data !== 'undefined' && data != null && typeof data.image_url !== 'undefined') {
+				newFormData.image_url = data.image_url;
+			}
+			console.log(newFormData);
+			CrapiApp.updateProduct(newFormData)
+			.then(function(res){
+				console.log(res);
+				if (res.result === 'OK') {
+					$.growl.notice({ message: "Successfully updated." });
+				} else {
+					$.growl.error({ message: res.error });
+				}
+			})
+			.catch(function(err){
+				console.warn(err);
+			})
+			.always(function(){
+				loadProducts();
+				CrapiApp.removeCommonLoader();
+				$('#EDITprod').modal('hide');
+			});
+		});
+	}
+
+
+	function createProduct(){
+		CrapiApp.showCommonLoader();
+
+		var formData = $('#createForm').serializeArray();
+		var newFormData = CrapiApp.getCleanFormData(formData);
+		newFormData['resto_id'] = restoid;
+
+		uploadProductImage($('#createForm'), function(data){
+			console.log(data);
+			if (typeof data !== 'undefined' && data != null && typeof data.image_url !== 'undefined') {
+				newFormData.image_url = data.image_url;
+			}
+			CrapiApp.createProduct(newFormData)
+			.then(function(res){
+				console.log(res);
+				if (res.result === 'OK') {
+					$.growl.notice({ message: "Successfully added." });
+				} else {
+					$.growl.error({ message: res.error });
+				}
+			})
+			.catch(function(err){
+				console.warn(err);
+			})
+			.always(function(){
+				loadProducts();
+				CrapiApp.removeCommonLoader();
+				$('#createForm')[0].reset();
+				$('#ADDprod').modal('hide');
+			});
+		});
+	}
+
+	function uploadProductImage(form, callback){
+		CrapiApp.showCommonLoader();
+
+		CrapiApp.uploadImage(form).always(function(res){
+			console.log(res);
+			if (typeof callback === 'function') {
+				callback(res.data);
+			}
+		});
+	}
 </script>
 </html>

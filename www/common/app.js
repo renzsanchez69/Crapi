@@ -23,7 +23,7 @@ var CrapiApp = (function() {
 
 	// Retrieve the login object from storage
 	var login_data = localStorage.getItem('login_data');
-	if (login_data != null) {
+	if (typeof login_data != 'undefined' && login_data != null && login_data != 'undefined') {
 		obj.config.login_data = JSON.parse(login_data);
 	}
 

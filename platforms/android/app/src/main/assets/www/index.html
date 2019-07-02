@@ -46,24 +46,22 @@
 
 		CrapiApp.loginUser({"email": mail, "password": pw})
 		.then(function(result_data) {
+			console.log(result_data);
 			if (result_data.result == TALK_GENERAL.api_result_success) {
 				if (typeof(Storage) !== "undefined") {
-
-					localStorage.setItem('login_data', JSON.stringify(result_data));
-					localStorage.setItem('login_token', JSON.stringify(result_data.login_token));
+					var login_data = result_data.data;
+					localStorage.setItem('login_data', JSON.stringify(login_data));
+					localStorage.setItem('login_token', login_data.login_token);
 					
-					switch(result_data.role) {
+					switch(login_data.role) {
 						case 'employee':
-							window.location.href = 'a-main.html';
+							window.location.href = 'e-main.html';
 						break;
 						case 'owner':
 							window.location.href = 'o-main.html';
 						break;
 						case 'customer':
 							window.location.href = 'c-locate-resto.html';
-						break;
-						case 'admin':
-							window.location.href = 'admin.html';
 						break;
 					  default:
 						$.growl.error({ message: "Sorry! your account not recognize!" });
@@ -73,16 +71,14 @@
 					$.growl.error({ message: "Sorry! browser not supported!" });
 				}
 
-				$.growl.notice({ message: result_data.error });
 			} else {
-				console.warn(result_data);
 				$.growl.error({ message: result_data.error });
 				return false;
 			}
 		})
 		.catch(function(err) {
-			$.growl.error({ message: "Connection refused!"});
-			return false;
+			// $.growl.error({ message: "Connection refused!"});
+			// return false;
 		})
 		.always(function() {
 		});
