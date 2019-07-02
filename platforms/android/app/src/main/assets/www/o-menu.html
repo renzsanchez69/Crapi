@@ -39,7 +39,7 @@
 	</div>
 
 	<div class="right">
-		<!-- php --><button class="add" id="myAdd" data-toggle="modal" data-target="#ADDfood">ADD FOOD</button><!-- php -->
+		<button class="add showModalAddForm" data-toggle="modal" data-target="#ADDprod">ADD FOOD</button>
 	</div>
 	<div class="t-title">
 		<table class="table table-condensed">
@@ -67,7 +67,7 @@
 
 
 <!-- Add Modal -->
-<div class="modal fade" id="ADDfood" role="dialog">
+<div class="modal fade" id="ADDprod" role="dialog">
 	<div class="modal-content">
 		<div class="modal-header">
 			<span class="close" data-dismiss="modal">&times;</span>
@@ -75,7 +75,7 @@
 		</div>
 		<div class="modal-body">
 			<div class="regbox">
-				<form class="reg">
+				<form class="reg" id="createForm" enctype="multipart/form-data">
 					<img src="http://placehold.it/150x150/FFC107/000000" class="img-responsive img-thumbnail img-upload-preview" style="margin-bottom: 20px; max-height: 150px;">
 					<p for="image">Select image of food</p>
 					<input type="file" name="product_image" class="img-input" required>
@@ -83,7 +83,7 @@
 					<input type="text" placeholder="Food name" name="name" required>
 					<input type="text" placeholder="Food description" name="details" required>
 					<input type="text" placeholder="Food price" name="price" required>
-					<button class="submit" name="create_btn">SUBMIT</button>
+					<button class="submit" id="create_btn">SUBMIT</button>
 				</form>
 			</div>
 		</div>
@@ -165,6 +165,7 @@
 
 		$(document).on('click', '.prodEditBtn', function(e){
 			e.preventDefault();
+			$('#updateForm')[0].reset();
 			prodid = $(this).data('prodid');
 
 			showProductEditModal(prodid, function(){
@@ -180,6 +181,11 @@
 		$(document).on('click', '#create_btn', function(e){
 			e.preventDefault();
 			createProduct();
+		});
+
+		$(document).on('click', '.showModalAddForm', function(){
+			$('#createForm')[0].reset();
+			$('#createForm .img-upload-preview').attr('src', IMAGE_PLACEHOLDER_URL);
 		});
 	});
 
@@ -288,43 +294,79 @@
 		});
 	}
 
-	function uploadImage(){
-
-		CrapiApp.uploadImage($('#updateForm')).then(function(){
-			
-		}).always(function(){
-
-		});
-	}
-
 	function updateProduct(){
 		CrapiApp.showCommonLoader();
-		// var formData = $('#updateForm').serialize();
-		// var formData = $('#updateForm').serializeArray();
-		// var newFormData = CrapiApp.getCleanFormData(formData);
-		// jQuery.each($('#updateForm input[name="image"]')[0].files, function(i, file) {
-		// 	newFormData['image'] = file;
-		// });
 		var formData = $('#updateForm').serializeArray();
 		var newFormData = CrapiApp.getCleanFormData(formData);
 
-
-		CrapiApp.updateProduct(newFormData)
-		.then(function(res){
-			console.log(res);
-			if (res.result === 'OK') {
-				$.growl.notice({ message: "Successfully updated." });
-			} else {
-				$.growl.error({ message: res.error });
+		uploadProductImage($('#updateForm'), function(data){
+			console.log(data);
+			if (typeof data !== 'undefined' && data != null && typeof data.image_url !== 'undefined') {
+				newFormData.image_url = data.image_url;
 			}
-		})
-		.catch(function(err){
-			console.warn(err);
-		})
-		.always(function(){
-			loadProducts();
-			CrapiApp.removeCommonLoader();
-			$('#EDITprod').modal('hide');
+			console.log(newFormData);
+			CrapiApp.updateProduct(newFormData)
+			.then(function(res){
+				console.log(res);
+				if (res.result === 'OK') {
+					$.growl.notice({ message: "Successfully updated." });
+				} else {
+					$.growl.error({ message: res.error });
+				}
+			})
+			.catch(function(err){
+				console.warn(err);
+			})
+			.always(function(){
+				loadProducts();
+				CrapiApp.removeCommonLoader();
+				$('#EDITprod').modal('hide');
+			});
+		});
+	}
+
+
+	function createProduct(){
+		CrapiApp.showCommonLoader();
+
+		var formData = $('#createForm').serializeArray();
+		var newFormData = CrapiApp.getCleanFormData(formData);
+		newFormData['resto_id'] = restoid;
+
+		uploadProductImage($('#createForm'), function(data){
+			console.log(data);
+			if (typeof data !== 'undefined' && data != null && typeof data.image_url !== 'undefined') {
+				newFormData.image_url = data.image_url;
+			}
+			CrapiApp.createProduct(newFormData)
+			.then(function(res){
+				console.log(res);
+				if (res.result === 'OK') {
+					$.growl.notice({ message: "Successfully added." });
+				} else {
+					$.growl.error({ message: res.error });
+				}
+			})
+			.catch(function(err){
+				console.warn(err);
+			})
+			.always(function(){
+				loadProducts();
+				CrapiApp.removeCommonLoader();
+				$('#createForm')[0].reset();
+				$('#ADDprod').modal('hide');
+			});
+		});
+	}
+
+	function uploadProductImage(form, callback){
+		CrapiApp.showCommonLoader();
+
+		CrapiApp.uploadImage(form).always(function(res){
+			console.log(res);
+			if (typeof callback === 'function') {
+				callback(res.data);
+			}
 		});
 	}
 </script>

@@ -23,6 +23,9 @@ const ENVIRONMENT_URL = {
 	products_base_url : BASE_URL+"/api/products",
 	products_search_url : BASE_URL+"/api/products/menu_list",
 
+	// - orders url
+	customer_order_list_url : BASE_URL+"/api/orders/order_by_customer",
+
 };
 
 // - general information
