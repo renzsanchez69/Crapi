@@ -1,107 +1,260 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>ORDER HISTORY</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="js/o-main.js"></script>
-    <link rel="stylesheet" type="text/css" href="css/o-main.css">
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-    <link rel="stylesheet" href="css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <script src="lib/jquery.min.js"></script>
-    <script src="lib/bootstrap.min.js"></script>
-</head>
-<body>
+	<head>
+			<title>ORDER HISTORY</title>
+			<meta name="viewport" content="width=device-width, initial-scale=1">
+			<script src="js/o-main.js"></script>
+			<link rel="stylesheet" type="text/css" href="css/o-main.css">
+			<link rel="stylesheet" type="text/css" href="css/style.css">
+			<link rel="stylesheet" href="css/font-awesome.min.css">
+			<link rel="stylesheet" href="css/bootstrap.min.css">
+			<script src="lib/jquery.min.js"></script>
+			<script src="lib/bootstrap.min.js"></script>
+	</head>
+	<body>
 
-<!-- Top Navigation Menu -->
-<div class="topnav" id="myTopnav">
-  <a href="o-hist.html" class="active">Order History</a>
-  <a href="o-main.html">Employee</a>
-  <a href="o-menu.html">Food Menu</a>
-  <a href="o-sub.html">Subscription</a>
-  <a href="index.html">Logout</a>
-  <a href="javascript:void(0);" class="icon" onclick="myFunction()">
-    <i class="fa fa-bars"></i>
-  </a>
-</div>
+		<!-- Top Navigation Menu -->
+		<div class="topnav" id="myTopnav">
+			<a href="o-hist.html" class="active">Order History</a>
+			<a href="o-main.html">Employee</a>
+			<a href="o-menu.html">Food Menu</a>
+			<a href="o-sub.html">Subscription</a>
+			<a href="index.html">Logout</a>
+			<a href="javascript:void(0);" class="icon" onclick="myFunction()">
+				<i class="fa fa-bars"></i>
+			</a>
+		</div>
 
-<div class="main">
-  <div class="title">
-  <h1>Order History</h1>
-  </div>
+		<div class="main">
+			<br>
+			<div class="title">
+				<h1>Order History</h1>
+			</div>
+			<br>
 
-  <div class="left">
-    <form action="">
-        <input class="search" type="text" placeholder="Search.." name="search">
-        <button type="submit"><i class="fa fa-search"></i></button>
-    </form>
-  </div>
+			<div class="left">
+				<form action="">
+					<input class="search" type="text" placeholder="Search.." name="search">
+					<button id="btnSearch" class="btn btn-default btn-lg"><i class="fa fa-search"></i></button>
+				</form>
+			</div>
 
-  <div class="t-title">
-    <table>
-      <tr>
-        <th>Order Date</th>
-        <th id="custname">Full name</th>
-        <th>Action</th>
-      </tr>
-    </table>
-  </div>
-  <div class="t-cust">
-    <table>
-      <!-- php -->
-      <tr>
-        <th>April 20, 2018</th>
-        <th id="custname">Junas Bangayan</th>
-        <th>
-          <button class="viewbut" name="view_btn" data-toggle="modal" data-target="#VIEWord"><i class="glyphicon glyphicon-eye-open"></i></button>
-        </th>
-      </tr>
-      <!-- php -->
-    </table>
-  </div>
+			<table class="table table-condensed">
+				<thead>
+					<tr>
+						<th>Order Date</th>
+						<th>Full name</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody id="ordListResult"></tbody>
 
-  <!-- Add Modal -->
-  <div class="modal fade" id="VIEWord" role="dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <span class="close" data-dismiss="modal">&times;</span>
-        <h2>BM3Y4</h2>
-      </div>
-      <div class="modal-body">
-       <div class="info">
-      <!-- php -->
-        <p>Customer name: Junas Bangayan</p>
-        <p>Address: Minglanilla</p>
-        <p>Contact number: 09771215342</p>
-        <p>Email address: junasmarcil@gmail.com</p>
-        <p>Date & Time: April 20, 2018 | 4:20 PM</p>
-      <!-- php -->    
-       </div>
-       <div class="order">
-        <table>
-          <tr>
-            <th style="width: 75%; text-align: left;">Product</th>
-            <th style="width: 5%; text-align: center;">Qty</th>
-            <th style="width: 20%; text-align: center;">Price</th>
-          </tr>
-          <!-- php -->
-          <tr>
-            <th style="width: 75%; text-align: left;">Bola-bola Siopao</th>
-            <th style="width: 5%; text-align: center;">4</th>
-            <th style="width: 20%; text-align: left;">P92.00</th> 
-          </tr>
-        </table>
-       </div>
-        <div class="modal-footer">
-          <div class="labelT">TOTAL</div><div class="labelV">(Incl. VAT)</div>
-          <!-- php --><div class="TotalA">P 92.00</div><!-- php -->
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+				<!-- data -->
+				<tr id="masterOrdRow" class="hidden">
+					<th class="ordDate">--</th>
+					<th class="ordName">--</th>
+					<th>
+						<button class="ordViewBtn btn btn-info btn-sm"><i class="glyphicon glyphicon-eye-open"></i></button>
+					</th>
+				</tr>
+			</table>
 
-</div>
+			<!-- Add Modal -->
+			<div class="modal fade" id="VIEWord" role="dialog" data-backdrop="false">
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<span class="close" data-dismiss="modal">&times;</span>
+							<h2>ORD#: <span id="ordNumber">--</span></h2>
+						</div>
+						<div class="modal-body">
+							<div class="info" id="customerInfo">
+								<p><strong>Customer name: </strong><span id="custFullname">--</span></p>
+								<p><strong>Address: </strong><span id="custAddress">--</span></p>
+								<p><strong>Contact number: </strong><span id="custContactNumber">--</span></p>
+								<p><strong>Email address: </strong><span id="custEmail">--</span></p>
+								<p><strong>Date & Time: </strong><span id="custCreated">--</span></p>  
+							</div>
+							<div class="order" id="orderDetails">
+								<table class="table table-condensed text-right" style="margin-bottom:0">
+									<thead>
+										<tr>
+											<th>Product</th>
+											<th>Qty</th>
+											<th>Price</th>
+										</tr>
+									</thead>
+									<!-- php -->
+									<tbody id="ordDetailListResult"></tbody>
+									<tr id="masterOrdDetailRow" class="hidden">
+										<th class="ordDetProdname">--</th>
+										<th class="ordDetQty">--</th>
+										<th class="ordDetPrice text-right">--</th> 
+									</tr>
+								</table>
+							</div>
+							<div class="modal-footer">
+								<div class="row">
+									<div class="col-xs-8">Subtotal</div>
+									<div class="col-xs-4"><span id="ordSubtotal">--</span></div>
+								</div>
+								<div class="row">
+									<div class="col-xs-8">+ 12% VAT</div>
+									<div class="col-xs-4"><span id="ordVat">--</span></div>
+								</div>
+								<hr>
+								<div class="row">
+									<div class="col-xs-8">Total</div>
+									<div class="col-xs-4"><span id="ordTotalPayable">--</span></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="lib/jquery.min.js"></script>
+	<script src="lib/bootstrap.min.js"></script>
+	<script src="js/jquery.growl.js" type="text/javascript"></script>
+	<script src="common/constants.js"></script>
+	<script src="common/app.js"></script>
+	<script>
+		var	myResto = null;
+		var	ordid = null;
+		var	orderList = {};
+		$(document).ready(function(){
+			loadRestaurantInfo(function(){
+				loadOrders();
+			});
 
-</body>
+			$('#btnSearch').click(function(e){
+				e.preventDefault();
+				loadOrders();
+			});
+
+			$(document).on('click', '.ordViewBtn', function(e){
+				e.preventDefault();
+				ordid = $(this).data('ordid');
+
+				showOrderDetailModal(ordid, function(){
+					 $('#VIEWord').modal('show');
+				});
+			});
+
+		});
+
+		function loadRestaurantInfo(callback){
+			CrapiApp.searchResto({
+				owner_id: CrapiApp.config.login_data.user_id
+			})
+			.then(function(res){
+				$('.loader').remove();
+
+				if (res.result === 'OK') {
+					if (typeof res.data[0] !== 'undefined') {
+
+						console.warn(res.data[0]);
+						myResto = res.data[0];
+						if (typeof callback == 'function') {
+							callback();
+						}
+					}
+				}
+			})
+			.catch(function(err){
+				console.warn(err);
+			});
+		}
+		
+		function loadOrders(){
+			CrapiApp.showCommonLoader();
+			var search = $('[name="search"]').val();
+			CrapiApp.orderListUrl({
+				name: search, 
+				// resto_id: myResto.id
+				resto_id: 1
+			})
+			.then(function(res){
+				$('#ordListResult').html('');
+
+				if (res.result === 'OK') {
+					for (var key in res.data) {
+						// skip loop if the property is from prototype
+						if (!res.data.hasOwnProperty(key)) continue;
+						var obj = res.data[key];
+						var empRow = $('#masterOrdRow').clone();
+						empRow.removeClass('hidden');
+						empRow.find('.ordDate').html(obj.created_at);
+						empRow.find('.ordName').html(obj.customer_fullname);
+						empRow.find('.ordViewBtn').attr('data-ordid', obj.id);
+
+						$('#ordListResult').append(empRow);
+
+						orderList[obj.id] = obj;
+					}
+				}
+			})
+			.catch(function(err){
+				console.warn(err);
+			})
+			.always(function(){
+				CrapiApp.removeCommonLoader();
+			});
+		}
+
+		function showOrderDetailModal(ordid, callback){
+			CrapiApp.showCommonLoader();
+			CrapiApp.getOrderDetails({
+				order_id: ordid,
+				order_status: ORDER_STATUS.success
+			})
+			.then(function(res){
+				console.warn('ORDERDETAILS -----------------');
+				console.warn(res);
+				$('#ordDetailListResult').html('');
+				if (typeof orderList[ordid] == 'undefined') {
+					console.warn("Customer order not found.");
+					return;
+				}
+				var customerInfo = orderList[ordid];
+				$('#ordNumber').html(customerInfo.order_number);
+				$('#customerInfo #custFullname').html(customerInfo.customer_fullname);
+				$('#customerInfo #custAddress').html(customerInfo.customer_address);
+				$('#customerInfo #custContactNumber').html(customerInfo.contact_number);
+				$('#customerInfo #custEmail').html(customerInfo.email);
+				$('#customerInfo #custCreated').html(customerInfo.created_at);
+
+				if (res.result === 'OK') {
+					var subTotalPrice = 0;
+					for (var key in res.data) {
+						// skip loop if the property is from prototype
+						if (!res.data.hasOwnProperty(key)) continue;
+						var obj = res.data[key];
+						var ordDetRow = $('#masterOrdDetailRow').clone();
+						ordDetRow.removeClass('hidden');
+						ordDetRow.find('.ordDetProdname').html(obj.name);
+						ordDetRow.find('.ordDetQty').html(obj.qty);
+						ordDetRow.find('.ordDetPrice').html(obj.price);
+
+						$('#ordDetailListResult').append(ordDetRow);
+						subTotalPrice = Number(obj.price) + Number(subTotalPrice);
+					}
+
+					var vatObj = CrapiApp.calculateVat(subTotalPrice);
+					$('#ordSubtotal').html(subTotalPrice);
+					$('#ordVat').html(vatObj.amount);
+					$('#ordTotalPayable').html(vatObj.total_payable);
+				}
+
+				if (typeof callback == 'function') {callback();}
+			})
+			.catch(function(err){
+				console.warn(err);
+			})
+			.always(function(){
+				CrapiApp.removeCommonLoader();
+			});
+		}
+	</script>
 </html>

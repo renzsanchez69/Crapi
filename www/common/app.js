@@ -319,7 +319,7 @@ var CrapiApp = (function() {
 
 		// - set request data
 		var params = {
-			url: ENVIRONMENT_URL.customer_order_list_url,
+			url: ENVIRONMENT_URL.order_list_url,
 			method: 'POST',
 			data: params
 		};
@@ -334,6 +334,19 @@ var CrapiApp = (function() {
 		// - set request data
 		var params = {
 			url: ENVIRONMENT_URL.order_delete_url,
+			method: 'POST',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+	obj.getOrderDetails = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.order_details_url,
 			method: 'POST',
 			data: params
 		};
@@ -365,6 +378,19 @@ var CrapiApp = (function() {
 			}
 		}
 		return newObj;
+	}
+
+	obj.calculateVat = function(amount){
+		var vat = {
+			amount: 0,
+			total_payable: 0
+		};
+		if (amount > 0) {
+			vat.amount = Number(amount) * .12;
+			vat.total_payable = Number(amount) + vat.amount;
+		}
+		
+		return vat;
 	}
 
 	function extend(obj, src) {

@@ -23,17 +23,12 @@ const ENVIRONMENT_URL = {
 	products_base_url : BASE_URL+"/api/products",
 	products_search_url : BASE_URL+"/api/products/menu_list",
 
-	// - order by customer url
+	// - orders url
 	order_by_customer_url : BASE_URL+"/api/orders/order_by_customer",
-
-	// - order list url
 	order_list_url : BASE_URL+"/api/orders/order_list",
-
-	// - order list url
 	add_order_url : BASE_URL+"/api/orders/add_orders",
-
-	// - order delete url
-	order_delete_url : BASE_URL+"/api/orders/order_delete_by_item"
+	order_delete_url : BASE_URL+"/api/orders/order_delete_by_item",
+	order_details_url : BASE_URL+"/api/orders/order_details_list"
 
 };
 
@@ -50,7 +45,7 @@ const TALK_GENERAL = {
 };
 
 
-// - broadcast status
+// - User role 
 const USER_ROLE = {
 	customer: {
 		text: "customer",
@@ -64,4 +59,11 @@ const USER_ROLE = {
 		text: "employee",
 		int: 2
 	}
+};
+
+// - Order status
+const ORDER_STATUS = {
+	pending: "pending",
+	success: "success",
+	pending: "failed"
 };

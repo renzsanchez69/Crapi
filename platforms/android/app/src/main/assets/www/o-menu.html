@@ -34,35 +34,33 @@
 	<div class="left">
 		<form action="">
 			<input class="search" type="text" placeholder="Search.." name="search">
-			<button type="submit" id="btnSearch"><i class="fa fa-search"></i></button>
+			<button type="submit" id="btnSearch" class="btn btn-default btn-lg"><i class="fa fa-search"></i></button>
 		</form>
 	</div>
 
 	<div class="right">
 		<button class="add showModalAddForm" data-toggle="modal" data-target="#ADDprod">ADD FOOD</button>
 	</div>
-	<div class="t-title">
-		<table class="table table-condensed">
-			<thead>
-				<tr>
-					<th>Food name</th>
-					<th>Price</th>
-					<th>Action</th>
-				</tr>
-			</thead>
-			<tbody id="prodListResult"></tbody>
-
-			<!-- data -->
-			<tr id="masterProdRow" class="hidden">
-				<th class="prodName">--</th>
-				<th class="prodPrice">--</th>
-				<th>
-					<button class="prodEditBtn"><i class="glyphicon glyphicon-edit"></i></button>
-					<button class="prodDeleteBtn" data-toggle="modal" data-target="#DELprod"><i class="glyphicon glyphicon-trash"></i></button>
-				</th>
+	<table class="table table-condensed">
+		<thead>
+			<tr>
+				<th>Food name</th>
+				<th>Price</th>
+				<th>Action</th>
 			</tr>
-		</table>
-	</div>
+		</thead>
+		<tbody id="prodListResult"></tbody>
+
+		<!-- data -->
+		<tr id="masterProdRow" class="hidden">
+			<th class="prodName">--</th>
+			<th class="prodPrice">--</th>
+			<th>
+				<button class="prodEditBtn btn btn-info btn-sm"><i class="glyphicon glyphicon-edit"></i></button>
+				<button class="prodDeleteBtn btn btn-danger btn-sm" data-toggle="modal" data-target="#DELprod"><i class="glyphicon glyphicon-trash"></i></button>
+			</th>
+		</tr>
+	</table>
 </div>
 
 
