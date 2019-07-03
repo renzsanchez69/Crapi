@@ -21,6 +21,7 @@ const ENVIRONMENT_URL = {
 
 	// - products url
 	products_base_url : BASE_URL+"/api/products",
+
 	products_search_url : BASE_URL+"/api/products/menu_list",
 
 	// - order by customer url
@@ -28,6 +29,9 @@ const ENVIRONMENT_URL = {
 
 	// - order list url
 	order_list_url : BASE_URL+"/api/orders/order_list",
+
+	// - order detial list url
+	order_detail_list_url : BASE_URL+"/api/orders/order_details_list",
 
 	// - order list url
 	add_order_url : BASE_URL+"/api/orders/add_orders",
@@ -39,7 +43,10 @@ const ENVIRONMENT_URL = {
 	order_edit_url : BASE_URL+"/api/orders/edit_orders",
 
 	// - order edit url
-	order_search_url : BASE_URL+"/api/orders/order_search"
+	order_search_url : BASE_URL+"/api/orders/order_search",
+
+	// - customer order edit url
+	customer_search_url : BASE_URL+"/api/customers/search"
 
 };
 

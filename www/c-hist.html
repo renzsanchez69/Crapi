@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>ORDER HISTORY</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="js/o-main.js"></script>
-    <link rel="stylesheet" type="text/css" href="css/o-main.css">
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-    <link rel="stylesheet" type="text/css" href="css/c-hist.css">
-    <link rel="stylesheet" href="css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <script src="lib/jquery.min.js"></script>
-    <script type="text/javascript">
-        $(function(){
-            if (localStorage.getItem("login_token") === null) {
-              window.location.href = 'index.html';
-            }
-        });
-    </script>
-    <script src="lib/bootstrap.min.js"></script>
+	<title>ORDER HISTORY</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="js/o-main.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/o-main.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link rel="stylesheet" type="text/css" href="css/c-hist.css">
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<script src="lib/jquery.min.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			if (localStorage.getItem("login_token") === null) {
+			  window.location.href = 'index.html';
+			}
+		});
+	</script>
+	<script src="lib/bootstrap.min.js"></script>
 <body>
 
 <!-- Top Navigation Menu -->
@@ -27,74 +27,74 @@
   <a href="c-locate-resto.html">Locate</a>
   <a href="index.html" id="log-out">Logout</a>
   <a href="javascript:void(0);" class="icon" onclick="myFunction()">
-    <i class="fa fa-bars"></i>
+	<i class="fa fa-bars"></i>
   </a>
 </div>
 
 <div class="main">
-    <div class="title">
-        <h1>Order History</h1>
-    </div>
-    <div class="container-fluid">
-        <div class="left">
-            <form action="" method="GET">
-                <input class="search" type="text" placeholder="Search.." name="search">
-                <button type="button" class="btn-light search-btn-light" style="padding: 10px !important;" id="fsearch"><i class="fa fa-search"></i></button>
-            </form>
-        </div>
-    </div>
+	<div class="title">
+		<h1>Order History</h1>
+	</div>
+	<div class="container-fluid">
+		<div class="left">
+			<form action="" method="GET">
+				<input class="search" type="text" placeholder="Search.." name="search">
+				<button type="button" class="btn-light search-btn-light" style="padding: 10px !important;" id="fsearch"><i class="fa fa-search"></i></button>
+			</form>
+		</div>
+	</div>
 
-    <div class="container-fluid">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th class="text-left"><b>Restaurant name</b></th>
-                    <th class="text-center"><b>Order Date</b></th>
-                    <th class="text-right"><b>Action</b></th>
-                </tr>
-            </thead>
-            <tbody id="tbody-order-list">
-            </tbody>
-        </table>
-    </div>
+	<div class="container-fluid">
+		<table class="table">
+			<thead>
+				<tr>
+					<th class="text-left"><b>Restaurant name</b></th>
+					<th class="text-center"><b>Order Date</b></th>
+					<th class="text-right"><b>Action</b></th>
+				</tr>
+			</thead>
+			<tbody id="tbody-order-list">
+			</tbody>
+		</table>
+	</div>
 
 </div>
 <!-- Add Modal -->
 <div class="modal fade" id="VIEWord" role="dialog">
-    <div class="modal-content">
-        <div class="modal-header">
-            <span class="close" data-dismiss="modal">&times;</span>
-            <h2>ORDER#:<b id="order_hash">BM3Y4</b></h2>
-        </div>
-        <div class="modal-body">
-            <div class="col-12">
-                <div class="info">
-                    <p> Customer name: <b id="customer_name">Anuar Delabahan</b></p>
-                    <p> Address: <b id="address">Cebu City</b></p>
-                    <p> Contact number: <b id="contact_number">09173260074</b></p>
-                    <p> Email address: <b id="email_address">delabahan@gmail.com</b></p>
-                    <p> Date & Time: <b id="date_time">April 17,2019</b></p>
-                </div>
-            </div>
-            <div class="col-12">
-                <br>
-                <br>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th class="text-left"><b>Product</b></th>
-                            <th class="text-center"><b>Qty</b></th>
-                            <th class="text-center"><b>Price</b></th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbody-order-list-view">
-                    </tbody>
-                    <tfoot id="fbody-order-list-view">
-                    </tfoot>
-                </table>
-            </div>
-        </div>
-    </div>
+	<div class="modal-content">
+		<div class="modal-header">
+			<span class="close" data-dismiss="modal">&times;</span>
+			<h2>ORDER#:<b id="order_hash">BM3Y4</b></h2>
+		</div>
+		<div class="modal-body">
+			<div class="col-12">
+				<div class="info">
+					<p> Customer name: <b id="customer_name">Anuar Delabahan</b></p>
+					<p> Address: <b id="address">Cebu City</b></p>
+					<p> Contact number: <b id="contact_number">09173260074</b></p>
+					<p> Email address: <b id="email_address">delabahan@gmail.com</b></p>
+					<p> Date & Time: <b id="date_time">April 17,2019</b></p>
+				</div>
+			</div>
+			<div class="col-12">
+				<br>
+				<br>
+				<table class="table">
+					<thead>
+						<tr>
+							<th class="text-left"><b>Product</b></th>
+							<th class="text-center"><b>Qty</b></th>
+							<th class="text-center"><b>Price</b></th>
+						</tr>
+					</thead>
+					<tbody id="tbody-order-list-view">
+					</tbody>
+					<tfoot id="fbody-order-list-view">
+					</tfoot>
+				</table>
+			</div>
+		</div>
+	</div>
 </div>
 
 <script src="js/o-main.js"></script>
@@ -103,144 +103,119 @@
 <script src="common/constants.js"></script>
 <script src="common/app.js"></script>
 <script type="text/javascript">
-    $(document).ready(function() {
-        get_data();
-    });
-
-	function get_data(){
-	var login_token = localStorage.getItem("login_token");
-	var role  = localStorage.getItem("role");
-
-	CrapiApp.showCommonLoader();
-	CrapiApp.orderListUrl({
-		login_token: login_token, 
-		role: role,
-		owner_id: CrapiApp.config.login_data.user_id
-	}).then(function(res){
-		console.log(res);
-	})
-	.catch(function(res){
-		console.log(res);
-	// $.growl.notice({ message: res.error });
-	})
-	.always(function(){
-		CrapiApp.removeCommonLoader();
+	$(document).ready(function() {
+		get_data();
 	});
 
-	/*return false;
-        var login_token = localStorage.getItem("login_token");
-        var role  = localStorage.getItem("role");
-        $.ajax({
-            type: "POST",
-            url: "http://localhost/crapi_admin/api/orders/order_list", // Example 
-            data: { "login_token":login_token,"role":role},
-            success: function(result_data) {
-                console.log(result_data);
-                if (result_data.result == 'OK') {
-                    var tbody_html = "";
-                    $.each( result_data.data, function( key, value ) {
-                        if (value.id == undefined) {
-                            return false;
-                        }
-                            tbody_html +='<tr id="'+value.id+'">';
-                                tbody_html +='<td class="text-left">'+value.restaurants_name+'</td>';
-                                tbody_html +='<td class="text-center">'+value.created_at+'</td>';
-                                tbody_html +='<td class="text-right">';
-                                    tbody_html +='<button class="editbut" name="edit_btn" onclick="view_details('+value.id+','+value.order_number+',\'' + value.created_at + '\',\'' + value.customer_fullname + '\',\'' + value.customer_fullname + '\',\'' + value.customer_address.trim() + '\',\'' + value.email + '\',\'' + value.contact_number + '\'); return false;"><i class="glyphicon glyphicon-eye-open"></i></button>';
-                                tbody_html +='</td>';
-                            tbody_html +='</tr>';
+	function get_data(){
+		CrapiApp.showCommonLoader();
+		CrapiApp.orderListUrl({
+		}).then(function(result_data){
+			if (result_data.result == 'OK') {
+				var tbody_html = "";
+				$.each( result_data.data, function( key, value ) {
+					if (value.id == undefined) {
+						return false;
+					}
+						tbody_html +='<tr id="'+value.id+'">';
+							tbody_html +='<td class="text-left">'+value.restaurants_name+'</td>';
+							tbody_html +='<td class="text-center">'+value.created_at+'</td>';
+							tbody_html +='<td class="text-right">';
+								tbody_html +='<button class="editbut" name="edit_btn" onclick="view_details('+value.id+','+value.order_number+',\'' + value.created_at + '\',\'' + value.customer_fullname + '\',\'' + value.customer_fullname + '\',\'' + value.customer_address.trim() + '\',\'' + value.email + '\',\'' + value.contact_number + '\'); return false;"><i class="glyphicon glyphicon-eye-open"></i></button>';
+							tbody_html +='</td>';
+						tbody_html +='</tr>';
 
-                    }); 
-                    $('#tbody-order-list').empty().append(tbody_html);
-                }
-            },
-            error: function(e) {
-                $.growl.error({ message: "Connection refused!"});
-                return false;
-            }
-        });*/
-    }
+				}); 
+				$('#tbody-order-list').empty().append(tbody_html);
+			}
+		})
+		.catch(function(res){
+			$.growl.error({ message: "Connection refused!"});
+		})
+		.always(function(){
+			CrapiApp.removeCommonLoader();
+		});
+	}
 
-    function view_details(order_id,order_number,date_order,full_name,description,address,email_address,contact_no) {
-        $('#VIEWord').modal('show');
-        var login_token = localStorage.getItem("login_token");
-        var role  = localStorage.getItem("role");
-        $('#order_hash').text(order_number);
-        $('#customer_name').text(full_name);
-        $('#address').text(address);
-        $('#contact_number').text(contact_no);
-        $('#email_address').text(email_address);
-        $('#date_time').text(date_order);
-        $.ajax({
-            type: "POST",
-            url: "http://localhost/crapi_admin/api/orders/order_details_list", // Example 
-            data: { "login_token":login_token,"role":role,"order_id":order_id},
-            success: function(result_data) {
-                console.log(result_data);
-                if (result_data.result == 'OK') {
-                    var tbody_html = "";
-                    var fbody_html = "";
-                     var sub_total = 0;
-                     var total_order = 0;
-                    $.each( result_data.data, function( key, value ) {
-                        if (value.id == undefined) {
-                            return false;
-                        }
-                        sub_total += parseInt(value.sub_total, 10);
-                        tbody_html +='<tr>';
-                            tbody_html +='<th class="text-left"> '+value.name+' </th>';
-                            tbody_html +='<th class="text-center"> '+value.qty+' </th>';
-                            tbody_html +='<th class="text-center">P '+value.price+' </th>';
-                        tbody_html +='</tr>';
-                    }); 
-                        total_order = (sub_total*.12) + sub_total;
-                        fbody_html +='<tr style="background-color:#ffe680;">';
-                            fbody_html +='<th class="text-left"><b>TOTAL </b></th>';
-                            fbody_html +='<th> </th>';
-                            fbody_html +='<th class="text-center"><b>P '+numberWithCommas(sub_total)+'<br>P '+numberWithCommas(total_order)+' (Incl. VAT)</b></th>';
-                        fbody_html +='</tr>';
-                    $('#tbody-order-list-view').empty().append(tbody_html);
-                    $('#fbody-order-list-view').empty().append(fbody_html);
-                }
-            },
-            error: function(e) {
-                $.growl.error({ message: "Connection refused!"});
-                return false;
-            }
-        });
-    }
+	function view_details(order_id,order_number,date_order,full_name,description,address,email_address,contact_no) {
+		$('#VIEWord').modal('show');
+		var login_token = localStorage.getItem("login_token");
+		var role  = localStorage.getItem("role");
+		$('#order_hash').text(order_number);
+		$('#customer_name').text(full_name);
+		$('#address').text(address);
+		$('#contact_number').text(contact_no);
+		$('#email_address').text(email_address);
+		$('#date_time').text(date_order);
 
-    $("#fsearch").click(function(){
-        var token = localStorage.getItem("login_token");
-        var role  = localStorage.getItem("role");
-        var fsearch = $('input[name="search"]').val();
-        $.ajax({
-            type: "POST",
-            url: "http://localhost/crapi_admin/api/customers/search", // Example 
-            data: { "search":fsearch,"token":token,"role":role},
-            success: function(result_data) {
-                console.log(result_data);
-                if (result_data.result == 'OK') {
-                    var tbody_html = "";
-                    $.each( result_data.data, function( key, value ) {
-                            tbody_html +='<tr id="'+value.id+'">';
-                                tbody_html +='<td class="text-left">'+value.resto_name+'</td>';
-                                tbody_html +='<td class="text-center">'+value.created_date+'</td>';
-                                tbody_html +='<td class="text-right">';
-                                    tbody_html +='<button class="editbut" name="edit_btn" onclick="view_details(\'' + value.created_date + '\',\'' + value.full_name + '\',\'' + value.description + '\',\'' + value.address + '\',\'' + value.email_address + '\',\'' + value.contact_no + '\',\'' + value.name + '\','+value.price+','+value.qty+',\'' +value.order_hash+ '\'); return false;"><i class="glyphicon glyphicon-eye-open"></i></button>';
-                                tbody_html +='</td>';
-                            tbody_html +='</tr>';
+		
+		CrapiApp.showCommonLoader();
+		CrapiApp.orderDetailListUrl({
+			"order_id":order_id
+		}).then(function(result_data){
+			if (result_data.result == 'OK') {
+				var tbody_html = "";
+				var fbody_html = "";
+				 var sub_total = 0;
+				 var total_order = 0;
+				$.each( result_data.data, function( key, value ) {
+					if (value.id == undefined) {
+						return false;
+					}
+					sub_total += parseInt(value.sub_total, 10);
+					tbody_html +='<tr>';
+						tbody_html +='<th class="text-left"> '+value.name+' </th>';
+						tbody_html +='<th class="text-center"> '+value.qty+' </th>';
+						tbody_html +='<th class="text-center">P '+value.price+' </th>';
+					tbody_html +='</tr>';
+				}); 
+					total_order = (sub_total*.12) + sub_total;
+					fbody_html +='<tr style="background-color:#ffe680;">';
+						fbody_html +='<th class="text-left"><b>TOTAL </b></th>';
+						fbody_html +='<th> </th>';
+						fbody_html +='<th class="text-center"><b>P '+numberWithCommas(sub_total)+'<br>P '+numberWithCommas(total_order)+' (Incl. VAT)</b></th>';
+					fbody_html +='</tr>';
+				$('#tbody-order-list-view').empty().append(tbody_html);
+				$('#fbody-order-list-view').empty().append(fbody_html);
+			}
+		})
+		.catch(function(res){
+			$.growl.error({ message: "Connection refused!"});
+		})
+		.always(function(){
+			CrapiApp.removeCommonLoader();
+		});
+	}
 
-                    }); 
-                    $('#tbody-order-list').empty().append(tbody_html);
-                }
-            },
-            error: function(e) {
-                $.growl.error({ message: "Connection refused!"});
-                return false;
-            }
-        });
-    });
+	$("#fsearch").click(function(){
+		CrapiApp.showCommonLoader();
+		CrapiApp.customerSearch({
+			search: $('input[name="search"]').val()
+		})
+		.then(function(result_data){
+			if (result_data.result == 'OK') {
+				var tbody_html = "";
+				$.each( result_data.data, function( key, value ) {
+						tbody_html +='<tr id="'+value.id+'">';
+							tbody_html +='<td class="text-left">'+value.resto_name+'</td>';
+							tbody_html +='<td class="text-center">'+value.created_date+'</td>';
+							tbody_html +='<td class="text-right">';
+								tbody_html +='<button class="editbut" name="edit_btn" onclick="view_details(\'' + value.created_date + '\',\'' + value.full_name + '\',\'' + value.description + '\',\'' + value.address + '\',\'' + value.email_address + '\',\'' + value.contact_no + '\',\'' + value.name + '\','+value.price+','+value.qty+',\'' +value.order_hash+ '\'); return false;"><i class="glyphicon glyphicon-eye-open"></i></button>';
+							tbody_html +='</td>';
+						tbody_html +='</tr>';
+
+				}); 
+				$('#tbody-order-list').empty().append(tbody_html);
+			}
+		})
+		.catch(function(res){
+			console.log(res);
+			$.growl.error({ message: "Connection refused!"});
+		})
+		.always(function(){
+			CrapiApp.removeCommonLoader();
+		});
+	});
 </script>
 </body>
 </html>
