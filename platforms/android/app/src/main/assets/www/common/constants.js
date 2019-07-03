@@ -12,6 +12,7 @@ const ENVIRONMENT_URL = {
 
 	// - customers url
 	customer_list_url : BASE_URL+"/api/customers",
+	customer_search_url : BASE_URL+"/api/customers/search",
 
 	// - restaurants url
 	resto_search_url : BASE_URL+"/api/restaurants/resto_search",
@@ -21,6 +22,7 @@ const ENVIRONMENT_URL = {
 
 	// - products url
 	products_base_url : BASE_URL+"/api/products",
+
 	products_search_url : BASE_URL+"/api/products/menu_list",
 
 	// - orders url
@@ -28,8 +30,9 @@ const ENVIRONMENT_URL = {
 	order_list_url : BASE_URL+"/api/orders/order_list",
 	add_order_url : BASE_URL+"/api/orders/add_orders",
 	order_delete_url : BASE_URL+"/api/orders/order_delete_by_item",
-	order_details_url : BASE_URL+"/api/orders/order_details_list"
-
+	order_details_url : BASE_URL+"/api/orders/order_details_list",
+	order_edit_url : BASE_URL+"/api/orders/edit_orders",
+	order_search_url : BASE_URL+"/api/orders/order_search"
 };
 
 // - general information
