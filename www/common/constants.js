@@ -33,7 +33,13 @@ const ENVIRONMENT_URL = {
 	add_order_url : BASE_URL+"/api/orders/add_orders",
 
 	// - order delete url
-	order_delete_url : BASE_URL+"/api/orders/order_delete_by_item"
+	order_delete_url : BASE_URL+"/api/orders/order_delete_by_item",
+
+	// - order edit url
+	order_edit_url : BASE_URL+"/api/orders/edit_orders",
+
+	// - order edit url
+	order_search_url : BASE_URL+"/api/orders/order_search"
 
 };
 
