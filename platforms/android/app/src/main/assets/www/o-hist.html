@@ -173,7 +173,8 @@
 			CrapiApp.orderListUrl({
 				name: search, 
 				// resto_id: myResto.id
-				resto_id: 1
+				resto_id: 1,
+				order_status: ORDER_STATUS.success,
 			})
 			.then(function(res){
 				$('#ordListResult').html('');
