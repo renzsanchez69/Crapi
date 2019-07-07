@@ -314,3 +314,9 @@ tr{background-color: #f2f2f2;}
 .modal{
   background: rgba(0 ,0,0,.5);
 }
+
+div#adv-search button, 
+div#adv-search input{
+	border-radius: 0;
+	height: 40px; 
+} 

@@ -22,7 +22,6 @@ const ENVIRONMENT_URL = {
 
 	// - products url
 	products_base_url : BASE_URL+"/api/products",
-
 	products_search_url : BASE_URL+"/api/products/menu_list",
 
 	// - orders url
@@ -32,7 +31,11 @@ const ENVIRONMENT_URL = {
 	order_delete_url : BASE_URL+"/api/orders/order_delete_by_item",
 	order_details_url : BASE_URL+"/api/orders/order_details_list",
 	order_edit_url : BASE_URL+"/api/orders/edit_orders",
-	order_search_url : BASE_URL+"/api/orders/order_search"
+	order_search_url : BASE_URL+"/api/orders/order_search",
+	update_order_url : BASE_URL+"/api/orders/update_order",
+
+	// - payments url
+	paymaya_checkout_url : BASE_URL+"/api/payments/paymaya_checkout"
 };
 
 // - general information
@@ -50,18 +53,9 @@ const TALK_GENERAL = {
 
 // - User role 
 const USER_ROLE = {
-	customer: {
-		text: "customer",
-		int: 0
-	},
-	owner: {
-		text: "owner",
-		int: 1
-	},
-	employee: {
-		text: "employee",
-		int: 2
-	}
+	owner: "owner",
+	customer: "customer",
+	employee: "employee"
 };
 
 // - Order status

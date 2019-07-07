@@ -6,6 +6,16 @@ $('#log-out').click(function(e){
     window.location.href = 'index.html';
 });
 
+$.urlParam = function(name){
+    var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    if (results==null){
+       return null;
+    }
+    else{
+       return results[1] || 0;
+    }
+}
+
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
@@ -25,6 +35,30 @@ var CrapiApp = (function() {
 	var login_data = localStorage.getItem('login_data');
 	if (typeof login_data != 'undefined' && login_data != null && login_data != 'undefined') {
 		obj.config.login_data = JSON.parse(login_data);
+		if(
+			window.location.pathname == '/' ||
+			window.location.pathname == '/o-reg.html' ||
+			window.location.pathname == '/c-reg.html' 
+		) {
+			switch(obj.config.login_data.role) {
+				case USER_ROLE.owner:
+					window.location.href = window.location.origin + "/o-main.html";
+					break;
+				case USER_ROLE.employee:
+					window.location.href = window.location.origin + "/e-main.html";
+					break;
+				case USER_ROLE.customer:
+					window.location.href = window.location.origin + "/c-main.html";
+					break;
+			}
+		}
+	} 
+	else if(
+		window.location.pathname !== '/' &&
+		window.location.pathname !== '/o-reg.html' &&
+		window.location.pathname !== '/c-reg.html' 
+	) {
+		window.location.href = '/';
 	}
 
 	// embeded swf object
@@ -39,7 +73,12 @@ var CrapiApp = (function() {
 		
 
 		// - if login token is not empty. add token
-		if (typeof element.config.login_data !== 'undefined' && typeof element.config.login_data.login_token !== 'undefined' && element.config.login_data.login_token.length != 0) {
+		if (
+			typeof element.config.login_data !== 'undefined' && 
+			typeof element.config.login_data.login_token !== 'undefined' && 
+			element.config.login_data.login_token != null && 
+			element.config.login_data.login_token.length != 0
+		) {
 			var user_data = {
 				login_token: element.config.login_data.login_token,
 				role: element.config.login_data.role
@@ -94,6 +133,7 @@ var CrapiApp = (function() {
 
 	obj.loginUser = function(params){
 		element = this;
+		delete CrapiApp.config.login_data;
 
 		// - set request data
 		var params = {
@@ -384,6 +424,20 @@ var CrapiApp = (function() {
 		return element.ajaxRestAction(params)
 	}
 
+	obj.updateOrder = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.update_order_url,
+			method: 'POST',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+
 	obj.orderSearchUrl = function(params){
 		element = this;
 
@@ -399,6 +453,25 @@ var CrapiApp = (function() {
 	}
 	/*---------------------------------------------------
 		END OF ORDERS - API REQUESTS
+	-----------------------------------------------------*/
+	/*---------------------------------------------------
+		PAYMENTS - API REQUESTS
+	-----------------------------------------------------*/
+	obj.checkoutWithPaymaya = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.paymaya_checkout_url,
+			method: 'POST',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+	/*---------------------------------------------------
+		END OF PAYMENTS - API REQUESTS
 	-----------------------------------------------------*/
 
 	obj.showCommonLoader = function(){

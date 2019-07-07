@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <access origin="*" />
 <allow-navigation href="*"/>
+<access origin="*" />
+<allow-navigation href="*" />
+<allow-intent href="*" />
 <widget xmlns   = "http://www.w3.org/ns/widgets"
     xmlns:gap   = "http://phonegap.com/ns/1.0"
     id          = "com.phonegap.example"
@@ -26,4 +29,7 @@
   <preference name="KeepRunning" value="false" />
 
   <plugin name="cordova-plugin-geolocation" spec="~4.0.1" />
+  <access origin="*" />
+<allow-navigation href="*" />
+<allow-intent href="*" />
 </widget>
