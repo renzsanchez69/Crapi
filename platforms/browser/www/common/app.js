@@ -1,5 +1,28 @@
 
+
+
 $('#log-out').click(function(e){
+	e.preventDefault();
+	var logoutModal = '<div class="modal fade" id="logoutModal" role="dialog">';
+		logoutModal += '<div class="modal-dialog modal-lg">';
+		logoutModal += '<div class="modal-content">';
+		logoutModal += '<div class="modal-header">';
+		logoutModal += '<h2>Logout ?</h2>';
+		logoutModal += '</div><div class="modal-body"><div class="regbox" style="padding-top: 10px;">';
+		logoutModal += '<p>Are you sure you want to logout?</p>';
+		logoutModal += '<button class="btn btn-danger" id="btnLogoutUser" style="width: 85px; border-radius: 0;padding: 12px;">YES</button> ';
+		logoutModal += '<button class="btn btn-info" data-dismiss="modal" style="width: 85px; border-radius: 0;padding: 12px;">NO</button>';
+		logoutModal += '</div></div></div></div></div>';
+
+	if ($('#logoutModal').length < 1) {
+		$('body').append(logoutModal);
+	}
+	
+	$('#logoutModal').modal('show');
+
+});
+
+$(document).on('click', '#btnLogoutUser', function(){
     localStorage.removeItem("login_token");
     localStorage.removeItem("login_data");
     delete CrapiApp.config.login_data;
@@ -38,7 +61,8 @@ var CrapiApp = (function() {
 		if(
 			window.location.pathname == '/' ||
 			window.location.pathname == '/o-reg.html' ||
-			window.location.pathname == '/c-reg.html' 
+			window.location.pathname == '/c-reg.html' ||
+			window.location.pathname == '/index.html' 
 		) {
 			switch(obj.config.login_data.role) {
 				case USER_ROLE.owner:
@@ -48,7 +72,7 @@ var CrapiApp = (function() {
 					window.location.href = window.location.origin + "/e-main.html";
 					break;
 				case USER_ROLE.customer:
-					window.location.href = window.location.origin + "/c-main.html";
+					window.location.href = window.location.origin + "/c-locate-resto.html";
 					break;
 			}
 		}

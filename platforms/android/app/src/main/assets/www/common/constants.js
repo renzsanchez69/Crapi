@@ -62,5 +62,5 @@ const USER_ROLE = {
 const ORDER_STATUS = {
 	pending: "pending",
 	success: "success",
-	pending: "failed"
+	failed: "failed"
 };

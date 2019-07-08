@@ -24,8 +24,8 @@
 
 <!-- Top Navigation Menu -->
 <div class="topnav" id="myTopnav">
-	<a href="c-main.html" class="active">Orders</a>
-	<a href="c-locate-resto.html">Locate</a>
+	<a href="c-locate-resto.html" class="active">Locate</a>
+	<a href="c-orders.html">Orders</a>
 	<a href="c-hist.html">Order History</a>
 	<a href="index.html" id="log-out">Logout</a>
 	<a href="javascript:void(0);" class="icon" onclick="myFunction()">
@@ -73,7 +73,7 @@
 		</table>
 		<div class="col-md-4 col-md-offset-4 text-center">
 			<br>
-			<button class="b-order o-btn" name="order_btn" onclick="view_order(); return false;">ORDER</button>
+			<button class="b-order o-btn" name="order_btn" onclick="view_order(); return false;" style="border-radius: 0; color: white;">ORDER</button>
 		</div>
 	</div>
 </div>
@@ -163,7 +163,7 @@
 			</div>
 			<div class="modal-footer" style="background-color:#ffffff;">
 				<div class="col-md-4 col-md-offset-4 text-center">
-					<button type="button" class="mr-auto" id="myviewfood" >Proceed</button>
+					<button type="button" class="mr-auto" id="myviewfood" >Proceed <span class="fa fa-arrow-right"></span></button>
 				</div>
 			</div>
 		</div>
@@ -195,7 +195,7 @@
 				</div>
 				<div class="col-sm-12 col-md-12 col-lg-12">
 					<div class="text-center">
-					   <button class="ordbut" id="add-order-fname" data-dismiss="modal">ORDER</button>
+					   <button class="ordbut" id="add-order-fname" data-dismiss="modal">ADD</button>
 					</div>
 				</div>
 			</div>
@@ -229,7 +229,7 @@
 				</div>
 				<div class="col-sm-12 col-md-12 col-lg-12">
 					<div class="text-center">
-						<button class="ordbut" id="edit-order-fname">ORDER</button>
+						<button class="ordbut" id="edit-order-fname">UPDATE</button>
 					</div>
 				</div>
 			</div>
@@ -267,8 +267,8 @@
 			<div class="modal-body">
 				<div class="regbox">
 					<h4>Choose payment method.</h4><br>
-					<button class="btn btn-success btn-block" id="btnCod">Cash on Delivery</button><br>
-					<button class="btn btn-success btn-block" id="btnPaymaya">Paymaya</button>
+					<button class="btn btn-success btn-block" id="btnCod" style="padding: 12px; border-radius: 0;">Cash on Delivery</button><br>
+					<button class="btn btn-success btn-block" id="btnPaymaya" style="padding: 12px; border-radius: 0;">Paymaya</button>
 				</div>
 			</div>
 		</div>
@@ -286,9 +286,8 @@
 			<div class="modal-body">
 				<div class="regbox">
 					<h4>How much cash do you have?</h4><br>
-					<input type="number" id="moneyOnHand" class="input-text qty text search-btn-light" >
-					<button class="btn btn-success btn-block" id="btnCod">Cash on Delivery</button><br>
-					<button class="btn btn-success btn-block" id="btnPaymaya">Paymaya</button>
+					<input type="number" max="99999" min="1" id="moneyOnHand" class="input-text qty text search-btn-light" >
+					<button class="btn btn-success btn-block" id="btnCod" style="padding: 12px; border-radius: 0;">Continue <span class="fa fa-arrow-right"></span></button><br>
 				</div>
 			</div>
 		</div>
@@ -440,7 +439,8 @@
 			search: $('input[name="search"]').val(),
 			resto_id: resto_id,
 			customer_id: CrapiApp.config.login_data.user_id,
-			order_status: 'pending'
+			order_status: ORDER_STATUS.pending,
+			is_paid: 0
 		})
 		.then(function(result_data){
 			$('#tbody-order-list').empty();
@@ -670,7 +670,9 @@
 			"qty": qty,
 			"price": $('#product-id-price').val(),
 			"description": $('#add-order-request').val(),
-			"resto_id": localStorage.getItem("resto_id")
+			"resto_id": localStorage.getItem("resto_id"),
+			"longitude": localStorage.getItem("deliveryLng"),
+			"latitude": localStorage.getItem("deliveryLat")
 		};
 		CrapiApp.showCommonLoader();
 		CrapiApp.orderAddUrl(formData)

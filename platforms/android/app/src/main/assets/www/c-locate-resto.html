@@ -22,13 +22,13 @@
 
 <!-- Top Navigation Menu -->
 <div class="topnav" id="myTopnav">
-  <a href="c-locate-resto.html" class="active">Locate</a>
-  <a href="c-hist.html">Order History</a>
-  <a href="c-main.html">Orders</a>
-  <a href="index.html"  id="log-out">Logout</a>
-  <a href="javascript:void(0);" class="icon" onclick="myFunction()">
-    <i class="fa fa-bars"></i>
-  </a>
+    <a href="c-locate-resto.html" class="active">Locate</a>
+    <a href="c-hist.html">Order History</a>
+    <a href="c-orders.html">Orders</a>
+    <a href="index.html"  id="log-out">Logout</a>
+    <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+        <i class="fa fa-bars"></i>
+    </a>
 </div>
 
 <div class="main">
@@ -91,7 +91,7 @@
     function resto_name(id,restoname) {
         localStorage.setItem("resto_id", id);
         localStorage.setItem("resto_name", restoname);
-        window.location.href = 'c-main.html';
+        window.location.href = 'c-locate.html';
     }
 
 </script>

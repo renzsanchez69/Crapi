@@ -22,19 +22,21 @@
 
 <!-- Top Navigation Menu -->
 <div class="topnav" id="myTopnav">
-  <a href="c-hist.html" class="active">Order History</a>
-  <a href="c-main.html">Orders</a>
-  <a href="c-locate-resto.html">Locate</a>
-  <a href="index.html" id="log-out">Logout</a>
-  <a href="javascript:void(0);" class="icon" onclick="myFunction()">
-	<i class="fa fa-bars"></i>
-  </a>
+	<a href="c-hist.html" class="active">Order History</a>
+	<a href="c-orders.html">Orders</a>
+	<a href="c-locate-resto.html">Locate</a>
+	<a href="index.html" id="log-out">Logout</a>
+	<a href="javascript:void(0);" class="icon" onclick="myFunction()">
+		<i class="fa fa-bars"></i>
+	</a>
 </div>
 
 <div class="main">
+	<br>
 	<div class="title">
 		<h1>Order History</h1>
 	</div>
+	<br>
 	<div class="container-fluid">
 		<div class="left">
 			<form action="" method="GET">
@@ -48,7 +50,7 @@
 		<table class="table">
 			<thead>
 				<tr>
-					<th class="text-left"><b>Restaurant name</b></th>
+					<th class="text-left"><b>Restaurant Name</b></th>
 					<th class="text-center"><b>Order Date</b></th>
 					<th class="text-right"><b>Action</b></th>
 				</tr>
@@ -116,7 +118,7 @@
 		CrapiApp.showCommonLoader();
 		var search = $('[name="search"]').val();
 		CrapiApp.orderListUrl({
-			search: search, 
+			search: search,
 			order_status: [ORDER_STATUS.success, ORDER_STATUS.failed],
 			customer_id: CrapiApp.config.login_data.user_id
 		})
