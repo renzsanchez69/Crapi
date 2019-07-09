@@ -27,6 +27,7 @@ const ENVIRONMENT_URL = {
 	// - orders url
 	order_by_customer_url : BASE_URL+"/api/orders/order_by_customer",
 	order_list_url : BASE_URL+"/api/orders/order_list",
+	order_emp_list_url : BASE_URL+"/api/orders/order_emp_list",
 	add_order_url : BASE_URL+"/api/orders/add_orders",
 	order_delete_url : BASE_URL+"/api/orders/order_delete_by_item",
 	order_details_url : BASE_URL+"/api/orders/order_details_list",
