@@ -18,7 +18,7 @@
 			<a href="e-menu.html">Food Menu</a>
 			<a href="e-main.html">Orders</a>
 			<a href="e-hist.html" class="active">Order History</a>
-			<a href="index.html">Logout</a>
+			<a href="index.html" id="log-out">Logout</a>
 			<a href="javascript:void(0);" class="icon" onclick="myFunction()">
 				<i class="fa fa-bars"></i>
 			</a>
@@ -43,7 +43,7 @@
 					<tr>
 						<th>Order Date</th>
 						<th>Full name</th>
-						<th>Action</th>
+						<th>Status</th>
 					</tr>
 				</thead>
 				<tbody id="ordListResult"></tbody>
@@ -53,64 +53,10 @@
 					<th class="ordDate">--</th>
 					<th class="ordName">--</th>
 					<th>
-						<button class="ordViewBtn btn btn-info btn-sm"><i class="glyphicon glyphicon-eye-open"></i></button>
+						<p class="ordViewBtn"></p>
 					</th>
 				</tr>
 			</table>
-
-			<!-- Add Modal -->
-			<div class="modal fade" id="VIEWord" role="dialog" data-backdrop="false">
-				<div class="modal-dialog modal-lg">
-					<div class="modal-content">
-						<div class="modal-header">
-							<span class="close" data-dismiss="modal">&times;</span>
-							<h2>ORD#: <span id="ordNumber">--</span></h2>
-						</div>
-						<div class="modal-body">
-							<div class="info" id="customerInfo">
-								<p><strong>Customer name: </strong><span id="custFullname">--</span></p>
-								<p><strong>Address: </strong><span id="custAddress">--</span></p>
-								<p><strong>Contact number: </strong><span id="custContactNumber">--</span></p>
-								<p><strong>Email address: </strong><span id="custEmail">--</span></p>
-								<p><strong>Date & Time: </strong><span id="custCreated">--</span></p>  
-							</div>
-							<div class="order" id="orderDetails">
-								<table class="table table-condensed text-right" style="margin-bottom:0">
-									<thead>
-										<tr>
-											<th>Product</th>
-											<th>Qty</th>
-											<th>Price</th>
-										</tr>
-									</thead>
-									<!-- php -->
-									<tbody id="ordDetailListResult"></tbody>
-									<tr id="masterOrdDetailRow" class="hidden">
-										<th class="ordDetProdname">--</th>
-										<th class="ordDetQty">--</th>
-										<th class="ordDetPrice text-right">--</th> 
-									</tr>
-								</table>
-							</div>
-							<div class="modal-footer">
-								<div class="row">
-									<div class="col-xs-8">Subtotal</div>
-									<div class="col-xs-4"><span id="ordSubtotal">--</span></div>
-								</div>
-								<div class="row">
-									<div class="col-xs-8">+ 12% VAT</div>
-									<div class="col-xs-4"><span id="ordVat">--</span></div>
-								</div>
-								<hr>
-								<div class="row">
-									<div class="col-xs-8">Total</div>
-									<div class="col-xs-4"><span id="ordTotalPayable">--</span></div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
 		</div>
 	</body>
 	<script src="lib/jquery.min.js"></script>
@@ -132,16 +78,24 @@
 				loadOrders();
 			});
 
-			$(document).on('click', '.ordViewBtn', function(e){
-				e.preventDefault();
-				ordid = $(this).data('ordid');
-
-				showOrderDetailModal(ordid, function(){
-					 $('#VIEWord').modal('show');
-				});
-			});
-
 		});
+
+		function orderApprovedByEmployee(id){
+			CrapiApp.updateOrder({
+				order_id: id,
+				is_delivered: 1
+			})
+			.then(function(res){
+				$('.loader').remove();
+
+				if (res.result === 'OK') {
+					loadOrders();
+				}
+			})
+			.catch(function(err){
+				console.warn(err);
+			});
+		}
 
 		function loadRestaurantInfo(callback){
 			CrapiApp.searchResto({
@@ -169,11 +123,10 @@
 		function loadOrders(){
 			CrapiApp.showCommonLoader();
 			var search = $('[name="search"]').val();
-			CrapiApp.orderListUrl({
-				name: search, 
-				// resto_id: myResto.id
-				resto_id: 1,
-				order_status: ORDER_STATUS.success,
+			CrapiApp.orderEmpListUrl({
+				search: search,
+				order_status: [ORDER_STATUS.failed,ORDER_STATUS.success],
+				owner_id: CrapiApp.config.login_data.user_id
 			})
 			.then(function(res){
 				$('#ordListResult').html('');
@@ -187,7 +140,12 @@
 						empRow.removeClass('hidden');
 						empRow.find('.ordDate').html(obj.created_at);
 						empRow.find('.ordName').html(obj.customer_fullname);
-						empRow.find('.ordViewBtn').attr('data-ordid', obj.id);
+						console.log(obj.order_status);
+						if(obj.order_status == "failed") {
+							empRow.find('p.ordViewBtn').text('Not Successfully Delivered');
+						} else {
+							empRow.find('p.ordViewBtn').text('Successfully Delivered');
+						}
 
 						$('#ordListResult').append(empRow);
 
@@ -219,6 +177,7 @@
 				}
 				var customerInfo = orderList[ordid];
 				$('#ordNumber').html(customerInfo.order_number);
+				$('#ordNumberApprove').html(customerInfo.order_number);
 				$('#customerInfo #custFullname').html(customerInfo.customer_fullname);
 				$('#customerInfo #custAddress').html(customerInfo.customer_address);
 				$('#customerInfo #custContactNumber').html(customerInfo.contact_number);

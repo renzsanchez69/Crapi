@@ -62,6 +62,7 @@
     if (paymentStatus == 'success') {
         updateOrderStatus({
             order_id: orderId,
+            payment_type: 'paymaya',
             is_paid: 1
         });
         $('#successUI').removeClass('hidden');

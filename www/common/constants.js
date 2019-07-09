@@ -12,6 +12,7 @@ const ENVIRONMENT_URL = {
 
 	// - customers url
 	customer_list_url : BASE_URL+"/api/customers",
+	customer_register_url : BASE_URL+"/api/customers/regist",
 	customer_search_url : BASE_URL+"/api/customers/search",
 
 	// - restaurants url

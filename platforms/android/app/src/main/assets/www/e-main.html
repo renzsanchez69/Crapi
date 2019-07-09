@@ -10,15 +10,16 @@
 			<link rel="stylesheet" href="css/bootstrap.min.css">
 			<script src="lib/jquery.min.js"></script>
 			<script src="lib/bootstrap.min.js"></script>
+			<link href="css/jquery.growl.css" rel="stylesheet" type="text/css" />
 	</head>
 	<body>
 
 		<!-- Top Navigation Menu -->
 		<div class="topnav" id="myTopnav">
+			<a href="e-main.html" class="active">Orders</a>
 			<a href="e-menu.html">Food Menu</a>
-			<a href="e-main.html"  class="active">Orders</a>
 			<a href="e-hist.html">Order History</a>
-			<a href="index.html">Logout</a>
+			<a href="index.html" id="log-out">Logout</a>
 			<a href="javascript:void(0);" class="icon" onclick="myFunction()">
 				<i class="fa fa-bars"></i>
 			</a>
@@ -54,6 +55,7 @@
 					<th class="ordName">--</th>
 					<th>
 						<button class="ordViewBtn btn btn-info btn-sm"><i class="glyphicon glyphicon-eye-open"></i></button>
+						<button class="ordApprovedBtn btn btn-success btn-sm"><i class="glyphicon glyphicon-ok-sign"></i></button>
 					</th>
 				</tr>
 			</table>
@@ -111,6 +113,26 @@
 					</div>
 				</div>
 			</div>
+
+			<!-- Add Modal -->
+			<div class="modal fade" id="ApprovedVIEWord" role="dialog" data-backdrop="false">
+				<div class="modal-dialog modal-md">
+					<div class="modal-content">
+						<div class="modal-header">
+							<span class="close" data-dismiss="modal">&times;</span>
+							<h2>Are you sure you want to approve this order?</h2>
+						</div>
+						<div class="modal-body">
+							<div class="info" id="customerInfo">
+								<h2>ORD#: <span id="ordNumberApprove">--</span></h2>
+							</div>
+							<div class="modal-footer" style="background-color:white;">
+								<button class="submit ordApprovedBtnOk" >Ok</button> 
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</body>
 	<script src="lib/jquery.min.js"></script>
@@ -141,7 +163,41 @@
 				});
 			});
 
+			$(document).on('click', '.ordApprovedBtn', function(e){
+				e.preventDefault();
+				ordid = $(this).data('ordid');
+
+				showOrderDetailModal(ordid, function(){
+					$('#ApprovedVIEWord').modal('show');
+				});
+			});
+
+			$(document).on('click', '.ordApprovedBtnOk', function(e){
+				e.preventDefault();
+				ordid = $('#masterOrdRow').find('.ordApprovedBtn').data('ordid');
+				orderApprovedByEmployee(ordid);
+			});
+
 		});
+
+		function orderApprovedByEmployee(id){
+			CrapiApp.updateOrder({
+				order_id: id,
+				is_delivered: 1
+			})
+			.then(function(res){
+				$('.loader').remove();
+
+				if (res.result === 'OK') {
+					loadOrders();
+					$('#ApprovedVIEWord').modal('hide');
+					$.growl.notice({ title: "Success", message: "Data has been successfully approved!" });
+				}
+			})
+			.catch(function(err){
+				console.warn(err);
+			});
+		}
 
 		function loadRestaurantInfo(callback){
 			CrapiApp.searchResto({
@@ -169,11 +225,12 @@
 		function loadOrders(){
 			CrapiApp.showCommonLoader();
 			var search = $('[name="search"]').val();
-			CrapiApp.orderListUrl({
-				name: search, 
-				// resto_id: myResto.id
-				resto_id: 1,
-				order_status: ORDER_STATUS.success,
+			CrapiApp.orderEmpListUrl({
+				search: search,
+				is_delivered: 0,
+				is_paid: 1,
+				order_status: ORDER_STATUS.pending,
+				owner_id: CrapiApp.config.login_data.user_id
 			})
 			.then(function(res){
 				$('#ordListResult').html('');
@@ -188,6 +245,7 @@
 						empRow.find('.ordDate').html(obj.created_at);
 						empRow.find('.ordName').html(obj.customer_fullname);
 						empRow.find('.ordViewBtn').attr('data-ordid', obj.id);
+						empRow.find('.ordApprovedBtn').attr('data-ordid', obj.id);
 
 						$('#ordListResult').append(empRow);
 
@@ -219,6 +277,7 @@
 				}
 				var customerInfo = orderList[ordid];
 				$('#ordNumber').html(customerInfo.order_number);
+				$('#ordNumberApprove').html(customerInfo.order_number);
 				$('#customerInfo #custFullname').html(customerInfo.customer_fullname);
 				$('#customerInfo #custAddress').html(customerInfo.customer_address);
 				$('#customerInfo #custContactNumber').html(customerInfo.contact_number);

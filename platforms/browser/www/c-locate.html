@@ -31,7 +31,7 @@
 		<a href="c-locate-resto.html" class="active">Locate</a>
 		<a href="c-hist.html">Order History</a>
 		<a href="c-orders.html">Orders</a>
-		<a href="index.html"  id="log-out">Logout</a>
+		<a href="index.html" id="log-out">Logout</a>
 		<a href="javascript:void(0);" class="icon" onclick="myFunction()">
 			<i class="fa fa-bars"></i>
 		</a>
@@ -41,29 +41,16 @@
 		<div class="container-fluid">
 			<br>
 			<div class="title">
-				<h1>Delivery Address</h1>
+				<h1>Store Address</h1>
 			</div>
 			<br>
-			<input type="hidden" name="latitude">
-			<input type="hidden" name="longitude">
 			<div class="container-fluid">
-				<div class="left">
-					<form action="#" method="GET">
-						<input class="search" type="text" placeholder="Search.." name="address">
-						<button type="button" class="btn-info search-btn-light" onclick=" codeAddress(); return false;" style="padding: 10px !important;" id="fsearch"><i class="fa fa-search"></i></button>
-					</form>
-				</div>
 				<div class="row">
 					<div class="col-md-12" id="map" style="height: 300px"></div>
 				</div>
 				<div class="row">
 					<br>
-					<div class="col-12">
-						<div class="alert alert-danger" role="alert">
-							<small> Pin your delivery address on the map for easier delivery.</small>
-						</div>
-					</div>
-					<br>
+					<button class="btn btn-success" id="btnBack" style=" padding: 10px !important; width: 100px; border-radius: 0; "><span class="fa fa-arrow-left"></span> Go Back </button>
 					<button class="btn btn-success" id="btnContinue" style=" padding: 10px !important; width: 100px; border-radius: 0; ">Continue <span class="fa fa-arrow-right"></span></button>
 				</div>
 			</div>
@@ -77,35 +64,53 @@
 <script src="common/constants.js"></script>
 <script src="common/app.js"></script>
 <script>
+	var resto_latitude = null;
+	var resto_longitude = null;
+	loadRestaurantInfo();
 	$(document).ready(function(){
-		$('#btnContinue').attr('disabled', true);
-
 		$(document).on('click', '#btnContinue', function(){
-			window.location.href = 'c-main.html';
+			window.location.href = 'c-mylocation.html';
+		});
+		$(document).on('click', '#btnBack', function(){
+			window.location.href = 'c-locate-resto.html';
 		});
 	});
 
+
+	function loadRestaurantInfo(){
+		var resto_id  = localStorage.getItem("resto_id");
+		CrapiApp.searchResto({
+			id: resto_id
+		})
+		.then(function(res){
+			$('.loader').remove();
+
+			if (res.result === 'OK') {
+				if (typeof res.data[0] !== 'undefined') {
+
+					console.warn(res.data[0]);
+					var obj = res.data[0];
+					resto_latitude = Number(obj.latitude);
+					resto_longitude = Number(obj.longitude);
+
+					initMap();
+				}
+			}
+		})
+		.catch(function(err){
+			console.warn(err);
+		});
+	}
+
 	var map, marker, geocoder;
 	function getDefaultMapCenter() {
-		var defaultLat = parseFloat($('[name=latitude]').val()) ||  10.3157,
-		defaultLng =  parseFloat($('[name=longitude]').val()) ||  123.8854;
+		var defaultLat = resto_latitude ||  10.3157,
+		defaultLng =  resto_longitude ||  123.8854;
 
 		return {
 			lat: defaultLat,
 			lng: defaultLng
 		} 
-	}
-
-	function codeAddress() {
-		var address = $('[name=address]').val();
-		geocoder.geocode( { 'address': address}, function(results, status) {
-			if (status == 'OK') {
-				map.setCenter(results[0].geometry.location);
-				// marker.setPosition(results[0].geometry.location);
-			} else {
-				$.growl.error({ message: 'Geocode was not successful for the following reason: ' + status});
-			}
-		});
 	}
 
 	function initMap() {
@@ -122,31 +127,7 @@
 			position: getDefaultMapCenter()
 		});
 
-		map.addListener('click', function (e) {
-			geocoder.geocode({'location': e.latLng}, function(results, status) {
-				if (status === 'OK') {
-					if (results[0]) {
-						marker.setPosition(e.latLng);
-						let deliveryLat = e.latLng.lat();
-						let deliveryLng = e.latLng.lng();
-						$('[name=address]').val(results[0].formatted_address);
-						$('[name=latitude]').val(deliveryLat);
-						$('[name=longitude]').val(deliveryLng);
-						$('#btnContinue').attr('disabled', false);
-						localStorage.setItem('deliveryLat', deliveryLat);
-						localStorage.setItem('deliveryLng', deliveryLng);
-					}
-				}
-			})
-		})
 	}
-
-	$('[name=address]').keydown(function (e) {
-		if(e.keyCode === 13){
-			e.preventDefault();
-			codeAddress();
-		}
-	});
 </script>
 <script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBb9gjcZGig7KAgoJC1EmMHA98Rp8Ayz98&amp;callback=initMap"></script>
 </html>

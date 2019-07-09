@@ -267,7 +267,7 @@
 			<div class="modal-body">
 				<div class="regbox">
 					<h4>Choose payment method.</h4><br>
-					<button class="btn btn-success btn-block" id="btnCod" style="padding: 12px; border-radius: 0;">Cash on Delivery</button><br>
+					<button class="btn btn-success btn-block" id="btnCod" style="padding: 12px; border-radius: 0;">Cash on Pickup</button><br>
 					<button class="btn btn-success btn-block" id="btnPaymaya" style="padding: 12px; border-radius: 0;">Paymaya</button>
 				</div>
 			</div>
@@ -287,7 +287,7 @@
 				<div class="regbox">
 					<h4>How much cash do you have?</h4><br>
 					<input type="number" max="99999" min="1" id="moneyOnHand" class="input-text qty text search-btn-light" >
-					<button class="btn btn-success btn-block" id="btnCod" style="padding: 12px; border-radius: 0;">Continue <span class="fa fa-arrow-right"></span></button><br>
+					<button class="btn btn-success btn-block" id="placeOrderByCod" style="padding: 12px; border-radius: 0;">Continue <span class="fa fa-arrow-right"></span></button><br>
 				</div>
 			</div>
 		</div>
@@ -320,6 +320,7 @@
 <script>
 	var resto_latitude = null;
 	var resto_longitude = null;
+	var resto_address = null;
 	var customer_order_id = null;
 	$(document).ready(function(){
 		loadRestaurantInfo();
@@ -350,6 +351,15 @@
 			get_paymaya_checkout_url();
 		});
 
+		$(document).on('click', '#placeOrderByCod', function(){
+			if ($('#moneyOnHand').val() < 1) {
+				$.growl.error({ message: "Please input cash amount!"});
+				return;
+			} else {
+				placeOrderByCod();
+			}
+		});
+
 		// $('#btnPaymaya').click(function(){
 		// 	$('#paymayaModal').modal('hide');
 		// 	$('#paymayaPaymentIframe').attr('src', 'https://payments-web-sandbox.paymaya.com/checkout?id=4a181d1a-74e7-4ab1-814b-e6e5425d648f');    
@@ -368,6 +378,25 @@
 		});
 
 	});
+
+	function placeOrderByCod(){
+        CrapiApp.showCommonLoader();
+        CrapiApp.updateOrder({
+            order_id: customer_order_id,
+            is_paid: 1,
+            payment_type: 'cod',
+            cod_cash: $('#moneyOnHand').val()
+        })
+        .then(function(res){
+        	window.location.href = "c-orders.html";
+        })
+        .catch(function(err){
+            console.warn(err);
+        })
+        .always(function(){
+            CrapiApp.removeCommonLoader();
+        });
+    }
 
 	function paymayaPaymentIframeLoaded(){
 		$('#paymayaPaymentIframe').contents().find('#logo').remove();
@@ -393,6 +422,10 @@
 					// resto_latitude = obj.latitude;
 					// resto_longitude = obj.longitude;
 					$('#restoName').html(obj.resto_name);
+					resto_latitude = Number(obj.latitude);
+					resto_longitude = Number(obj.longitude);
+
+					initMap();
 				}
 			}
 		})
@@ -805,44 +838,21 @@
 	function initMap() {
 		map = new google.maps.Map(document.getElementById('map'), {
 			center: {lat: 10.3091267, lng: 123.8915115},
-			zoom: 14
+			zoom: 16
 		});
+		if (resto_latitude != null && resto_longitude != null) {
+			var pos = {
+				lat: resto_latitude,
+				lng: resto_longitude
+			};
 
-		infoWindow = new google.maps.InfoWindow;
-
-		// Try HTML5 geolocation.
-		if (navigator.geolocation) {
-			// alert('Geolocation initialized.'); 
-			navigator.geolocation.getCurrentPosition(function(position) {
-				console.log(position);
-		// 		alert('111111');
-		// 		alert('THE latitude : ' + position.coords.latitude);
-		// 		alert('THE longitude : ' + position.coords.longitude);
-		// 		var pos = {
-		// 			lat: position.coords.latitude,
-		// 			lng: position.coords.longitude
-		// 		};
-
-		// 		alert(pos.lat);
-		// 		alert(pos.lng);
-
-		// 		$('[name=latitude]').val(pos.lat);
-		// 		$('[name=longitude]').val(pos.lng);
-
-		// 		infoWindow.setPosition(pos);
-		// 		infoWindow.setContent('You are here!');
-		// 		infoWindow.open(map);
-		// 		map.setCenter(pos);
-			}, function(e) {
-				console.log(e);
-		// 		alert('22222');
-		// 		handleLocationError(true, infoWindow, map.getCenter());
-			});
-		} else {
-		// 	alert('333');
-		// 	// Browser doesn't support Geolocation
-		// 	handleLocationError(false, infoWindow, map.getCenter());
+			infoWindow = new google.maps.InfoWindow;
+			infoWindow.setPosition(pos);
+			infoWindow.setContent('<p class="crapiMapInfoWindow"><span class="fa fa-map-marker"></span> 	Store is here!</p>');
+			infoWindow.open(map);
+			map.setCenter(pos);
 		}
+
 	}
 
 	function handleLocationError(browserHasGeolocation, infoWindow, pos) {
@@ -854,5 +864,13 @@
 	}
 
 </script>
-<script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBb9gjcZGig7KAgoJC1EmMHA98Rp8Ayz98&amp;libraries=places&amp;callback=initMap"></script>
+
+<style type="text/css">
+	.crapiMapInfoWindow{
+		font-family: arial;
+		font-size: 20px;
+		color: #d86e2c;
+	}
+</style>
+<script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBb9gjcZGig7KAgoJC1EmMHA98Rp8Ayz98&amp;libraries=places"></script>
 </html>

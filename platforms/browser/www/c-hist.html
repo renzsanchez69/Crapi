@@ -52,6 +52,7 @@
 				<tr>
 					<th class="text-left"><b>Restaurant Name</b></th>
 					<th class="text-center"><b>Order Date</b></th>
+					<th class="text-center"><b>Status</b></th>
 					<th class="text-right"><b>Action</b></th>
 				</tr>
 			</thead>
@@ -69,7 +70,7 @@
 				<span class="close" data-dismiss="modal">&times;</span>
 				<div class="col-12">
 
-					<h2><small>ORD#:</small><b id="order_hash">--</b></h2>
+					<h3><small>ORD#:</small><b id="order_hash">--</b></h3>
 				</div>
 			</div>
 			<div class="modal-body">
@@ -80,6 +81,7 @@
 						<p> Contact number: <b id="contact_number">--</b></p>
 						<p> Email address: <b id="email_address">--</b></p>
 						<p> Date & Time: <b id="date_time">--</b></p>
+						<p> Status: <b id="orderStatus">--</b></p>
 					</div>
 				</div>
 				<div class="col-12">
@@ -112,6 +114,9 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		loadOrders();
+		$(document).on('click', '#fsearch', function(){
+			loadOrders();
+		});
 	});
 
 	function loadOrders(){
@@ -123,7 +128,7 @@
 			customer_id: CrapiApp.config.login_data.user_id
 		})
 		.then(function(result_data){
-			$('#ordListResult').html('');
+			$('#tbody-order-list').empty();
 
 			if (result_data.result === 'OK') {
 				var tbody_html = "";
@@ -133,7 +138,18 @@
 					}
 						tbody_html +='<tr id="'+value.id+'">';
 							tbody_html +='<td class="text-left">'+value.restaurants_name+'</td>';
-							tbody_html +='<td class="text-center">'+value.created_at+'</td>';
+							tbody_html +='<td class="text-center">'+value.created_at+'</td>';	
+
+							if (value.is_received == 1) {
+								tbody_html +='<td class="text-center"><span class="label label-info">Received</span></td>';
+							} else if (value.is_delivered == 1) {
+								tbody_html +='<td class="text-center"><span class="label label-success">Delivered</span></td>';
+							} else if (value.order_status == ORDER_STATUS.failed) {
+								tbody_html +='<td class="text-center"><span class="label label-danger">Failed</span></td>';
+							} else {
+								tbody_html +='<td class="text-center"><span class="label label-warning">Preparing</span></td>';
+							}
+							
 							tbody_html +='<td class="text-right">';
 								tbody_html +='<button class="editbut" name="edit_btn" onclick="view_details('+value.id+','+value.order_number+',\'' + value.created_at + '\',\'' + value.customer_fullname + '\',\'' + value.customer_fullname + '\',\'' + value.customer_address.trim() + '\',\'' + value.email + '\',\'' + value.contact_number + '\'); return false;"><i class="glyphicon glyphicon-eye-open"></i></button>';
 							tbody_html +='</td>';
@@ -165,11 +181,24 @@
 		CrapiApp.getOrderDetails({
 			order_id: order_id
 		}).then(function(result_data){
+			$('#tbody-order-list-view').empty();
+			$('#fbody-order-list-view').empty();
 			if (result_data.result == 'OK') {
 				var tbody_html = "";
 				var fbody_html = "";
-				 var sub_total = 0;
-				 var total_order = 0;
+				var sub_total = 0;
+				var total_order = 0;
+
+				if (result_data.order.is_received == 1) {
+					$('#orderStatus').html('<span class="label label-info">Received</span>');
+				} else if (result_data.order.is_delivered == 1) {
+					$('#orderStatus').html('<span class="label label-success">Delivered</span>');
+				} else if (result_data.order.is_failed == 1) {
+					$('#orderStatus').html('<span class="label label-danger">Failed</span>');
+				} else {
+					$('#orderStatus').html('<span class="label label-warning">Preparing</span>');
+				}
+
 				$.each( result_data.data, function( key, value ) {
 					if (value.id == undefined) {
 						return false;
@@ -200,35 +229,35 @@
 		});
 	}
 
-	$("#fsearch").click(function(){
-		CrapiApp.showCommonLoader();
-		CrapiApp.customerSearch({
-			search: $('input[name="search"]').val()
-		})
-		.then(function(result_data){
-			if (result_data.result == 'OK') {
-				var tbody_html = "";
-				$.each( result_data.data, function( key, value ) {
-						tbody_html +='<tr id="'+value.id+'">';
-							tbody_html +='<td class="text-left">'+value.resto_name+'</td>';
-							tbody_html +='<td class="text-center">'+value.created_date+'</td>';
-							tbody_html +='<td class="text-right">';
-								tbody_html +='<button class="editbut" name="edit_btn" onclick="view_details(\'' + value.created_date + '\',\'' + value.full_name + '\',\'' + value.description + '\',\'' + value.address + '\',\'' + value.email_address + '\',\'' + value.contact_no + '\',\'' + value.name + '\','+value.price+','+value.qty+',\'' +value.order_hash+ '\'); return false;"><i class="glyphicon glyphicon-eye-open"></i></button>';
-							tbody_html +='</td>';
-						tbody_html +='</tr>';
+	// $("#fsearch").click(function(){
+	// 	CrapiApp.showCommonLoader();
+	// 	CrapiApp.customerSearch({
+	// 		search: $('input[name="search"]').val()
+	// 	})
+	// 	.then(function(result_data){
+	// 		if (result_data.result == 'OK') {
+	// 			var tbody_html = "";
+	// 			$.each( result_data.data, function( key, value ) {
+	// 					tbody_html +='<tr id="'+value.id+'">';
+	// 						tbody_html +='<td class="text-left">'+value.resto_name+'</td>';
+	// 						tbody_html +='<td class="text-center">'+value.created_date+'</td>';
+	// 						tbody_html +='<td class="text-right">';
+	// 							tbody_html +='<button class="editbut" name="edit_btn" onclick="view_details(\'' + value.created_date + '\',\'' + value.full_name + '\',\'' + value.description + '\',\'' + value.address + '\',\'' + value.email_address + '\',\'' + value.contact_no + '\',\'' + value.name + '\','+value.price+','+value.qty+',\'' +value.order_hash+ '\'); return false;"><i class="glyphicon glyphicon-eye-open"></i></button>';
+	// 						tbody_html +='</td>';
+	// 					tbody_html +='</tr>';
 
-				}); 
-				$('#tbody-order-list').empty().append(tbody_html);
-			}
-		})
-		.catch(function(res){
-			console.log(res);
-			$.growl.error({ message: "Connection refused!"});
-		})
-		.always(function(){
-			CrapiApp.removeCommonLoader();
-		});
-	});
+	// 			}); 
+	// 			$('#tbody-order-list').empty().append(tbody_html);
+	// 		}
+	// 	})
+	// 	.catch(function(res){
+	// 		console.log(res);
+	// 		$.growl.error({ message: "Connection refused!"});
+	// 	})
+	// 	.always(function(){
+	// 		CrapiApp.removeCommonLoader();
+	// 	});
+	// });
 </script>
 </body>
 </html>

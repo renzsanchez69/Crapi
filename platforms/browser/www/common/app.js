@@ -87,7 +87,7 @@ var CrapiApp = (function() {
 
 	// embeded swf object
 	obj.embededSwfObj = null;
-	obj.loaderElement = '<div class="modal-backdrop fade in loaderElement"><center><span class="fa fa-spinner fa-spin" style="font-size: 80px; line-height: 50vh; color: #eee"></span></center></div>';
+	obj.loaderElement = '<div class="modal-backdrop fade in loaderElement" style="z-index:999;"><center><span class="fa fa-spinner fa-spin" style="font-size: 80px; line-height: 50vh; color: #eee"></span></center></div>';
 
 
 	obj.ajaxRestAction = function(requestObj) {
@@ -406,6 +406,20 @@ var CrapiApp = (function() {
 		return element.ajaxRestAction(params)
 	}
 
+	obj.orderEmpListUrl = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.order_emp_list_url,
+			method: 'POST',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+
 	obj.orderDeleteUrl = function(params){
 		element = this;
 
@@ -497,13 +511,33 @@ var CrapiApp = (function() {
 	/*---------------------------------------------------
 		END OF PAYMENTS - API REQUESTS
 	-----------------------------------------------------*/
+	/*---------------------------------------------------
+		CUSTOMERS - API REQUESTS
+	-----------------------------------------------------*/
+
+	obj.createCustomer = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.customer_register_url,
+			method: 'POST',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+	/*---------------------------------------------------
+		END OF CUSTOMERS - API REQUESTS
+	-----------------------------------------------------*/
 
 	obj.showCommonLoader = function(){
 		if ($('.loaderElement').length > 0) {
 			return;
 		}
 
-		$('body').append(obj.loaderElement);
+		$('html').append(obj.loaderElement);
 	}
 
 	obj.removeCommonLoader = function(){
