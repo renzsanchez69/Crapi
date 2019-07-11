@@ -142,9 +142,9 @@
 						empRow.find('.ordName').html(obj.customer_fullname);
 						console.log(obj.order_status);
 						if(obj.order_status == "failed") {
-							empRow.find('p.ordViewBtn').text('Not Successfully Delivered');
+							empRow.find('p.ordViewBtn').text('<span class="label label-danger">Failed</span>');
 						} else {
-							empRow.find('p.ordViewBtn').text('Successfully Delivered');
+							empRow.find('p.ordViewBtn').html('<span class="label label-success">Success</span>');
 						}
 
 						$('#ordListResult').append(empRow);

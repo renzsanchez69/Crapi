@@ -141,7 +141,7 @@
 							tbody_html +='<td class="text-center">'+value.created_at+'</td>';	
 
 							if (value.is_received == 1) {
-								tbody_html +='<td class="text-center"><span class="label label-info">Received</span></td>';
+								tbody_html +='<td class="text-center"><span class="label label-success">Received</span></td>';
 							} else if (value.is_delivered == 1) {
 								tbody_html +='<td class="text-center"><span class="label label-success">Delivered</span></td>';
 							} else if (value.order_status == ORDER_STATUS.failed) {

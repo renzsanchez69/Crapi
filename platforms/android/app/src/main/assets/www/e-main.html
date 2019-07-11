@@ -28,7 +28,7 @@
 		<div class="main">
 			<br>
 			<div class="title">
-				<h1>Order History</h1>
+				<h1>Orders</h1>
 			</div>
 			<br>
 
@@ -55,7 +55,10 @@
 					<th class="ordName">--</th>
 					<th>
 						<button class="ordViewBtn btn btn-info btn-sm"><i class="glyphicon glyphicon-eye-open"></i></button>
-						<button class="ordApprovedBtn btn btn-success btn-sm"><i class="glyphicon glyphicon-ok-sign"></i></button>
+						<button class="ordApprovedBtn btn btn-warning btn-sm"><i class="glyphicon glyphicon-ok-sign"></i></button>
+						<button class="ordReadyBtn btn btn-success btn-sm hidden"><i class="glyphicon glyphicon-ok-sign"></i></button>
+						<span class="label label-success badgeReady hidden">Ready</span>
+						<button class="ordRejectBtn btn btn-danger btn-sm"><i class="fa fa-times"></i></button>
 					</th>
 				</tr>
 			</table>
@@ -96,10 +99,10 @@
 							</div>
 							<div class="modal-footer">
 								<div class="row">
-									<div class="col-xs-8">Subtotal</div>
+									<div class="col-xs-8">Total</div>
 									<div class="col-xs-4"><span id="ordSubtotal">--</span></div>
 								</div>
-								<div class="row">
+								<!-- <div class="row">
 									<div class="col-xs-8">+ 12% VAT</div>
 									<div class="col-xs-4"><span id="ordVat">--</span></div>
 								</div>
@@ -107,7 +110,7 @@
 								<div class="row">
 									<div class="col-xs-8">Total</div>
 									<div class="col-xs-4"><span id="ordTotalPayable">--</span></div>
-								</div>
+								</div> -->
 							</div>
 						</div>
 					</div>
@@ -115,12 +118,32 @@
 			</div>
 
 			<!-- Add Modal -->
-			<div class="modal fade" id="ApprovedVIEWord" role="dialog" data-backdrop="false">
+			<div class="modal fade" id="confirmActionModal" role="dialog" data-backdrop="false">
 				<div class="modal-dialog modal-md">
 					<div class="modal-content">
 						<div class="modal-header">
 							<span class="close" data-dismiss="modal">&times;</span>
-							<h2>Are you sure you want to approve this order?</h2>
+							<h2 id="modalConfirmQuestion">Are you sure you want to accept this order?</h2>
+						</div>
+						<div class="modal-body">
+							<div class="info" id="customerInfo">
+								<h2>ORD#: <span id="ordNumbered">--</span></h2>
+							</div>
+							<div class="modal-footer" style="background-color:white;">
+								<button id="btnActionSubmit" class="submit" >Ok</button> 
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Reject Modal -->
+			<!-- <div class="modal fade" id="RejectVIEWord" role="dialog" data-backdrop="false">
+				<div class="modal-dialog modal-md">
+					<div class="modal-content">
+						<div class="modal-header">
+							<span class="close" data-dismiss="modal">&times;</span>
+							<h2>Are you sure you want to reject this order?</h2>
 						</div>
 						<div class="modal-body">
 							<div class="info" id="customerInfo">
@@ -132,7 +155,7 @@
 						</div>
 					</div>
 				</div>
-			</div>
+			</div> -->
 		</div>
 	</body>
 	<script src="lib/jquery.min.js"></script>
@@ -166,32 +189,73 @@
 			$(document).on('click', '.ordApprovedBtn', function(e){
 				e.preventDefault();
 				ordid = $(this).data('ordid');
+				showConfirmModal(ordid, 'reject', function(data){
+					$('#confirmActionModal').modal('show');
+					$('#modalConfirmQuestion').text('Approve this order? ');
+					$('#btnActionSubmit').addClass('ordApprovedBtnOk');
+				});
+			});
 
-				showOrderDetailModal(ordid, function(){
-					$('#ApprovedVIEWord').modal('show');
+			$(document).on('click', '.ordReadyBtn', function(e){
+				e.preventDefault();
+				ordid = $(this).data('ordid');
+				showConfirmModal(ordid, 'reject', function(data){
+					$('#confirmActionModal').modal('show');
+					$('#modalConfirmQuestion').text('Order ready? ');
+					$('#btnActionSubmit').addClass('ordReadyBtnOk');
+				});
+			});
+
+			$(document).on('click', '.ordRejectBtn', function(e){
+				e.preventDefault();
+				ordid = $(this).data('ordid');
+				showConfirmModal(ordid, 'reject', function(data){
+					$('#confirmActionModal').modal('show');
+					$('#modalConfirmQuestion').text('Reject this order? ');
+					$('#btnActionSubmit').addClass('ordRejectBtnOk');
 				});
 			});
 
 			$(document).on('click', '.ordApprovedBtnOk', function(e){
 				e.preventDefault();
-				ordid = $('#masterOrdRow').find('.ordApprovedBtn').data('ordid');
-				orderApprovedByEmployee(ordid);
+				updateOrderStatus({
+					order_id: ordid,
+					is_preparing: 1
+				}, 'approve');
 			});
+			$(document).on('click', '.ordReadyBtnOk', function(e){
+				e.preventDefault();
+				updateOrderStatus({
+					order_id: ordid,
+					is_delivered: 1
+				}, 'ready');
+			});
+			$(document).on('click', '.ordRejectBtnOk', function(e){
+				e.preventDefault();
+				updateOrderStatus({
+					order_id: ordid,
+					order_status: 'failed'
+				}, 'reject');
+			});
+
 
 		});
 
-		function orderApprovedByEmployee(id){
-			CrapiApp.updateOrder({
-				order_id: id,
-				is_delivered: 1
-			})
+		function updateOrderStatus(requestObj, action){
+			CrapiApp.updateOrder(requestObj)
 			.then(function(res){
 				$('.loader').remove();
 
 				if (res.result === 'OK') {
 					loadOrders();
-					$('#ApprovedVIEWord').modal('hide');
-					$.growl.notice({ title: "Success", message: "Data has been successfully approved!" });
+					if (action == 'approve') {
+						$.growl.notice({ title: "Success", message: "Data has been successfully accepted!" });
+					} else if (action == 'reject'){
+						$.growl.notice({ title: "Success", message: "Data has been successfully rejected!" });
+					} else if (action == 'ready'){
+						$.growl.notice({ title: "Success", message: "Order is now ready!" });
+					}
+					$('#confirmActionModal').modal('hide');
 				}
 			})
 			.catch(function(err){
@@ -225,12 +289,10 @@
 		function loadOrders(){
 			CrapiApp.showCommonLoader();
 			var search = $('[name="search"]').val();
-			CrapiApp.orderEmpListUrl({
+			CrapiApp.orderListUrl({
 				search: search,
-				is_delivered: 0,
 				is_paid: 1,
-				order_status: ORDER_STATUS.pending,
-				owner_id: CrapiApp.config.login_data.user_id
+				order_status: ORDER_STATUS.pending
 			})
 			.then(function(res){
 				$('#ordListResult').html('');
@@ -246,6 +308,29 @@
 						empRow.find('.ordName').html(obj.customer_fullname);
 						empRow.find('.ordViewBtn').attr('data-ordid', obj.id);
 						empRow.find('.ordApprovedBtn').attr('data-ordid', obj.id);
+						empRow.find('.ordRejectBtn').attr('data-ordid', obj.id);
+						empRow.find('.ordReadyBtn').attr('data-ordid', obj.id);
+						if(obj.is_delivered == 1) {
+							empRow.find('.badgeReady').removeClass('hidden');
+							empRow.find('.ordRejectBtn').addClass('hidden');
+							empRow.find('.ordApprovedBtn').addClass('hidden');
+							empRow.find('.ordReadyBtn').addClass('hidden');
+						} else if (obj.is_preparing == 1) {
+							empRow.find('.ordRejectBtn').remove();
+							empRow.find('.ordApprovedBtn').addClass('hidden');
+							empRow.find('.ordReadyBtn').removeClass('hidden');
+							empRow.find('.badgeReady').addClass('hidden');
+						} else {
+							empRow.find('.badgeReady').addClass('hidden');
+							empRow.find('.ordRejectBtn').removeClass('hidden');
+							empRow.find('.ordApprovedBtn').removeClass('hidden');
+							empRow.find('.ordReadyBtn').addClass('hidden');
+						}
+
+						if (obj.payment_type == 'paymaya') {
+							empRow.find('.ordRejectBtn').addClass('hidden');
+						}
+						
 
 						$('#ordListResult').append(empRow);
 
@@ -261,11 +346,67 @@
 			});
 		}
 
+		function showConfirmModal(ordid, status, callback){
+			CrapiApp.showCommonLoader();
+
+			$("#btnActionSubmit").removeClass();
+			$("#btnActionSubmit").addClass('submit');
+			CrapiApp.getOrderById({
+				order_id: ordid,
+			})
+			.then(function(res){
+				console.log(res);
+				// if (typeof orderList[ordid] == 'undefined') {
+				// 	console.warn("Customer order not found.");
+				// 	return;
+				// }
+				// var customerInfo = orderList[ordid];
+				$('#ordNumbered').text(res.data.order_number);
+				console.log(res.data.order_number);
+				console.log($('#ordNumbersss'));
+				// $('#ordNumberApprove').html(customerInfo.order_number);
+				// $('#customerInfo #custFullname').html(customerInfo.customer_fullname);
+				// $('#customerInfo #custAddress').html(customerInfo.customer_address);
+				// $('#customerInfo #custContactNumber').html(customerInfo.contact_number);
+				// $('#customerInfo #custEmail').html(customerInfo.email);
+				// $('#customerInfo #custCreated').html(customerInfo.created_at);
+
+				// if (res.result === 'OK') {
+				// 	var subTotalPrice = 0;
+				// 	for (var key in res.data) {
+				// 		// skip loop if the property is from prototype
+				// 		if (!res.data.hasOwnProperty(key)) continue;
+				// 		var obj = res.data[key];
+				// 		var ordDetRow = $('#masterOrdDetailRow').clone();
+				// 		ordDetRow.removeClass('hidden');
+				// 		ordDetRow.find('.ordDetProdname').html(obj.name);
+				// 		ordDetRow.find('.ordDetQty').html(obj.qty);
+				// 		ordDetRow.find('.ordDetPrice').html(obj.price);
+
+				// 		$('#ordDetailListResult').append(ordDetRow);
+				// 		subTotalPrice = Number(obj.price) + Number(subTotalPrice);
+				// 	}
+
+				// 	var vatObj = CrapiApp.calculateVat(subTotalPrice);
+				// 	$('#ordSubtotal').html(subTotalPrice);
+				// 	$('#ordVat').html(vatObj.amount);
+				// 	$('#ordTotalPayable').html(vatObj.total_payable);
+				// }
+
+				if (typeof callback == 'function') {callback(res.data);}
+			})
+			.catch(function(err){
+				console.warn(err);
+			})
+			.always(function(){
+				CrapiApp.removeCommonLoader();
+			});
+		}
+
 		function showOrderDetailModal(ordid, callback){
 			CrapiApp.showCommonLoader();
 			CrapiApp.getOrderDetails({
-				order_id: ordid,
-				order_status: ORDER_STATUS.success
+				order_id: ordid
 			})
 			.then(function(res){
 				console.warn('ORDERDETAILS -----------------');

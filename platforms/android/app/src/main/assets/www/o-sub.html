@@ -9,8 +9,6 @@
 		<link rel="stylesheet" type="text/css" href="css/o-sub.css">
 		<link rel="stylesheet" href="css/font-awesome.min.css">
 		<link rel="stylesheet" href="css/bootstrap.min.css">
-		<script src="lib/jquery.min.js"></script>
-		<script src="lib/bootstrap.min.js"></script>
 	<body>
 		<!-- Top Navigation Menu -->
 		<div class="topnav" id="myTopnav">
@@ -24,7 +22,7 @@
 			</a>
 		</div>
 		<br>
-		<div class="container hidden">
+		<div class="container hidden" id="isSubExpired">
 			<div class="row">
 				<h1 class="text-danger">Subscription Expired.</h1>
 			</div>
@@ -32,18 +30,122 @@
 			<div class="alert alert-warning" role="alert">
 				In order to use this app, you need to renew your subscription.
 			</div>
-			<button class="btn btn-success">Renew Now</button>
+			<button class="btn btn-success btnSubscribe">Renew Now</button>
 		</div>
 
-		<div class="container">
+		<div class="container hidden" id="isSubActive">
 			<div class="row">
 				<h1 class="text-success">Subscription Active.</h1>
 			</div>
 			<br>
 			<div class="alert alert-warning" role="alert">
-				Renew your subscription before September 1, 2019.
+				Renew your subscription before <span id="nextExpDate">--</span>.
 			</div>
-			<button class="btn btn-success">Renew Now</button>
+			<button class="btn btn-success btnSubscribe">Renew Now</button>
 		</div>
 	</body>
+
+<script src="lib/jquery.min.js"></script>
+<script src="lib/bootstrap.min.js"></script>
+<script src="js/jquery.growl.js" type="text/javascript"></script>
+<script src="common/constants.js"></script>
+<script src="common/app.js"></script>
+<script type="text/javascript">
+    let referenceNumber = $.urlParam('refno');
+    let paymentStatus = $.urlParam('status');
+	$(document).ready(function(){
+		getOwnerInfo();
+
+		if (paymentStatus == "success") {
+			update_owner_subscription();
+		}
+
+
+		$(document).on('click', '.btnSubscribe', function(){
+			get_paymaya_subscribe_url()
+		});
+
+
+	});
+
+	function getOwnerInfo(){
+		CrapiApp.showCommonLoader();
+		CrapiApp.getOwnerInfo({
+			id: CrapiApp.config.login_data.user_id
+		})
+		.then(function(res){
+			console.log(res);
+
+			if (res.result === 'OK') {
+				if (res.data.is_expired) {
+					$('#isSubExpired').removeClass('hidden');
+					$('#isSubActive').addClass('hidden');
+				} else {
+					$('#nextExpDate').text(res.data.next_expire_date);
+					$('#isSubActive').removeClass('hidden');
+					$('#isSubExpired').addClass('hidden');
+				}  
+			}
+		})
+		.catch(function(err){
+			console.warn(err);
+		})
+		.always(function(){
+			CrapiApp.removeCommonLoader();
+		});
+	}
+
+	function get_paymaya_subscribe_url(){
+		CrapiApp.showCommonLoader();
+		CrapiApp.subscribeWithPaymaya({
+			owner_id: CrapiApp.config.login_data.user_id,
+			callback_url: window.location.origin
+		})
+		.then(function(res){
+			console.log(res);
+
+			if (res.result === 'OK') {
+				// cb.onLocationChange = function(loc){
+				//     console.log("location = " + loc);
+				//     if (loc != "http://example.com") {
+				//         cb.close();
+				//     }
+				// };
+				window.location.href = res.data.checkout_url
+				// $('#paymentMethodOptionModal').modal('hide');
+				// $('#paymayaPaymentIframe').attr('src', res.data.checkout_url);    
+			}
+		})
+		.catch(function(err){
+			console.warn(err);
+		})
+		.always(function(){
+			CrapiApp.removeCommonLoader();
+		});
+	}
+
+	function update_owner_subscription(){
+		if (localStorage.getItem(referenceNumber) == null) {
+			CrapiApp.showCommonLoader();
+			CrapiApp.updateOwner({
+				id: CrapiApp.config.login_data.user_id,
+				subscription: true
+			})
+			.then(function(res){
+				console.log(res);
+				if (res.result === 'OK') {
+					localStorage.setItem(referenceNumber, true);
+					$.growl.notice({ message: "Successfully updated." });
+					location.href = "o-sub.html";
+				}
+			})
+			.catch(function(err){
+				console.warn(err);
+			})
+			.always(function(){
+				CrapiApp.removeCommonLoader();
+			});
+		}
+	}
+</script>
 </html>

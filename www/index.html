@@ -3,8 +3,6 @@
 <head>
 	<title>CRAPI</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1,connect-src *">
-	<!-- <meta http-equiv="Content-Security-Policy" content="default-src *; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data:"> -->
-	
 	<link rel="stylesheet" type="text/css" href="css/login.css">
 	<link href="css/jquery.growl.css" rel="stylesheet" type="text/css" />
 </head>
@@ -27,7 +25,7 @@
 <script src="common/app.js"></script>
 <script src="js/jquery.growl.js" type="text/javascript"></script>
 <script>
-	$('#log_form').click(function(e){
+	$(document).on('click', '#log_form', function(e){
 		e.preventDefault();
 		var mail = $('input[name="email"]').val();
 		var pw = $('input[name="password"]').val();

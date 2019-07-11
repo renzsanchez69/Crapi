@@ -1,6 +1,7 @@
 // - use strict
 'use strict'
 
+// const BASE_URL = "http://crapicebu.site";
 const BASE_URL = "http://localhost/crapi_admin";
 const UPLOADS_URL = BASE_URL+"/assets/uploads/";
 const IMAGE_PLACEHOLDER_URL = BASE_URL+"/assets/images/image_placeholder.png";
@@ -21,6 +22,10 @@ const ENVIRONMENT_URL = {
 	// - employees url
 	employees_search_url : BASE_URL+"/api/employees",
 
+	// - employees url
+	owners_search_url : BASE_URL+"/api/owners",
+	owner_register_url : BASE_URL+"/api/owners/regist",
+
 	// - products url
 	products_base_url : BASE_URL+"/api/products",
 	products_search_url : BASE_URL+"/api/products/menu_list",
@@ -35,9 +40,11 @@ const ENVIRONMENT_URL = {
 	order_edit_url : BASE_URL+"/api/orders/edit_orders",
 	order_search_url : BASE_URL+"/api/orders/order_search",
 	update_order_url : BASE_URL+"/api/orders/update_order",
+	get_order_by_id_url : BASE_URL+"/api/orders/get_order_by_id",
 
 	// - payments url
-	paymaya_checkout_url : BASE_URL+"/api/payments/paymaya_checkout"
+	paymaya_checkout_url : BASE_URL+"/api/payments/paymaya_checkout",
+	paymaya_subscribe_url : BASE_URL+"/api/payments/subcribeByPaymaya"
 };
 
 // - general information

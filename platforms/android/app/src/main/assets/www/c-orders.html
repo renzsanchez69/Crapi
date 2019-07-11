@@ -153,11 +153,13 @@
 						tbody_html +='<tr id="'+value.id+'">';
 							tbody_html +='<td class="text-left">'+value.restaurants_name+'</td>';
 							tbody_html +='<td class="text-center">'+value.created_at+'</td>';
-							
-							if (value.is_delivered == 1) {
-								tbody_html +='<td class="text-center"><span class="label label-success">Delivered</span></td>';
+
+							if(value.is_delivered == 1) {
+								tbody_html +='<td class="text-center"><span class="label label-success">Ready</span></td>';
+							} else if (value.is_preparing == 1) {
+								tbody_html +='<td class="text-center"><span class="label label-info">Preparing</span></td>';
 							} else {
-								tbody_html +='<td class="text-center"><span class="label label-warning">Preparing</span></td>';
+								tbody_html +='<td class="text-center"><span class="label label-warning">Pending</span></td>';
 							}
 							
 							tbody_html +='<td class="text-right">';
@@ -200,13 +202,24 @@
 				var sub_total = 0;
 				var total_order = 0;
 
-				if (result_data.order.is_delivered == 1) {
+				if(result_data.order.is_delivered == 1) {
 					$('#btnOrderReceived').show();
-					$('#orderStatus').html('<span class="label label-success">Delivered</span>');
+					$('#orderStatus').html('<span class="label label-success">Ready</span>');
+				} else if (result_data.order.is_preparing == 1) {
+					$('#btnOrderReceived').hide();
+					$('#orderStatus').html('<span class="label label-info">Preparing</span>');
 				} else {
 					$('#btnOrderReceived').hide();
-					$('#orderStatus').html('<span class="label label-warning">Preparing</span>');
+					$('#orderStatus').html('<span class="label label-warning">Pending</span>');
 				}
+
+				// if (result_data.order.is_delivered == 1) {
+				// 	$('#btnOrderReceived').show();
+				// 	$('#orderStatus').html('<span class="label label-success">Delivered</span>');
+				// } else {
+				// 	$('#btnOrderReceived').hide();
+				// 	$('#orderStatus').html('<span class="label label-warning">Preparing</span>');
+				// }
 
 				$.each( result_data.data, function( key, value ) {
 					if (value.id == undefined) {

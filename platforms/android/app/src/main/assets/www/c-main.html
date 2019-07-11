@@ -286,6 +286,8 @@
 			<div class="modal-body">
 				<div class="regbox">
 					<h4>How much cash do you have?</h4><br>
+					<center><b>PAYABLE AMOUNT: </b>P <span id="totalAmountPayable">--</span></center>
+					<br>
 					<input type="number" max="99999" min="1" id="moneyOnHand" class="input-text qty text search-btn-light" >
 					<button class="btn btn-success btn-block" id="placeOrderByCod" style="padding: 12px; border-radius: 0;">Continue <span class="fa fa-arrow-right"></span></button><br>
 				</div>
@@ -352,8 +354,13 @@
 		});
 
 		$(document).on('click', '#placeOrderByCod', function(){
+			var totalAmountPayable = $('#totalAmountPayable').text();
+			var moneyOnHand = $('#moneyOnHand').val();
 			if ($('#moneyOnHand').val() < 1) {
 				$.growl.error({ message: "Please input cash amount!"});
+				return;
+			} else if (Number(moneyOnHand) <= Number(totalAmountPayable)) {
+				$.growl.error({ message: "Cash is not enough!"});
 				return;
 			} else {
 				placeOrderByCod();
@@ -521,9 +528,11 @@
 					fbody_html_orders +='<th class="text-left font-text  font-text-amt">TOTAL</th>';
 					fbody_html_orders +='<th class="text-center"></th>';
 					total_order = (sub_total*.12) + sub_total;
-					fbody_html_orders +='<th class="text-center">P '+numberWithCommas(sub_total)+' <br>P '+numberWithCommas(parseInt(total_order, 10))+' (Incl. VAT) </th>';
+					fbody_html_orders +='<th class="text-center">P '+numberWithCommas(sub_total)+'</th>';
+					// - VAT:  <br>P '+numberWithCommas(parseInt(total_order, 10))+' (Incl. VAT) 
 				fbody_html +='</tr>';
-
+				$('#totalAmountPayable').text(sub_total);
+				$('#moneyOnHand').attr('min', sub_total);
 				$('.order_hash').text(result_data.data[0].order_number);
 				$('#customer_name').text(result_data.data[0].customer_fullname);
 				$('#address').text(result_data.data[0].address);

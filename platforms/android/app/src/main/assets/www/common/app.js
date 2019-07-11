@@ -1,7 +1,6 @@
 
 
-
-$('#log-out').click(function(e){
+$(document).on('click', '#log-out', function(e){
 	e.preventDefault();
 	var logoutModal = '<div class="modal fade" id="logoutModal" role="dialog">';
 		logoutModal += '<div class="modal-dialog modal-lg">';
@@ -44,6 +43,8 @@ function numberWithCommas(x) {
 }
 
 var CrapiApp = (function() {
+	// navigator.geolocation.getCurrentPosition(function(pos){alert(pos.coords.latitude);}, function(e){alert(e.message);})
+
 
 	// return handlers
 	var obj = {};
@@ -59,30 +60,43 @@ var CrapiApp = (function() {
 	if (typeof login_data != 'undefined' && login_data != null && login_data != 'undefined') {
 		obj.config.login_data = JSON.parse(login_data);
 		if(
-			window.location.pathname == '/' ||
-			window.location.pathname == '/o-reg.html' ||
-			window.location.pathname == '/c-reg.html' ||
-			window.location.pathname == '/index.html' 
+			window.location.pathname.includes('o-reg.html') ||
+			window.location.pathname.includes('c-reg.html') ||
+			window.location.pathname.includes('index.html')
+			// window.location.pathname == '/' ||
+			// window.location.pathname == '/o-reg.html' ||
+			// window.location.pathname == '/c-reg.html' ||
+			// window.location.pathname == '/index.html' 
 		) {
+			alert('TEST THAT');
+			alert(window.location.pathname);
 			switch(obj.config.login_data.role) {
 				case USER_ROLE.owner:
-					window.location.href = window.location.origin + "/o-main.html";
+					window.location.href = "o-main.html";
 					break;
 				case USER_ROLE.employee:
-					window.location.href = window.location.origin + "/e-main.html";
+					window.location.href = "e-main.html";
 					break;
 				case USER_ROLE.customer:
-					window.location.href = window.location.origin + "/c-locate-resto.html";
+					window.location.href = "c-locate-resto.html";
 					break;
 			}
 		}
-	} 
-	else if(
-		window.location.pathname !== '/' &&
-		window.location.pathname !== '/o-reg.html' &&
-		window.location.pathname !== '/c-reg.html' 
+	} else if(
+		window.location.pathname.includes('o-reg.html')  &&
+		window.location.pathname.includes('c-reg.html')  &&
+		window.location.pathname.includes('index.html') 
+		// window.location.pathname != '/' &&
+		// window.location.pathname != '/o-reg.html' &&
+		// window.location.pathname != '/c-reg.html' &&
+		// window.location.pathname != '/index.html' 
 	) {
-		window.location.href = '/';
+		alert('TEST THIS');
+		alert(window.location.pathname);
+		alert(window.location.origin);
+		alert(document.location.hostname);
+		alert(location.host);
+		window.location.href = 'index.html';
 	}
 
 	// embeded swf object
@@ -350,6 +364,20 @@ var CrapiApp = (function() {
 	/*---------------------------------------------------
 		ORDERS - API REQUESTS
 	-----------------------------------------------------*/
+	obj.getOrderById = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.get_order_by_id_url,
+			method: 'POST',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+
 	obj.orderByCustomer = function(params){
 		element = this;
 
@@ -476,6 +504,20 @@ var CrapiApp = (function() {
 		return element.ajaxRestAction(params)
 	}
 
+	obj.getEmployees = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.my_url,
+			method: 'GET',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+
 	obj.orderSearchUrl = function(params){
 		element = this;
 
@@ -508,6 +550,19 @@ var CrapiApp = (function() {
 		// - perform ajax for login
 		return element.ajaxRestAction(params)
 	}
+	obj.subscribeWithPaymaya = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.paymaya_subscribe_url,
+			method: 'POST',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
 	/*---------------------------------------------------
 		END OF PAYMENTS - API REQUESTS
 	-----------------------------------------------------*/
@@ -531,6 +586,52 @@ var CrapiApp = (function() {
 	/*---------------------------------------------------
 		END OF CUSTOMERS - API REQUESTS
 	-----------------------------------------------------*/
+	/*---------------------------------------------------
+		OWNERS - API REQUESTS
+	-----------------------------------------------------*/
+	obj.getOwnerInfo = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.owners_search_url+'/'+params.id,
+			method: 'GET',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+	obj.updateOwner = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.owners_search_url+'/'+params.id,
+			method: 'PUT',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+	obj.createOwner = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.owner_register_url,
+			method: 'POST',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+	/*---------------------------------------------------
+		END OF OWNERS - API REQUESTS
+	-----------------------------------------------------*/
+
 
 	obj.showCommonLoader = function(){
 		if ($('.loaderElement').length > 0) {
