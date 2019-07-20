@@ -201,6 +201,9 @@
 
 			$(document).on('click', '.ordApprovedBtn', function(e){
 				e.preventDefault();
+				if ($(this).hasClass("disabled")) {
+					return;
+				}
 				ordid = $(this).data('ordid');
 				showConfirmModal(ordid, 'reject', function(data){
 					$('#confirmActionModal').modal('show');
@@ -349,7 +352,7 @@
 							empRow.find('.ordPaymentMethod').removeClass('hidden');
 						} else {
 							empRow.find('.ordApprovedBtn').addClass('disabled');
-							empRow.find('.ordApprovedBtn').removeClass('ordApprovedBtn');
+							// empRow.find('.ordApprovedBtn').removeClass('ordApprovedBtn');
 						}
 
 						if (obj.payment_type == 'paymaya') {
