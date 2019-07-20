@@ -61,7 +61,7 @@
 					<th>
 						<button class="ordViewBtn btn btn-info btn-sm"><i class="glyphicon glyphicon-eye-open"></i></button>
 						<button class="ordApprovedBtn btn btn-warning btn-sm"><i class="glyphicon glyphicon-ok-sign"></i></button>
-						<button class="ordReadyBtn btn btn-success btn-sm hidden"><i class="glyphicon glyphicon-ok-sign"></i></button>
+						<button class="ordReadyBtn btn btn-success btn-sm"><i class="glyphicon glyphicon-ok-sign"></i></button>
 						<button class="ordRejectBtn btn btn-danger btn-sm"><i class="fa fa-times"></i></button>
 					</th>
 				</tr>
@@ -172,8 +172,9 @@
 	<script src="js/jquery.growl.js" type="text/javascript"></script>
 	<script src="common/constants.js"></script>
 	<script src="common/app.js"></script>
+	<script src="common/owner_sub_checker.js"></script>
 	<script>
-		var myResto = null;
+		// var myResto = null;
 		var ordid = null;
 		var orderList = {};
 		var resto_latitude = null;
@@ -181,9 +182,9 @@
 		var map, marker, geocoder;
 
 		$(document).ready(function(){
-			loadRestaurantInfo(function(){
+			// loadRestaurantInfo(function(){
 				loadOrders();
-			});
+			// });
 
 			$('#btnSearch').click(function(e){
 				e.preventDefault();
@@ -215,6 +216,9 @@
 
 			$(document).on('click', '.ordReadyBtn', function(e){
 				e.preventDefault();
+				if ($(this).hasClass("disabled")) {
+					return;
+				}
 				ordid = $(this).data('ordid');
 				showConfirmModal(ordid, 'reject', function(data){
 					$('#confirmActionModal').modal('show');
@@ -225,6 +229,9 @@
 
 			$(document).on('click', '.ordRejectBtn', function(e){
 				e.preventDefault();
+				if ($(this).hasClass("disabled")) {
+					return;
+				}
 				ordid = $(this).data('ordid');
 				showConfirmModal(ordid, 'reject', function(data){
 					$('#confirmActionModal').modal('show');
@@ -282,28 +289,28 @@
 			});
 		}
 
-		function loadRestaurantInfo(callback){
-			CrapiApp.searchResto({
-				owner_id: CrapiApp.config.login_data.user_id
-			})
-			.then(function(res){
-				$('.loader').remove();
+		// function loadRestaurantInfo(callback){
+		// 	CrapiApp.searchResto({
+		// 		owner_id: CrapiApp.config.login_data.resto_info.owner_id
+		// 	})
+		// 	.then(function(res){
+		// 		$('.loader').remove();
 
-				if (res.result === 'OK') {
-					if (typeof res.data[0] !== 'undefined') {
+		// 		if (res.result === 'OK') {
+		// 			if (typeof res.data[0] !== 'undefined') {
 
-						console.warn(res.data[0]);
-						myResto = res.data[0];
-						if (typeof callback == 'function') {
-							callback();
-						}
-					}
-				}
-			})
-			.catch(function(err){
-				console.warn(err);
-			});
-		}
+		// 				console.warn(res.data[0]);
+		// 				myResto = res.data[0];
+		// 				if (typeof callback == 'function') {
+		// 					callback();
+		// 				}
+		// 			}
+		// 		}
+		// 	})
+		// 	.catch(function(err){
+		// 		console.warn(err);
+		// 	});
+		// }
 		
 		function loadOrders(){
 			CrapiApp.showCommonLoader();
@@ -311,7 +318,8 @@
 			CrapiApp.orderListUrl({
 				search: search,
 				is_approved: [1,2],
-				order_status: ORDER_STATUS.pending
+				order_status: ORDER_STATUS.pending,
+				resto_id: CrapiApp.config.login_data.resto_info.id
 			})
 			.then(function(res){
 				$('#ordListResult').html('');
@@ -321,14 +329,29 @@
 						// skip loop if the property is from prototype
 						if (!res.data.hasOwnProperty(key)) continue;
 						var obj = res.data[key];
-						var empRow = $('#masterOrdRow').clone();
+						var empRow = null;
+						empRow = $('#masterOrdRow').clone();
 						empRow.removeClass('hidden');
+						empRow.attr('id', '');
 						empRow.find('.ordDate').html(obj.created_at);
 						empRow.find('.ordName').html(obj.customer_fullname);
 						empRow.find('.ordViewBtn').attr('data-ordid', obj.id);
 						empRow.find('.ordApprovedBtn').attr('data-ordid', obj.id);
 						empRow.find('.ordRejectBtn').attr('data-ordid', obj.id);
 						empRow.find('.ordReadyBtn').attr('data-ordid', obj.id);
+						empRow.find('.ordReadyBtn').attr('id', "ordReadyBtn"+obj.id);
+
+
+						if (obj.payment_type != null) {
+							empRow.find('.ordPaymentMethod').text(obj.payment_type.charAt(0).toUpperCase() + obj.payment_type.slice(1));
+							empRow.find('.ordPaymentMethod').removeClass('hidden');
+						} else {
+							// empRow.find('.ordReadyBtn').remove();
+							// empRow.find('#ordReadyBtn'+obj.id).addClass('disabled');
+							empRow.find('.ordReadyBtn').addClass('disabled');
+							// empRow.find('.ordApprovedBtn').addClass('disabled');
+							// empRow.find('.ordApprovedBtn').removeClass('ordApprovedBtn');
+						}
 
 						if(obj.is_delivered == 1) {
 							empRow.find('.badgeReady').removeClass('hidden');
@@ -347,13 +370,6 @@
 							empRow.find('.ordReadyBtn').addClass('hidden');
 						}
 
-						if (obj.payment_type != null) {
-							empRow.find('.ordPaymentMethod').text(obj.payment_type.charAt(0).toUpperCase() + obj.payment_type.slice(1));
-							empRow.find('.ordPaymentMethod').removeClass('hidden');
-						} else {
-							empRow.find('.ordApprovedBtn').addClass('disabled');
-							// empRow.find('.ordApprovedBtn').removeClass('ordApprovedBtn');
-						}
 
 						if (obj.payment_type == 'paymaya') {
 							empRow.find('.ordRejectBtn').addClass('hidden');

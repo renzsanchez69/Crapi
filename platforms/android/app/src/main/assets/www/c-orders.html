@@ -79,13 +79,13 @@
 						<p> Date & Time: <b id="date_time">--</b></p>
 						<p> Status: <b id="orderStatus">--</b></p>
 						<br>
-						<center><button class="btn btn-info">Update my location.</button></center>
+						<center><button class="btn btn-info" id="showCustLocationPickerModal">Update my location.</button></center>
 					</div>
 
 					<div class="info bg-warning" style="padding: 20px 20px;">
 						<center><h4>Employee Info</h4></center>
-						<p> Employee name: <b id="customer_name">--</b></p>
-						<p> Contact number: <b id="contact_number">--</b></p>
+						<p> Employee name: <b id="ordEmpName">--</b></p>
+						<p> Contact number: <b id="ordEmpContact">--</b></p>
 					</div>
 				</div>
 				<div class="col-12">
@@ -106,15 +106,16 @@
 					</table>
 					
 					<div class="text-center">
-						<br>
 						<button class="btn btn-success" id="btnOrderReceived" style=" padding: 10px !important; width: 200px; border-radius: 0; ">
 							<span class="fa fa-check"></span> Order Received 
 						</button>
-						<br><br>
+
 						<button class="btn btn-success" id="btnupdatePaymentMethod" style=" padding: 10px !important; width: 200px; border-radius: 0; ">
 							<span class="fa fa-money"></span> Update Payment Method 
 						</button>
-						<br>
+						<div class="alert alert-warning" id="orderPaymentWarning">
+							Your order needs to be approved by employee. Please update payment method after employee's approval.
+						</div>
 					</div>
 
 				</div>
@@ -179,6 +180,26 @@
 		</div>
 	</div>
 </div>
+<div class="modal fade" id="custUpdateLocationModal" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<span class="close" data-dismiss="modal">&times;</span>
+				<h4>Pin you location</h4>
+			</div>
+			<div class="modal-body">
+				<input type="hidden" name="cust_latitude">
+				<input type="hidden" name="cust_longitude">
+				<div class="form-group">
+					<input type="text" name="cust_address" class="form-control">
+				</div>
+				<div id="cust_map" style="height: 250px;"></div>
+				<br>
+				<center><button class="btn btn-success" id="updateCustomerLocationAction">UPDATE</button></center>
+			</div>
+		</div>
+	</div>
+</div>
 
 <script src="js/o-main.js"></script>
 <script src="lib/jquery.min.js"></script>
@@ -215,6 +236,16 @@
 		$(document).on('click', '#btnPaymaya', function(){
 			CrapiApp.showCommonLoader();
 			get_paymaya_checkout_url();
+		});
+
+		$(document).on('click', '#showCustLocationPickerModal', function(){
+			$('#custUpdateLocationModal').modal('show');
+			$('#VIEWord').modal('hide');
+		});
+
+		$(document).on('click', '#updateCustomerLocationAction', function(){
+			// do update location process
+			updateOrderLocation();
 		});
 
 		$(document).on('click', '#placeOrderByCod', function(){
@@ -307,18 +338,26 @@
 				resto_latitude = Number(result_data.resto.latitude);
 				resto_longitude = Number(result_data.resto.longitude);
 				initMap();
+				$('#ordEmpName').text(result_data.employee.firstname + " " + result_data.employee.lastname);
+				$('#ordEmpContact').text(result_data.employee.contact_number);
 
 				$('#btnOrderReceived').hide();
 				$('#btnupdatePaymentMethod').hide();
+				$('#orderPaymentWarning').hide();
 
 				if(result_data.order.is_delivered == 1) {
 					$('#btnOrderReceived').show();
 					$('#orderStatus').html('<span class="label label-success">Ready</span>');
 				} else if (result_data.order.is_preparing == 1) {
-					$('#btnupdatePaymentMethod').show();
 					$('#orderStatus').html('<span class="label label-info">Preparing</span>');
 				} else {
 					$('#orderStatus').html('<span class="label label-warning">Pending</span>');
+				}
+
+				if (result_data.order.payment_type == null && result_data.order.is_approved == 2) {
+					$('#btnupdatePaymentMethod').show();
+				} else if (result_data.order.is_approved == 1) {
+					$('#orderPaymentWarning').show();
 				}
 
 				$.each( result_data.data, function( key, value ) {
@@ -353,6 +392,25 @@
 			CrapiApp.removeCommonLoader();
 		});
 	}
+
+	function updateOrderLocation(){
+        CrapiApp.showCommonLoader();
+        CrapiApp.updateOrder({
+            order_id: customer_order_id,
+            latitude: $('[name=cust_latitude]').val(),
+            longitude: $('[name=cust_longitude]').val(),
+            delivery_address: $('[name=cust_address]').val()
+        })
+        .then(function(res){
+        	$.growl.notice({ message: "Successfully updated." });
+        })
+        .catch(function(err){
+            console.warn(err);
+        })
+        .always(function(){
+            CrapiApp.removeCommonLoader();
+        });
+    }
 
 	function updateOrderStatus(selOrderId){
         CrapiApp.showCommonLoader();
@@ -402,7 +460,7 @@
         CrapiApp.showCommonLoader();
         CrapiApp.updateOrder({
             order_id: customer_order_id,
-            payment_type: 'cod',
+            payment_type: 'coa',
             cod_cash: $('#moneyOnHand').val()
         })
         .then(function(res){
@@ -451,6 +509,75 @@
 
 	}
 </script>
-<script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBb9gjcZGig7KAgoJC1EmMHA98Rp8Ayz98&amp;callback=initMap"></script>
+<script>
+	var cust_map, cust_marker, cust_geocoder;
+	function cust_getDefaultMapCenter() {
+		var defaultLat = parseFloat($('[name=latitude]').val()) ||  10.3157,
+		defaultLng =  parseFloat($('[name=longitude]').val()) ||  123.8854;
+
+		return {
+			lat: defaultLat,
+			lng: defaultLng
+		} 
+	}
+
+	function cust_codeAddress() {
+		var address = $('[name=cust_address]').val();
+		cust_geocoder.geocode( { 'address': address}, function(results, status) {
+			if (status == 'OK') {
+				cust_map.setCenter(results[0].geometry.location);
+				cust_marker.setPosition(results[0].geometry.location);
+				console.log(results[0].geometry.location.lat());
+				let deliveryLat = results[0].geometry.location.lat();
+				let deliveryLng = results[0].geometry.location.lng();
+				$('[name=cust_latitude]').val(deliveryLat);
+				$('[name=cust_longitude]').val(deliveryLng);
+			} else {
+				$.growl.error({ message: 'Geocode was not successful for the following reason: ' + status});
+			}
+		});
+	}
+
+	function cust_initMap() {
+
+		cust_geocoder = new google.maps.Geocoder;
+
+		cust_map = new google.maps.Map(document.getElementById('cust_map'), {
+			zoom: 14,
+			center: cust_getDefaultMapCenter()
+		});
+
+		cust_marker = new google.maps.Marker({
+			map: cust_map,
+			position: cust_getDefaultMapCenter()
+		});
+
+		cust_map.addListener('click', function (e) {
+			cust_geocoder.geocode({'location': e.latLng}, function(results, status) {
+				if (status === 'OK') {
+					if (results[0]) {
+						cust_marker.setPosition(e.latLng);
+						let deliveryLat = e.latLng.lat();
+						let deliveryLng = e.latLng.lng();
+						$('[name=cust_address]').val(results[0].formatted_address);
+						$('[name=cust_latitude]').val(deliveryLat);
+						$('[name=cust_longitude]').val(deliveryLng);
+						// $('#btnContinue').attr('disabled', false);
+						// localStorage.setItem('deliveryLat', deliveryLat);
+						// localStorage.setItem('deliveryLng', deliveryLng);
+					}
+				}
+			})
+		})
+	}
+
+	$('[name=cust_address]').keydown(function (e) {
+		if(e.keyCode === 13){
+			e.preventDefault();
+			cust_codeAddress();
+		}
+	});
+</script>
+<script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBb9gjcZGig7KAgoJC1EmMHA98Rp8Ayz98&amp;callback=cust_initMap"></script>
 </body>
 </html>
