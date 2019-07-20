@@ -44,6 +44,7 @@
 					<tr>
 						<th>Order Date</th>
 						<th>Full name</th>
+						<th>Payment</th>
 						<th>Action</th>
 					</tr>
 				</thead>
@@ -54,10 +55,13 @@
 					<th class="ordDate">--</th>
 					<th class="ordName">--</th>
 					<th>
+						<span class="label label-info ordPaymentMethod hidden"></span><br>
+						<span class="label label-success badgeReady hidden">Ready</span>
+					</th>
+					<th>
 						<button class="ordViewBtn btn btn-info btn-sm"><i class="glyphicon glyphicon-eye-open"></i></button>
 						<button class="ordApprovedBtn btn btn-warning btn-sm"><i class="glyphicon glyphicon-ok-sign"></i></button>
 						<button class="ordReadyBtn btn btn-success btn-sm hidden"><i class="glyphicon glyphicon-ok-sign"></i></button>
-						<span class="label label-success badgeReady hidden">Ready</span>
 						<button class="ordRejectBtn btn btn-danger btn-sm"><i class="fa fa-times"></i></button>
 					</th>
 				</tr>
@@ -72,6 +76,8 @@
 							<h2>ORD#: <span id="ordNumber">--</span></h2>
 						</div>
 						<div class="modal-body">
+							<h3 class="text-center">Customer's Location</h3>
+							<div id="map" style="height: 250px;"></div><br>
 							<div class="info" id="customerInfo">
 								<p><strong>Customer name: </strong><span id="custFullname">--</span></p>
 								<p><strong>Address: </strong><span id="custAddress">--</span></p>
@@ -88,7 +94,7 @@
 											<th>Price</th>
 										</tr>
 									</thead>
-									<!-- php -->
+									
 									<tbody id="ordDetailListResult"></tbody>
 									<tr id="masterOrdDetailRow" class="hidden">
 										<th class="ordDetProdname">--</th>
@@ -123,11 +129,14 @@
 					<div class="modal-content">
 						<div class="modal-header">
 							<span class="close" data-dismiss="modal">&times;</span>
-							<h2 id="modalConfirmQuestion">Are you sure you want to accept this order?</h2>
+							<h2 id="modalConfirmQuestion"></h2>
+							<h2>ORD#: <span id="ordNumbered">--</span></h2>
 						</div>
 						<div class="modal-body">
 							<div class="info" id="customerInfo">
-								<h2>ORD#: <span id="ordNumbered">--</span></h2>
+
+								
+								<p id="acceptOrderTAC" class="text-left hidden" style="padding: 10px; border: 1px solid grey;">Upon proceeding to process this order, you must ensure that all of the food listed on the order must be met and be produce at a span of time that you will give to the said customer after accepting this order. If all task will not be met please do reject the order and kindly contact them to apologize for rejecting their order.</p>
 							</div>
 							<div class="modal-footer" style="background-color:white;">
 								<button id="btnActionSubmit" class="submit" >Ok</button> 
@@ -167,6 +176,10 @@
 		var myResto = null;
 		var ordid = null;
 		var orderList = {};
+		var resto_latitude = null;
+		var resto_longitude = null;
+		var map, marker, geocoder;
+
 		$(document).ready(function(){
 			loadRestaurantInfo(function(){
 				loadOrders();
@@ -191,7 +204,8 @@
 				ordid = $(this).data('ordid');
 				showConfirmModal(ordid, 'reject', function(data){
 					$('#confirmActionModal').modal('show');
-					$('#modalConfirmQuestion').text('Approve this order? ');
+					$('#modalConfirmQuestion').text('');
+					$('#acceptOrderTAC').removeClass('hidden');
 					$('#btnActionSubmit').addClass('ordApprovedBtnOk');
 				});
 			});
@@ -220,7 +234,9 @@
 				e.preventDefault();
 				updateOrderStatus({
 					order_id: ordid,
-					is_preparing: 1
+					is_approved: 2,
+					is_preparing: 1,
+					employee_id: CrapiApp.config.login_data.user_id
 				}, 'approve');
 			});
 			$(document).on('click', '.ordReadyBtnOk', function(e){
@@ -249,9 +265,9 @@
 				if (res.result === 'OK') {
 					loadOrders();
 					if (action == 'approve') {
-						$.growl.notice({ title: "Success", message: "Data has been successfully accepted!" });
+						$.growl.notice({ title: "Success", message: "Order has been successfully accepted!" });
 					} else if (action == 'reject'){
-						$.growl.notice({ title: "Success", message: "Data has been successfully rejected!" });
+						$.growl.notice({ title: "Success", message: "Order has been successfully rejected!" });
 					} else if (action == 'ready'){
 						$.growl.notice({ title: "Success", message: "Order is now ready!" });
 					}
@@ -291,7 +307,7 @@
 			var search = $('[name="search"]').val();
 			CrapiApp.orderListUrl({
 				search: search,
-				is_paid: 1,
+				is_approved: [1,2],
 				order_status: ORDER_STATUS.pending
 			})
 			.then(function(res){
@@ -310,6 +326,7 @@
 						empRow.find('.ordApprovedBtn').attr('data-ordid', obj.id);
 						empRow.find('.ordRejectBtn').attr('data-ordid', obj.id);
 						empRow.find('.ordReadyBtn').attr('data-ordid', obj.id);
+
 						if(obj.is_delivered == 1) {
 							empRow.find('.badgeReady').removeClass('hidden');
 							empRow.find('.ordRejectBtn').addClass('hidden');
@@ -325,6 +342,14 @@
 							empRow.find('.ordRejectBtn').removeClass('hidden');
 							empRow.find('.ordApprovedBtn').removeClass('hidden');
 							empRow.find('.ordReadyBtn').addClass('hidden');
+						}
+
+						if (obj.payment_type != null) {
+							empRow.find('.ordPaymentMethod').text(obj.payment_type.charAt(0).toUpperCase() + obj.payment_type.slice(1));
+							empRow.find('.ordPaymentMethod').removeClass('hidden');
+						} else {
+							empRow.find('.ordApprovedBtn').addClass('disabled');
+							empRow.find('.ordApprovedBtn').removeClass('ordApprovedBtn');
 						}
 
 						if (obj.payment_type == 'paymaya') {
@@ -416,6 +441,13 @@
 					console.warn("Customer order not found.");
 					return;
 				}
+				
+				// - load map
+				resto_latitude = Number(res.order.latitude);
+				resto_longitude = Number(res.order.longitude);
+
+				initMap();
+
 				var customerInfo = orderList[ordid];
 				$('#ordNumber').html(customerInfo.order_number);
 				$('#ordNumberApprove').html(customerInfo.order_number);
@@ -438,7 +470,8 @@
 						ordDetRow.find('.ordDetPrice').html(obj.price);
 
 						$('#ordDetailListResult').append(ordDetRow);
-						subTotalPrice = Number(obj.price) + Number(subTotalPrice);
+						var prodQty = Number(obj.qty);
+						subTotalPrice = (Number(obj.price) * prodQty) + Number(subTotalPrice);
 					}
 
 					var vatObj = CrapiApp.calculateVat(subTotalPrice);
@@ -456,5 +489,33 @@
 				CrapiApp.removeCommonLoader();
 			});
 		}
+
+		function getDefaultMapCenter() {
+			var defaultLat = resto_latitude ||  10.3157,
+			defaultLng =  resto_longitude ||  123.8854;
+			console.log("LAT ---> " + defaultLat);
+			console.log("LNG ---> " + defaultLng);
+			return {
+				lat: defaultLat,
+				lng: defaultLng
+			} 
+		}
+
+		function initMap() {
+
+			geocoder = new google.maps.Geocoder;
+
+			map = new google.maps.Map(document.getElementById('map'), {
+				zoom: 14,
+				center: getDefaultMapCenter()
+			});
+
+			marker = new google.maps.Marker({
+				map: map,
+				position: getDefaultMapCenter()
+			});
+
+		}
 	</script>
+	<script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBb9gjcZGig7KAgoJC1EmMHA98Rp8Ayz98&amp;callback=initMap"></script>
 </html>

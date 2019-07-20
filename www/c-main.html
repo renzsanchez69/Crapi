@@ -73,7 +73,7 @@
 		</table>
 		<div class="col-md-4 col-md-offset-4 text-center">
 			<br>
-			<button class="b-order o-btn" name="order_btn" onclick="view_order(); return false;" style="border-radius: 0; color: white;">ORDER</button>
+			<button class="b-order o-btn" name="order_btn" onclick="show_terms_and_conditions(); return false;" style="border-radius: 0; color: white;">ORDER</button>
 		</div>
 	</div>
 </div>
@@ -313,6 +313,28 @@
 		</div>
 	</div>
 </div>
+
+<!-- Add Modal -->
+<div class="modal fade" id="orderTAC" role="dialog" data-backdrop="false">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header">
+				<span class="close" data-dismiss="modal">&times;</span>
+				<h2 id="modalConfirmQuestion"></h2>
+				<h2>ORD#: <span class="order_hash">--</span></h2>
+			</div>
+			<div class="modal-body">
+				<div class="info" id="customerInfo">
+					<p id="acceptOrderTAC" class="text-left" style="padding: 10px; border: 1px solid grey;">Upon proceeding to process this order, you must ensure that all of the food listed on the order must be met and be produce at a span of time that you will give to the said customer after accepting this order. If all task will not be met please do reject the order and kindly contact them to apologize for rejecting their order.</p>
+				</div>
+				<div class="modal-footer" style="background-color:white;">
+					<button id="btnAgreeTAC" class="submit" >Ok</button> 
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
 </body>
 <script src="lib/jquery.min.js"></script>
 <script src="lib/bootstrap.min.js"></script>
@@ -348,6 +370,11 @@
 			$('#cashOnDeliveryModal').modal('show');
 		});
 
+		$(document).on('click', '#btnAgreeTAC', function(){
+			// - update order to pending 
+			requestEmployeeToAcceptOrder();
+		});
+
 		$(document).on('click', '#btnPaymaya', function(){
 			CrapiApp.showCommonLoader();
 			get_paymaya_checkout_url();
@@ -359,23 +386,13 @@
 			if ($('#moneyOnHand').val() < 1) {
 				$.growl.error({ message: "Please input cash amount!"});
 				return;
-			} else if (Number(moneyOnHand) <= Number(totalAmountPayable)) {
+			} else if (Number(moneyOnHand) < Number(totalAmountPayable)) {
 				$.growl.error({ message: "Cash is not enough!"});
 				return;
 			} else {
 				placeOrderByCod();
 			}
 		});
-
-		// $('#btnPaymaya').click(function(){
-		// 	$('#paymayaModal').modal('hide');
-		// 	$('#paymayaPaymentIframe').attr('src', 'https://payments-web-sandbox.paymaya.com/checkout?id=4a181d1a-74e7-4ab1-814b-e6e5425d648f');    
-		// });
-
-		// $('#paymayaPaymentIframe').load(function(){
-			// $('#paymayaModal').modal('show');
-			// console.log('iframe loaded successfully')
-		// });
 
 		$(document).on('click', '#showMenuListModal', function(){
 			$('input[name="quantity"]').val(0);
@@ -385,6 +402,23 @@
 		});
 
 	});
+
+	function requestEmployeeToAcceptOrder(){
+		CrapiApp.showCommonLoader();
+		CrapiApp.updateOrder({
+			order_id: customer_order_id,
+			is_approved: 1
+		})
+		.then(function(res){
+			window.location.href = "c-orders.html";
+		})
+		.catch(function(err){
+			console.warn(err);
+		})
+		.always(function(){
+			CrapiApp.removeCommonLoader();
+		});
+	}
 
 	function placeOrderByCod(){
         CrapiApp.showCommonLoader();
@@ -789,6 +823,10 @@
 		.always(function(){
 			CrapiApp.removeCommonLoader();
 		});
+	}
+
+	function show_terms_and_conditions(){
+		$('#orderTAC').modal('show');
 	}
 
 	function view_order() {
