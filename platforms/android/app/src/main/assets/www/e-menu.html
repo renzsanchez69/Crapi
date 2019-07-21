@@ -141,10 +141,11 @@
 <script src="common/common.js"></script>
 <script src="common/owner_sub_checker.js"></script>
 <script>
-    var restoid = null;
+    var restoid = CrapiApp.config.login_data.resto_info.id;
     var prodid = null;
     $(document).ready(function(){
-        loadRestaurantInfo();
+        // loadRestaurantInfo();
+        loadProducts();
 
         $('#btnSearch').click(function(e){
             e.preventDefault();
@@ -218,25 +219,25 @@
         });
     }
 
-    function loadRestaurantInfo(){
-        CrapiApp.searchResto({
-            owner_id: CrapiApp.config.login_data.user_id
-        })
-        .then(function(res){
-            $('.loader').remove();
+    // function loadRestaurantInfo(){
+    //     CrapiApp.searchResto({
+    //         owner_id: CrapiApp.config.login_data.user_id
+    //     })
+    //     .then(function(res){
+    //         $('.loader').remove();
 
-            if (res.result === 'OK') {
-                if (typeof res.data[0] !== 'undefined') {
-                    var obj = res.data[0];
-                    restoid = obj.id
-                    loadProducts();
-                }
-            }
-        })
-        .catch(function(err){
-            console.warn(err);
-        });
-    }
+    //         if (res.result === 'OK') {
+    //             if (typeof res.data[0] !== 'undefined') {
+    //                 var obj = res.data[0];
+    //                 restoid = obj.id
+    //                 loadProducts();
+    //             }
+    //         }
+    //     })
+    //     .catch(function(err){
+    //         console.warn(err);
+    //     });
+    // }
 
     function deleteProduct(prodid){
         CrapiApp.showCommonLoader();

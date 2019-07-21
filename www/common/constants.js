@@ -18,6 +18,7 @@ const ENVIRONMENT_URL = {
 
 	// - restaurants url
 	resto_search_url : BASE_URL+"/api/restaurants/resto_search",
+	logout_employee_resto_url : BASE_URL+"/api/restaurants/logout_employee_to_resto",
 
 	// - employees url
 	employees_search_url : BASE_URL+"/api/employees",

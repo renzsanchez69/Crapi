@@ -22,10 +22,29 @@ $(document).on('click', '#log-out', function(e){
 });
 
 $(document).on('click', '#btnLogoutUser', function(){
-    localStorage.removeItem("login_token");
-    localStorage.removeItem("login_data");
-    delete CrapiApp.config.login_data;
-    window.location.href = 'index.html';
+
+    // - if user is employee
+    if (CrapiApp.config.login_data.role == USER_ROLE.employee) {
+    	CrapiApp.logoutEmployeeToResto({
+			id: CrapiApp.config.login_data.resto_info.id
+		})
+		.then(function(res){
+			console.log(res);
+		})
+		.always(function(res){
+			console.log(res);
+		    localStorage.removeItem("login_token");
+		    localStorage.removeItem("login_data");
+		    delete CrapiApp.config.login_data;
+	    	window.location.href = 'index.html';
+		});
+    
+    } else {
+	    localStorage.removeItem("login_token");
+	    localStorage.removeItem("login_data");
+	    delete CrapiApp.config.login_data;
+    	window.location.href = 'index.html';
+    }
 });
 
 $.urlParam = function(name){
@@ -205,6 +224,20 @@ var CrapiApp = (function() {
 		var params = {
 			url: ENVIRONMENT_URL.resto_search_url,
 			method: 'POST',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+
+	obj.logoutEmployeeToResto = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.logout_employee_resto_url,
+			method: 'PUT',
 			data: params
 		};
 		
