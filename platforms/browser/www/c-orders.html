@@ -79,6 +79,7 @@
 						<p> Email address: <b id="email_address">--</b></p>
 						<p> Date & Time: <b id="date_time">--</b></p>
 						<p> Status: <b id="orderStatus">--</b></p>
+						<p> GUID: <b id="orderGuid">--</b></p>
 						<br>
 						<center><button class="btn btn-info" id="showCustLocationPickerModal">Update my location.</button></center>
 					</div>
@@ -343,6 +344,7 @@
 				initMap();
 				$('#ordEmpName').text(result_data.employee.firstname + " " + result_data.employee.lastname);
 				$('#ordEmpContact').text(result_data.employee.contact_number);
+				$('#orderGuid').text(result_data.order.order_guid);
 
 				$('#btnOrderReceived').hide();
 				$('#btnupdatePaymentMethod').hide();
