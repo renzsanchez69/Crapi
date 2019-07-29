@@ -407,7 +407,8 @@
 		CrapiApp.showCommonLoader();
 		CrapiApp.updateOrder({
 			order_id: customer_order_id,
-			is_approved: 1
+			is_approved: 1,
+			order_guid: CrapiApp.uuidv4
 		})
 		.then(function(res){
 			// window.location.href = "c-orders.html";

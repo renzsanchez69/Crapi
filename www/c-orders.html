@@ -45,6 +45,7 @@
 					<th class="text-left"><b>Restaurant Name</b></th>
 					<th class="text-center"><b>Order Date</b></th>
 					<th class="text-center"><b>Status</b></th>
+					<th class="text-center"><b>Amount Due</b></th>
 					<th class="text-right"><b>Action</b></th>
 				</tr>
 			</thead>
@@ -78,6 +79,7 @@
 						<p> Email address: <b id="email_address">--</b></p>
 						<p> Date & Time: <b id="date_time">--</b></p>
 						<p> Status: <b id="orderStatus">--</b></p>
+						<p> GUID: <b id="orderGuid">--</b></p>
 						<br>
 						<center><button class="btn btn-info" id="showCustLocationPickerModal">Update my location.</button></center>
 					</div>
@@ -294,6 +296,8 @@
 							} else {
 								tbody_html +='<td class="text-center"><span class="label label-warning">Pending</span></td>';
 							}
+
+							tbody_html +='<td class="text-center">'+value.amount_due+'</td>';
 							
 							tbody_html +='<td class="text-right">';
 								tbody_html +='<button class="editbut" name="edit_btn" onclick="view_details('+value.id+','+value.order_number+',\'' + value.created_at + '\',\'' + value.customer_fullname + '\',\'' + value.customer_fullname + '\',\'' + value.customer_address.trim() + '\',\'' + value.email + '\',\'' + value.contact_number + '\'); return false;"><i class="glyphicon glyphicon-eye-open"></i></button>';
@@ -342,6 +346,7 @@
 				initMap();
 				$('#ordEmpName').text(result_data.employee.firstname + " " + result_data.employee.lastname);
 				$('#ordEmpContact').text(result_data.employee.contact_number);
+				$('#orderGuid').text(result_data.order.order_guid);
 
 				$('#btnOrderReceived').hide();
 				$('#btnupdatePaymentMethod').hide();
