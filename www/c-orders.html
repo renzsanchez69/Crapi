@@ -106,9 +106,9 @@
 					</table>
 					
 					<div class="text-center">
-						<button class="btn btn-success" id="btnOrderReceived" style=" padding: 10px !important; width: 200px; border-radius: 0; ">
+						<!-- <button class="btn btn-success" id="btnOrderReceived" style=" padding: 10px !important; width: 200px; border-radius: 0; ">
 							<span class="fa fa-check"></span> Order Received 
-						</button>
+						</button> -->
 
 						<button class="btn btn-success" id="btnupdatePaymentMethod" style=" padding: 10px !important; width: 200px; border-radius: 0; ">
 							<span class="fa fa-money"></span> Update Payment Method 
@@ -287,8 +287,10 @@
 
 							if(value.is_delivered == 1) {
 								tbody_html +='<td class="text-center"><span class="label label-success">Ready</span></td>';
+							} else if (value.is_approved == 2 && value.payment_type == null) {
+								tbody_html +='<td class="text-center"><span class="label label-warning">Payment</span></td>';
 							} else if (value.is_preparing == 1) {
-								tbody_html +='<td class="text-center"><span class="label label-info">Preparing</span></td>';
+								tbody_html +='<td class="text-center"><span class="label label-info">Processing</span></td>';
 							} else {
 								tbody_html +='<td class="text-center"><span class="label label-warning">Pending</span></td>';
 							}
@@ -348,8 +350,10 @@
 				if(result_data.order.is_delivered == 1) {
 					$('#btnOrderReceived').show();
 					$('#orderStatus').html('<span class="label label-success">Ready</span>');
+				} else if (result_data.order.is_approved == 2 && result_data.order.payment_type == null) {
+					$('#orderStatus').html('<span class="label label-warning">Payment</span>');
 				} else if (result_data.order.is_preparing == 1) {
-					$('#orderStatus').html('<span class="label label-info">Preparing</span>');
+					$('#orderStatus').html('<span class="label label-info">Processing</span>');
 				} else {
 					$('#orderStatus').html('<span class="label label-warning">Pending</span>');
 				}

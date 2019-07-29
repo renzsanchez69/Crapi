@@ -325,7 +325,7 @@
 			</div>
 			<div class="modal-body">
 				<div class="info" id="customerInfo">
-					<p id="acceptOrderTAC" class="text-left" style="padding: 10px; border: 1px solid grey;">Upon proceeding to process this order, you must ensure that all of the food listed on the order must be met and be produce at a span of time that you will give to the said customer after accepting this order. If all task will not be met please do reject the order and kindly contact them to apologize for rejecting their order.</p>
+					<p id="acceptOrderTAC" class="text-left" style="padding: 10px; border: 1px solid grey;">Upon proceeding to transact this order, you must ensure that all food in the order is finalized (no refunds for mistakes) and to be claimed at the restaurant. However, incase of emergencies on your way to the restaurant, please do contact or send a message to the employee on your state of coming in late. Not claiming the order shall be reported at once. Note: Having 2 reports may disable your account. Thank you!</p>
 				</div>
 				<div class="modal-footer" style="background-color:white;">
 					<button id="btnAgreeTAC" class="submit" >Ok</button> 
@@ -410,7 +410,7 @@
 			is_approved: 1
 		})
 		.then(function(res){
-			window.location.href = "c-orders.html";
+			// window.location.href = "c-orders.html";
 		})
 		.catch(function(err){
 			console.warn(err);
@@ -514,7 +514,8 @@
 			resto_id: resto_id,
 			customer_id: CrapiApp.config.login_data.user_id,
 			order_status: ORDER_STATUS.pending,
-			is_paid: 0
+			is_paid: 0,
+			is_approved: 0
 		})
 		.then(function(result_data){
 			$('#tbody-order-list').empty();

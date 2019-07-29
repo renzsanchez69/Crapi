@@ -75,13 +75,24 @@
 			</div>
 			<div class="modal-body">
 				<div class="col-12">
-					<div class="info">
+					<h3 class="text-center">Restaurant's Location</h3>
+					<div id="map" style="height: 250px;"></div><br>
+					
+					<div class="info bg-info" style="padding: 20px 20px;">
+						<center><h4>Customer Info</h4></center>
 						<p> Customer name: <b id="customer_name">--</b></p>
 						<p> Address: <b id="address">--</b></p>
 						<p> Contact number: <b id="contact_number">--</b></p>
 						<p> Email address: <b id="email_address">--</b></p>
 						<p> Date & Time: <b id="date_time">--</b></p>
 						<p> Status: <b id="orderStatus">--</b></p>
+						<br>
+					</div>
+
+					<div class="info bg-warning" style="padding: 20px 20px;">
+						<center><h4>Employee Info</h4></center>
+						<p> Employee name: <b id="ordEmpName">--</b></p>
+						<p> Contact number: <b id="ordEmpContact">--</b></p>
 					</div>
 				</div>
 				<div class="col-12">
@@ -112,6 +123,10 @@
 <script src="common/constants.js"></script>
 <script src="common/app.js"></script>
 <script type="text/javascript">
+	var resto_latitude = null;
+	var resto_longitude = null;
+	var map, marker, geocoder;
+
 	$(document).ready(function() {
 		loadOrders();
 		$(document).on('click', '#fsearch', function(){
@@ -189,6 +204,13 @@
 				var sub_total = 0;
 				var total_order = 0;
 
+				// - load map
+				resto_latitude = Number(result_data.resto.latitude);
+				resto_longitude = Number(result_data.resto.longitude);
+				initMap();
+				$('#ordEmpName').text(result_data.employee.firstname + " " + result_data.employee.lastname);
+				$('#ordEmpContact').text(result_data.employee.contact_number);
+
 				if (result_data.order.is_received == 1) {
 					$('#orderStatus').html('<span class="label label-info">Received</span>');
 				} else if (result_data.order.is_delivered == 1) {
@@ -214,7 +236,8 @@
 					fbody_html +='<tr style="background-color:#ffe680;">';
 						fbody_html +='<th class="text-left"><b>TOTAL </b></th>';
 						fbody_html +='<th> </th>';
-						fbody_html +='<th class="text-center"><b>P '+numberWithCommas(sub_total)+'<br>P '+numberWithCommas(total_order)+' (Incl. VAT)</b></th>';
+						fbody_html +='<th class="text-center"><b>P '+numberWithCommas(sub_total)+'</b></th>';
+						// +'<br>P '+numberWithCommas(total_order)+' (Incl. VAT)
 					fbody_html +='</tr>';
 				$('#tbody-order-list-view').empty().append(tbody_html);
 				$('#fbody-order-list-view').empty().append(fbody_html);
@@ -229,35 +252,34 @@
 		});
 	}
 
-	// $("#fsearch").click(function(){
-	// 	CrapiApp.showCommonLoader();
-	// 	CrapiApp.customerSearch({
-	// 		search: $('input[name="search"]').val()
-	// 	})
-	// 	.then(function(result_data){
-	// 		if (result_data.result == 'OK') {
-	// 			var tbody_html = "";
-	// 			$.each( result_data.data, function( key, value ) {
-	// 					tbody_html +='<tr id="'+value.id+'">';
-	// 						tbody_html +='<td class="text-left">'+value.resto_name+'</td>';
-	// 						tbody_html +='<td class="text-center">'+value.created_date+'</td>';
-	// 						tbody_html +='<td class="text-right">';
-	// 							tbody_html +='<button class="editbut" name="edit_btn" onclick="view_details(\'' + value.created_date + '\',\'' + value.full_name + '\',\'' + value.description + '\',\'' + value.address + '\',\'' + value.email_address + '\',\'' + value.contact_no + '\',\'' + value.name + '\','+value.price+','+value.qty+',\'' +value.order_hash+ '\'); return false;"><i class="glyphicon glyphicon-eye-open"></i></button>';
-	// 						tbody_html +='</td>';
-	// 					tbody_html +='</tr>';
 
-	// 			}); 
-	// 			$('#tbody-order-list').empty().append(tbody_html);
-	// 		}
-	// 	})
-	// 	.catch(function(res){
-	// 		console.log(res);
-	// 		$.growl.error({ message: "Connection refused!"});
-	// 	})
-	// 	.always(function(){
-	// 		CrapiApp.removeCommonLoader();
-	// 	});
-	// });
+	function getDefaultMapCenter() {
+		var defaultLat = resto_latitude ||  10.3157,
+		defaultLng =  resto_longitude ||  123.8854;
+		console.log("LAT ---> " + defaultLat);
+		console.log("LNG ---> " + defaultLng);
+		return {
+			lat: defaultLat,
+			lng: defaultLng
+		} 
+	}
+
+	function initMap() {
+
+		geocoder = new google.maps.Geocoder;
+
+		map = new google.maps.Map(document.getElementById('map'), {
+			zoom: 14,
+			center: getDefaultMapCenter()
+		});
+
+		marker = new google.maps.Marker({
+			map: map,
+			position: getDefaultMapCenter()
+		});
+
+	}
 </script>
+<script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBb9gjcZGig7KAgoJC1EmMHA98Rp8Ayz98"></script>
 </body>
 </html>
