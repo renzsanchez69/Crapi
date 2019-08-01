@@ -155,12 +155,22 @@
 							tbody_html +='<td class="text-left">'+value.restaurants_name+'</td>';
 							tbody_html +='<td class="text-center">'+value.created_at+'</td>';	
 
-							if (value.is_received == 1) {
-								tbody_html +='<td class="text-center"><span class="label label-success">Received</span></td>';
-							} else if (value.is_delivered == 1) {
-								tbody_html +='<td class="text-center"><span class="label label-success">Delivered</span></td>';
-							} else if (value.order_status == ORDER_STATUS.failed) {
-								tbody_html +='<td class="text-center"><span class="label label-danger">Failed</span></td>';
+							// if (value.is_received == 1) {
+							// 	tbody_html +='<td class="text-center"><span class="label label-success">Claimed</span></td>';
+							// } else if (value.is_delivered == 1) {
+							// 	tbody_html +='<td class="text-center"><span class="label label-success">Delivered</span></td>';
+							// } else if (value.order_status == ORDER_STATUS.failed) {
+							// 	tbody_html +='<td class="text-center"><span class="label label-danger">Failed</span></td>';
+							// } else {
+							// 	tbody_html +='<td class="text-center"><span class="label label-warning">Preparing</span></td>';
+							// }
+							// - new order history status
+							if (value.order_status == ORDER_STATUS.failed) {
+								tbody_html +='<td class="text-center"><span class="label label-danger">Rejected</span></td>';
+							} else if (value.is_received == 1) {
+								tbody_html +='<td class="text-center"><span class="label label-success">Claimed</span></td>';
+							} else if (value.is_received == 2) {
+								tbody_html +='<td class="text-center"><span class="label label-warning">Not Claimed</span></td>';
 							} else {
 								tbody_html +='<td class="text-center"><span class="label label-warning">Preparing</span></td>';
 							}
@@ -211,14 +221,24 @@
 				$('#ordEmpName').text(result_data.employee.firstname + " " + result_data.employee.lastname);
 				$('#ordEmpContact').text(result_data.employee.contact_number);
 
-				if (result_data.order.is_received == 1) {
-					$('#orderStatus').html('<span class="label label-info">Received</span>');
-				} else if (result_data.order.is_delivered == 1) {
-					$('#orderStatus').html('<span class="label label-success">Delivered</span>');
-				} else if (result_data.order.is_failed == 1) {
-					$('#orderStatus').html('<span class="label label-danger">Failed</span>');
+				// if (result_data.order.is_received == 1) {
+				// 	$('#orderStatus').html('<span class="label label-info">Received</span>');
+				// } else if (result_data.order.is_delivered == 1) {
+				// 	$('#orderStatus').html('<span class="label label-success">Delivered</span>');
+				// } else if (result_data.order.is_failed == 1) {
+				// 	$('#orderStatus').html('<span class="label label-danger">Failed</span>');
+				// } else {
+				// 	$('#orderStatus').html('<span class="label label-warning">Preparing</span>');
+				// }
+
+				if (result_data.order.order_status == ORDER_STATUS.failed) {
+					$('#orderStatus').html('<span class="label label-danger">Rejected</span>');
+				} else if (result_data.order.is_received == 1) {
+					$('#orderStatus').html('<span class="label label-success">Claimed</span>');
+				} else if (result_data.order.is_received == 2) {
+					$('#orderStatus').html('<span class="label label-warning">Not Claimed</span>');
 				} else {
-					$('#orderStatus').html('<span class="label label-warning">Preparing</span>');
+					$('#orderStatus').html('');
 				}
 
 				$.each( result_data.data, function( key, value ) {

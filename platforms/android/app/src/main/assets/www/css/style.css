@@ -280,7 +280,7 @@ tr{background-color: #f2f2f2;}
 
 @media screen and (max-width: 769px){
   .modal-content {
-    margin: 15% 20%;
+    /*margin: 15% 20%;*/
   }
 }
 

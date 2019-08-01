@@ -79,7 +79,9 @@
 						<p> Email address: <b id="email_address">--</b></p>
 						<p> Date & Time: <b id="date_time">--</b></p>
 						<p> Status: <b id="orderStatus">--</b></p>
-						<p> GUID: <b id="orderGuid">--</b></p>
+						<!-- <p> GUID: <b id="orderGuid">--</b></p> -->
+						<p> Payment Type: <b id="orderPaymentType">--</b></p>
+						<p> Change: <b id="orderChange">--</b></p>
 						<br>
 						<center><button class="btn btn-info" id="showCustLocationPickerModal">Update my location.</button></center>
 					</div>
@@ -156,6 +158,8 @@
 				<div class="regbox">
 					<h4>How much cash do you have?</h4><br>
 					<center><b>PAYABLE AMOUNT: </b>P <span id="totalAmountPayable">--</span></center>
+					<br>
+					<center><b>CHANGE: </b>P <span id="yourChange">0</span></center>
 					<br>
 					<input type="number" max="99999" min="1" id="moneyOnHand" class="input-text qty text search-btn-light" >
 					<button class="btn btn-success btn-block" id="placeOrderByCod" style="padding: 12px; border-radius: 0;">Continue <span class="fa fa-arrow-right"></span></button><br>
@@ -248,6 +252,16 @@
 		$(document).on('click', '#updateCustomerLocationAction', function(){
 			// do update location process
 			updateOrderLocation();
+		});
+
+		$('#moneyOnHand').keyup(function(){
+			var money = Number($('#moneyOnHand').val());
+			var cost = Number($('#totalAmountPayable').text());
+			if (money <= cost) {
+				return;
+			}
+			var change = Number(money) - Number(cost);
+			$('#yourChange').text(change);
 		});
 
 		$(document).on('click', '#placeOrderByCod', function(){
@@ -344,9 +358,15 @@
 				resto_latitude = Number(result_data.resto.latitude);
 				resto_longitude = Number(result_data.resto.longitude);
 				initMap();
-				$('#ordEmpName').text(result_data.employee.firstname + " " + result_data.employee.lastname);
-				$('#ordEmpContact').text(result_data.employee.contact_number);
-				$('#orderGuid').text(result_data.order.order_guid);
+				if (typeof result_data.employee.firstname != 'undefined') {
+					$('#ordEmpName').text(result_data.employee.firstname + " " + result_data.employee.lastname);
+					$('#ordEmpContact').text(result_data.employee.contact_number);
+				}
+				// $('#orderGuid').text(result_data.order.order_guid);
+				if (typeof result_data.order.payment_type !== 'undefined' && result_data.order.payment_type != null) {
+					$('#orderPaymentType').html('<span class="label label-info">'+result_data.order.payment_type.toUpperCase()+'</span>');
+					$('#orderChange').html(Number(result_data.order.cod_cash) - Number(result_data.order.sub_total));
+				}
 
 				$('#btnOrderReceived').hide();
 				$('#btnupdatePaymentMethod').hide();

@@ -84,6 +84,8 @@
 								<p><strong>Contact number: </strong><span id="custContactNumber">--</span></p>
 								<p><strong>Email address: </strong><span id="custEmail">--</span></p>
 								<p><strong>Date & Time: </strong><span id="custCreated">--</span></p>  
+								<p><strong>Payment Type: </strong><span id="custPaymentType">--</span></p>
+								<p><strong>Change: </strong><span id="custChange">--</span></p>
 							</div>
 							<div class="order" id="orderDetails">
 								<table class="table table-condensed text-right" style="margin-bottom:0">
@@ -119,8 +121,11 @@
 								</div> -->
 							</div>
 							<br>
-							<button class="btn btn-success" id="btnOrderReceived" style=" padding: 10px !important; width: 200px; border-radius: 0; ">
+							<button class="btn btn-success" id="btnOrderReceived" style=" padding: 10px !important; width: 200px; border-radius: 0; margin-bottom: 5px;">
 								<span class="fa fa-check"></span> Order Received 
+							</button>
+							<button class="btn btn-warning mt-1" id="btnOrderNotClaimed" style=" padding: 10px !important; width: 200px; border-radius: 0; ">
+								<span class="fa fa-times"></span> Order Not Claimed 
 							</button>
 						</div>
 					</div>
@@ -274,13 +279,26 @@
 					order_id: ordid,
 					order_status: 'success',
 					is_received: 1
-				}, 'received');
+				}, 'received', function(){
+					$('#VIEWord').modal('hide');
+				});
+			});
+
+			$(document).on('click', '#btnOrderNotClaimed', function(e){
+				e.preventDefault();
+				updateOrderStatus({
+					order_id: ordid,
+					order_status: 'success',
+					is_received: 2
+				}, 'received', function(){
+					$('#VIEWord').modal('hide');
+				});
 			});
 
 
 		});
 
-		function updateOrderStatus(requestObj, action){
+		function updateOrderStatus(requestObj, action, callback){
 			CrapiApp.updateOrder(requestObj)
 			.then(function(res){
 				$('.loader').remove();
@@ -297,6 +315,10 @@
 						$.growl.notice({ title: "Success", message: "Order status updated!" });
 					}
 					$('#confirmActionModal').modal('hide');
+				}
+
+				if (typeof callback == 'function') {
+					callback();
 				}
 			})
 			.catch(function(err){
@@ -490,6 +512,10 @@
 				$('#customerInfo #custContactNumber').html(customerInfo.contact_number);
 				$('#customerInfo #custEmail').html(customerInfo.email);
 				$('#customerInfo #custCreated').html(customerInfo.created_at);
+				if (typeof res.order.payment_type !== 'undefined' && res.order.payment_type != null) {
+					$('#customerInfo #custPaymentType').html('<span class="label label-info">'+res.order.payment_type.toUpperCase()+'</span>');
+					$('#customerInfo #custChange').html(Number(res.order.cod_cash) - Number(res.order.sub_total));
+				}
 
 				if (res.result === 'OK') {
 					var subTotalPrice = 0;

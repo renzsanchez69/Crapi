@@ -45,7 +45,10 @@ const ENVIRONMENT_URL = {
 
 	// - payments url
 	paymaya_checkout_url : BASE_URL+"/api/payments/paymaya_checkout",
-	paymaya_subscribe_url : BASE_URL+"/api/payments/subcribeByPaymaya"
+	paymaya_subscribe_url : BASE_URL+"/api/payments/subcribeByPaymaya",
+
+	// - reports url
+	reports_url : BASE_URL+"/api/reports/reports_list"
 };
 
 // - general information

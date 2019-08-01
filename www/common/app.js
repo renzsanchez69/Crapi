@@ -664,6 +664,25 @@ var CrapiApp = (function() {
 	/*---------------------------------------------------
 		END OF OWNERS - API REQUESTS
 	-----------------------------------------------------*/
+	/*---------------------------------------------------
+		REPORTS - API REQUESTS
+	-----------------------------------------------------*/
+	obj.getReportsList = function(params){
+		element = this;
+
+		// - set request data
+		var params = {
+			url: ENVIRONMENT_URL.reports_url,
+			method: 'POST',
+			data: params
+		};
+		
+		// - perform ajax for login
+		return element.ajaxRestAction(params)
+	}
+	/*---------------------------------------------------
+		END OF REPORTS - API REQUESTS
+	-----------------------------------------------------*/
 
 
 	obj.showCommonLoader = function(){

@@ -19,6 +19,7 @@
 			<a href="o-main.html">Employee</a>
 			<a href="o-menu.html">Food Menu</a>
 			<a href="o-sub.html">Subscription</a>
+			<a href="o-report.html">Reports</a>
 			<a href="index.html" id="log-out">Logout</a>
 			<a href="javascript:void(0);" class="icon" onclick="myFunction()">
 				<i class="fa fa-bars"></i>
@@ -44,6 +45,7 @@
 					<tr>
 						<th>Order Date</th>
 						<th>Full name</th>
+						<th>Status</th>
 						<th>Action</th>
 					</tr>
 				</thead>
@@ -54,60 +56,64 @@
 					<th class="ordDate">--</th>
 					<th class="ordName">--</th>
 					<th>
-						<button class="ordViewBtn btn btn-info btn-sm"><i class="glyphicon glyphicon-eye-open"></i></button>
+						<p class="ordStatus"></p>
+					</th>
+					<th>
+						<p class="ordViewBtn"><button class="editbut" name="edit_btn"><i class="glyphicon glyphicon-eye-open"></i></button></p>
 					</th>
 				</tr>
 			</table>
+		</div>
 
-			<!-- Add Modal -->
-			<div class="modal fade" id="VIEWord" role="dialog" data-backdrop="false">
-				<div class="modal-dialog modal-lg">
-					<div class="modal-content">
-						<div class="modal-header">
-							<span class="close" data-dismiss="modal">&times;</span>
-							<h2>ORD#: <span id="ordNumber">--</span></h2>
+		<!-- Add Modal -->
+		<div class="modal fade" id="VIEWord" role="dialog">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<span class="close" data-dismiss="modal">&times;</span>
+						<div class="col-12">
+
+							<h3><small>ORD#:</small><b id="order_hash">--</b></h3>
 						</div>
-						<div class="modal-body">
-							<div class="info" id="customerInfo">
-								<p><strong>Customer name: </strong><span id="custFullname">--</span></p>
-								<p><strong>Address: </strong><span id="custAddress">--</span></p>
-								<p><strong>Contact number: </strong><span id="custContactNumber">--</span></p>
-								<p><strong>Email address: </strong><span id="custEmail">--</span></p>
-								<p><strong>Date & Time: </strong><span id="custCreated">--</span></p>  
+					</div>
+					<div class="modal-body">
+						<div class="col-12">
+							<h3 class="text-center">Customer's Location</h3>
+							<div id="map" style="height: 250px;"></div><br>
+							
+							<div class="info bg-info" style="padding: 20px 20px;">
+								<center><h4>Customer Info</h4></center>
+								<p> Customer name: <b id="customer_name">--</b></p>
+								<p> Address: <b id="address">--</b></p>
+								<p> Contact number: <b id="contact_number">--</b></p>
+								<p> Email address: <b id="email_address">--</b></p>
+								<p> Date & Time: <b id="date_time">--</b></p>
+								<p> Status: <b id="orderStatus">--</b></p>
+								<br>
 							</div>
-							<div class="order" id="orderDetails">
-								<table class="table table-condensed text-right" style="margin-bottom:0">
-									<thead>
-										<tr>
-											<th>Product</th>
-											<th>Qty</th>
-											<th>Price</th>
-										</tr>
-									</thead>
-									<!-- php -->
-									<tbody id="ordDetailListResult"></tbody>
-									<tr id="masterOrdDetailRow" class="hidden">
-										<th class="ordDetProdname">--</th>
-										<th class="ordDetQty">--</th>
-										<th class="ordDetPrice text-right">--</th> 
+
+							<div class="info bg-warning" style="padding: 20px 20px;">
+								<center><h4>Employee Info</h4></center>
+								<p> Employee name: <b id="ordEmpName">--</b></p>
+								<p> Contact number: <b id="ordEmpContact">--</b></p>
+							</div>
+						</div>
+						<div class="col-12">
+							<br>
+							<br>
+							<table class="table">
+								<thead>
+									<tr>
+										<th class="text-left"><b>Product</b></th>
+										<th class="text-center"><b>Qty</b></th>
+										<th class="text-center"><b>Price</b></th>
 									</tr>
-								</table>
-							</div>
-							<div class="modal-footer">
-								<div class="row">
-									<div class="col-xs-8">Subtotal</div>
-									<div class="col-xs-4"><span id="ordSubtotal">--</span></div>
-								</div>
-								<div class="row">
-									<div class="col-xs-8">+ 12% VAT</div>
-									<div class="col-xs-4"><span id="ordVat">--</span></div>
-								</div>
-								<hr>
-								<div class="row">
-									<div class="col-xs-8">Total</div>
-									<div class="col-xs-4"><span id="ordTotalPayable">--</span></div>
-								</div>
-							</div>
+								</thead>
+								<tbody id="tbody-order-list-view">
+								</tbody>
+								<tfoot id="fbody-order-list-view">
+								</tfoot>
+							</table>
 						</div>
 					</div>
 				</div>
@@ -121,13 +127,16 @@
 	<script src="common/app.js"></script>
 	<script src="common/owner_sub_checker.js"></script>
 	<script>
+		var resto_latitude = null;
+		var resto_longitude = null;
+		var map, marker, geocoder;
 		var	myResto = null;
 		var	ordid = null;
 		var	orderList = {};
 		$(document).ready(function(){
-			loadRestaurantInfo(function(){
+			// loadRestaurantInfo(function(){
 				loadOrders();
-			});
+			// });
 
 			$('#btnSearch').click(function(e){
 				e.preventDefault();
@@ -172,9 +181,8 @@
 			CrapiApp.showCommonLoader();
 			var search = $('[name="search"]').val();
 			CrapiApp.orderListUrl({
-				name: search, 
-				// resto_id: myResto.id
-				resto_id: 1,
+				name: search,
+				resto_id: CrapiApp.config.login_data.resto_info.id,
 				order_status: ORDER_STATUS.success,
 			})
 			.then(function(res){
@@ -190,6 +198,16 @@
 						empRow.find('.ordDate').html(obj.created_at);
 						empRow.find('.ordName').html(obj.customer_fullname);
 						empRow.find('.ordViewBtn').attr('data-ordid', obj.id);
+						
+						if(obj.order_status == "failed") {
+							empRow.find('p.ordStatus').html('<span class="label label-danger">Failed</span>');
+						} else if(obj.is_received == 1) {
+							empRow.find('p.ordStatus').html('<span class="label label-success">Claimed</span>');
+						} else if(obj.is_received ==2) {
+							empRow.find('p.ordStatus').html('<span class="label label-warning">Not Claimed</span>');
+						} else {
+							empRow.find('p.ordStatus').html('');
+						}
 
 						$('#ordListResult').append(empRow);
 
@@ -208,48 +226,70 @@
 		function showOrderDetailModal(ordid, callback){
 			CrapiApp.showCommonLoader();
 			CrapiApp.getOrderDetails({
-				order_id: ordid,
-				order_status: ORDER_STATUS.success
+				order_id: ordid
 			})
-			.then(function(res){
+			.then(function(result_data){
 				console.warn('ORDERDETAILS -----------------');
-				console.warn(res);
-				$('#ordDetailListResult').html('');
-				if (typeof orderList[ordid] == 'undefined') {
-					console.warn("Customer order not found.");
-					return;
-				}
-				var customerInfo = orderList[ordid];
-				$('#ordNumber').html(customerInfo.order_number);
-				$('#customerInfo #custFullname').html(customerInfo.customer_fullname);
-				$('#customerInfo #custAddress').html(customerInfo.customer_address);
-				$('#customerInfo #custContactNumber').html(customerInfo.contact_number);
-				$('#customerInfo #custEmail').html(customerInfo.email);
-				$('#customerInfo #custCreated').html(customerInfo.created_at);
+				console.warn(result_data);
+				$('#tbody-order-list-view').empty();
+				$('#fbody-order-list-view').empty();
+				if (result_data.result == 'OK') {
+					var tbody_html = "";
+					var fbody_html = "";
+					var sub_total = 0;
+					var total_order = 0;
 
-				if (res.result === 'OK') {
-					var subTotalPrice = 0;
-					for (var key in res.data) {
-						// skip loop if the property is from prototype
-						if (!res.data.hasOwnProperty(key)) continue;
-						var obj = res.data[key];
-						var ordDetRow = $('#masterOrdDetailRow').clone();
-						ordDetRow.removeClass('hidden');
-						ordDetRow.find('.ordDetProdname').html(obj.name);
-						ordDetRow.find('.ordDetQty').html(obj.qty);
-						ordDetRow.find('.ordDetPrice').html(obj.price);
+					// - set customer's info
+					$('#order_hash').text(result_data.order.order_number);
+					$('#customer_name').text(result_data.customer.firstname+' '+result_data.customer.lastname);
+					$('#address').text(result_data.customer.address);
+					$('#contact_number').text(result_data.customer.contact_number);
+					$('#email_address').text(result_data.customer.email);
+					$('#date_time').text(result_data.order.created_at);
 
-						$('#ordDetailListResult').append(ordDetRow);
-						subTotalPrice = Number(obj.price) + Number(subTotalPrice);
+					// - load map
+					resto_latitude = Number(result_data.order.latitude);
+					resto_longitude = Number(result_data.order.longitude);
+					initMap();
+
+					// - employee info
+					$('#ordEmpName').text(result_data.employee.firstname + " " + result_data.employee.lastname);
+					$('#ordEmpContact').text(result_data.employee.contact_number);
+
+					// - order status
+					if (result_data.order.order_status == ORDER_STATUS.failed) {
+						$('#orderStatus').html('<span class="label label-danger">Rejected</span>');
+					} else if (result_data.order.is_received == 1) {
+						$('#orderStatus').html('<span class="label label-success">Claimed</span>');
+					} else if (result_data.order.is_received == 2) {
+						$('#orderStatus').html('<span class="label label-warning">Not Claimed</span>');
+					} else {
+						$('#orderStatus').html('');
 					}
 
-					var vatObj = CrapiApp.calculateVat(subTotalPrice);
-					$('#ordSubtotal').html(subTotalPrice);
-					$('#ordVat').html(vatObj.amount);
-					$('#ordTotalPayable').html(vatObj.total_payable);
+					// - order details 
+					$.each( result_data.data, function( key, value ) {
+						if (value.id == undefined) {
+							return false;
+						}
+						sub_total += parseInt(value.sub_total, 10);
+						tbody_html +='<tr>';
+							tbody_html +='<th class="text-left"> '+value.name+' </th>';
+							tbody_html +='<th class="text-center"> '+value.qty+' </th>';
+							tbody_html +='<th class="text-center">P '+value.price+' </th>';
+						tbody_html +='</tr>';
+					});
+					fbody_html +='<tr style="background-color:#ffe680;">';
+					fbody_html +='<th class="text-left"><b>TOTAL </b></th>';
+					fbody_html +='<th> </th>';
+					fbody_html +='<th class="text-center"><b>P '+numberWithCommas(sub_total)+'</b></th>';
+					// total_order = (sub_total*.12) + sub_total;
+					// +'<br>P '+numberWithCommas(total_order)+' (Incl. VAT)
+					fbody_html +='</tr>';
+					$('#tbody-order-list-view').empty().append(tbody_html);
+					$('#fbody-order-list-view').empty().append(fbody_html);
+					$('#VIEWord').modal('show');
 				}
-
-				if (typeof callback == 'function') {callback();}
 			})
 			.catch(function(err){
 				console.warn(err);
@@ -258,5 +298,34 @@
 				CrapiApp.removeCommonLoader();
 			});
 		}
+
+
+		function getDefaultMapCenter() {
+			var defaultLat = resto_latitude ||  10.3157,
+			defaultLng =  resto_longitude ||  123.8854;
+			console.log("LAT ---> " + defaultLat);
+			console.log("LNG ---> " + defaultLng);
+			return {
+				lat: defaultLat,
+				lng: defaultLng
+			} 
+		}
+
+		function initMap() {
+
+			geocoder = new google.maps.Geocoder;
+
+			map = new google.maps.Map(document.getElementById('map'), {
+				zoom: 14,
+				center: getDefaultMapCenter()
+			});
+
+			marker = new google.maps.Marker({
+				map: map,
+				position: getDefaultMapCenter()
+			});
+
+		}
 	</script>
+	<script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBb9gjcZGig7KAgoJC1EmMHA98Rp8Ayz98"></script>
 </html>
