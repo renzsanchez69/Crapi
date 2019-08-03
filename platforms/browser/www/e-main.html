@@ -85,6 +85,7 @@
 								<p><strong>Email address: </strong><span id="custEmail">--</span></p>
 								<p><strong>Date & Time: </strong><span id="custCreated">--</span></p>  
 								<p><strong>Payment Type: </strong><span id="custPaymentType">--</span></p>
+								<p><strong>Cash: </strong><span id="custCash">--</span></p>
 								<p><strong>Change: </strong><span id="custChange">--</span></p>
 							</div>
 							<div class="order" id="orderDetails">
@@ -514,7 +515,8 @@
 				$('#customerInfo #custCreated').html(customerInfo.created_at);
 				if (typeof res.order.payment_type !== 'undefined' && res.order.payment_type != null) {
 					$('#customerInfo #custPaymentType').html('<span class="label label-info">'+res.order.payment_type.toUpperCase()+'</span>');
-					$('#customerInfo #custChange').html(Number(res.order.cod_cash) - Number(res.order.sub_total));
+					$('#customerInfo #custCash').html("₱ " + res.order.cod_cash);
+					$('#customerInfo #custChange').html("₱ " + (Number(res.order.cod_cash) - Number(res.order.sub_total)));
 				}
 
 				if (res.result === 'OK') {

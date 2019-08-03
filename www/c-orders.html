@@ -81,6 +81,7 @@
 						<p> Status: <b id="orderStatus">--</b></p>
 						<!-- <p> GUID: <b id="orderGuid">--</b></p> -->
 						<p> Payment Type: <b id="orderPaymentType">--</b></p>
+						<p> Cash: <b id="orderCash">--</b></p>
 						<p> Change: <b id="orderChange">--</b></p>
 						<br>
 						<center><button class="btn btn-info" id="showCustLocationPickerModal">Update my location.</button></center>
@@ -365,7 +366,8 @@
 				// $('#orderGuid').text(result_data.order.order_guid);
 				if (typeof result_data.order.payment_type !== 'undefined' && result_data.order.payment_type != null) {
 					$('#orderPaymentType').html('<span class="label label-info">'+result_data.order.payment_type.toUpperCase()+'</span>');
-					$('#orderChange').html(Number(result_data.order.cod_cash) - Number(result_data.order.sub_total));
+					$('#orderCash').html("₱ " + result_data.order.cod_cash);
+					$('#orderChange').html("₱ " + (Number(result_data.order.cod_cash) - Number(result_data.order.sub_total)));
 				}
 
 				$('#btnOrderReceived').hide();
