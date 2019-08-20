@@ -32,16 +32,19 @@
 		</div>
 	<br>
 
+
+  <div class="row">
   	<div class="col-sm-4">
 	  <div class="">
 		<form action="">
 			<input class="search" type="text" placeholder="Search.." name="search">
-			<button id="btnSearch" class="btn btn-default btn-lg"><i class="fa fa-search"></i></button>
+
+			<input class="search" type="date" placeholder="Date from" name="date_from">
+			<input class="search" type="date" placeholder="Date to" name="date_to"><br>
+			<button id="btnSearch" class="btn btn-default btn-lg"><i class="fa fa-search"></i></button><br><hr>
 		</form>
 	  </div>
 	</div>
-
-  <div class="row">
   	<div class="col-sm-4">
   		<b>TOTAL SALES: </b>
   	</div>
@@ -94,8 +97,12 @@
 	function loadReport(){
 		CrapiApp.showCommonLoader();
 		var search = $('[name="search"]').val();
+		var date_from = $('[name="date_from"]').val();
+		var date_to = $('[name="date_to"]').val();
 		CrapiApp.getReportsList({
-			name: search, 
+			name: search,
+			date_from: date_from,
+			date_to: date_to,
 			resto_id: CrapiApp.config.login_data.resto_info.id
 		})
 		.then(function(res){
