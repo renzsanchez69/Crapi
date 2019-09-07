@@ -218,7 +218,7 @@ tr{background-color: #f2f2f2;}
   to {top: 0; opacity: 1}
 }
 
-.reg input{
+.reg input, .reg select{
   width: 90%;
   padding: 10px;
   margin-bottom: 15px;
@@ -270,7 +270,7 @@ tr{background-color: #f2f2f2;}
 
 @media screen and (max-width: 1025px){
   .modal-content {
-    margin: 15% 30%;
+    /*margin: 15% 30%;*/
   }
   .left input {
     padding: 10px;
@@ -280,7 +280,7 @@ tr{background-color: #f2f2f2;}
 
 @media screen and (max-width: 769px){
   .modal-content {
-    margin: 15% 20%;
+    /*margin: 15% 20%;*/
   }
 }
 
@@ -310,3 +310,13 @@ tr{background-color: #f2f2f2;}
     font-size: 1.2em;
   }
 }
+
+.modal{
+  background: rgba(0 ,0,0,.5);
+}
+
+div#adv-search button, 
+div#adv-search input{
+	border-radius: 0;
+	height: 40px; 
+} 

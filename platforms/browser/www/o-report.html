@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>WELCOME</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="js/o-main.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/o-main.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link href="css/jquery.growl.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+<!-- Top Navigation Menu -->
+<div class="topnav" id="myTopnav">
+	<a href="o-report.html" class="active">Reports</a>
+	<a href="o-main.html">Employee</a>
+	<a href="o-menu.html">Food Menu</a>
+	<a href="o-sub.html">Subscription</a>
+	<a href="o-hist.html">Order History</a>
+	<a href="index.html" id="log-out">Logout</a>
+	<a href="javascript:void(0);" class="icon" onclick="myFunction()">
+		<i class="fa fa-bars"></i>
+	</a>
+</div>
+
+<div class="main">
+	<br>
+		<div class="title">
+			<h1> Reports</h1>
+		</div>
+	<br>
+
+
+  <div class="row">
+  	<div class="col-sm-4">
+	  <div class="">
+		<form action="">
+			<input class="search" type="text" placeholder="Search.." name="search">
+
+			<input class="search" type="date" placeholder="Date from" name="date_from">
+			<input class="search" type="date" placeholder="Date to" name="date_to"><br>
+			<button id="btnSearch" class="btn btn-default btn-lg"><i class="fa fa-search"></i></button><br><hr>
+		</form>
+	  </div>
+	</div>
+  	<div class="col-sm-4">
+  		<b>TOTAL SALES: </b>
+  	</div>
+  	<div class="col-sm-2">
+  		<span id="reportTotalSales">--</span>
+  	</div>
+  </div>
+
+  <table class="table table-condensed">
+	<thead>
+	  <tr>
+		<th>Order Date</th>
+		<th>Employee Name</th>
+		<th>Sub Total</th>
+	  </tr>
+	</thead>
+	<tbody id="reportListResult"></tbody>
+
+	<!-- data -->
+	<tr id="masterReportRow" class="hidden">
+	  <th class="reportOrderDate">--</th>
+	  <th class="reportEmployeeName">--</th>
+	  <th class="reportSubTotal">--</th>
+	</tr>
+  </table>
+
+
+</div>
+
+</body>
+<script src="lib/jquery.min.js"></script>
+<script src="lib/bootstrap.min.js"></script>
+<script src="js/jquery.growl.js" type="text/javascript"></script>
+<script src="common/constants.js"></script>
+<script src="common/app.js"></script>
+<script src="common/owner_sub_checker.js"></script>
+<script>
+	
+	$(document).ready(function(){
+		loadReport();
+
+		$('#btnSearch').click(function(e){
+			e.preventDefault();
+			loadReport();
+		});
+
+
+	});
+
+	function loadReport(){
+		CrapiApp.showCommonLoader();
+		var search = $('[name="search"]').val();
+		var date_from = $('[name="date_from"]').val();
+		var date_to = $('[name="date_to"]').val();
+		CrapiApp.getReportsList({
+			name: search,
+			date_from: date_from,
+			date_to: date_to,
+			resto_id: CrapiApp.config.login_data.resto_info.id
+		})
+		.then(function(res){
+			console.log(res);
+			$('#reportListResult').html('');
+			var reportTotalSales = 0;
+			if (res.result === 'OK') {
+				for (var key in res.data) {
+					// skip loop if the property is from prototype
+					if (!res.data.hasOwnProperty(key)) continue;
+					var obj = res.data[key];
+					console.log(obj);
+					var reportRow = $('#masterReportRow').clone();
+					reportRow.removeClass('hidden');
+					reportRow.find('.reportOrderDate').html(obj.created_at);
+					reportRow.find('.reportEmployeeName').html(obj.employee_fullname);
+					reportRow.find('.reportSubTotal').html('₱ '+obj.sub_total);
+					reportTotalSales = Number(reportTotalSales) + Number(obj.sub_total);
+					$('#reportListResult').append(reportRow);
+				}
+			}
+
+			$('#reportTotalSales').html('₱ '+reportTotalSales);
+		})
+		.catch(function(err){
+			console.warn(err);
+		})
+		.always(function(){
+			CrapiApp.removeCommonLoader();
+		});
+	}
+
+</script>
+</html>

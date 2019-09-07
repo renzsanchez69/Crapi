@@ -1,95 +1,93 @@
-<!DOCTYPE>
+<!DOCTYPE html>
 <html>
 <head>
     <title>MENU</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/o-main.css" type="text/css" >
-    <link rel="stylesheet" href="css/style.css" type="text/css" >
-    <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css" >
-    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" >
+    <script src="js/o-main.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/o-main.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/o-menu.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
     <link href="css/jquery.growl.css" rel="stylesheet" type="text/css" />
-</head>
-<body id="bg-color">
+<body>
 
 <!-- Top Navigation Menu -->
 <div class="topnav" id="myTopnav">
     <a href="e-menu.html" class="active">Food Menu</a>
     <a href="e-main.html">Orders</a>
     <a href="e-hist.html">Order History</a>
-    <a href="index.html">Logout</a>
+    <a href="index.html" id="log-out">Logout</a>
     <a href="javascript:void(0);" class="icon" onclick="myFunction()">
         <i class="fa fa-bars"></i>
     </a>
 </div>
 
 <div class="main">
+    <br>
     <div class="title">
-        <div class="row">
-            <div class="col-sm-12 col-md-12 col-lg-12">
-                <h1>MENU OF THE DAY</h1>
-            </div>
-        </div>
+        <h1>MENU OF THE DAY</h1>
+    </div>
+    <br>
+
+    <div class="left">
+        <form action="">
+            <input class="search" type="text" placeholder="Search.." name="search">
+            <button type="submit" id="btnSearch" class="btn btn-default btn-lg"><i class="fa fa-search"></i></button>
+        </form>
     </div>
 
-    <div class="left mt-5">
-        <div class="row">
-            <div class="col-sm-12 col-md-12 col-lg-12">
-                <form action="" method="GET">
-                    <input class="search" type="text" placeholder="Search.." name="search">
-                    <button type="button" class="btn-light search-btn-light" id="fsearch"><i class="fa fa-search"></i></button>
+    <div class="right">
+        <button class="add showModalAddForm" data-toggle="modal" data-target="#ADDprod">ADD FOOD</button>
+    </div>
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>Food name</th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="prodListResult"></tbody>
+
+        <!-- data -->
+        <tr id="masterProdRow" class="hidden">
+            <th class="prodName">--</th>
+            <th class="prodPrice">--</th>
+            <th>
+                <button class="prodEditBtn btn btn-info btn-sm"><i class="glyphicon glyphicon-edit"></i></button>
+                <button class="prodDeleteBtn btn btn-danger btn-sm" data-toggle="modal" data-target="#DELprod"><i class="glyphicon glyphicon-trash"></i></button>
+            </th>
+        </tr>
+    </table>
+</div>
+
+
+<!-- Add Modal -->
+<div class="modal fade" id="ADDprod" role="dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close" data-dismiss="modal">&times;</span>
+            <h2>ADD FOOD</h2>
+        </div>
+        <div class="modal-body">
+            <div class="regbox">
+                <form class="reg" id="createForm" enctype="multipart/form-data">
+                    <img src="http://placehold.it/150x150/FFC107/000000" class="img-responsive img-thumbnail img-upload-preview" style="margin-bottom: 20px; max-height: 150px;">
+                    <p for="image">Select image of food</p>
+                    <input type="file" name="product_image" class="img-input" required>
+                    <input type="hidden" name="image_category" value="product_image" required>
+                    <input type="text" placeholder="Food name" name="name" required>
+                    <input type="text" placeholder="Food description" name="details" required>
+                    <input type="text" placeholder="Food price" name="price" required>
+                    <button class="submit" id="create_btn">SUBMIT</button>
                 </form>
             </div>
         </div>
     </div>
-
-    <div class="right">
-        <div class="row">
-            <div class="col-sm-12 col-md-12 col-lg-12">
-                <button class="search-btn-light add" id="myAdd" data-toggle="modal" data-target="#ADDfood">ADD FOOD</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="container-fluid">        
-        <table class="table">
-            <thead class="thead-dark">
-                <tr>
-                    <th scope="col"><b>Food name</b></th>
-                    <th scope="col"><b>Price</b></th>
-                    <th  class="text-right" scope="col"><b>Action</b></th>
-                </tr>
-            </thead>
-            <tbody id="product-data">
-            </tbody>
-        </table>
-    </div>
 </div>
 
-<!-- Add Modal -->
-<div class="modal fade" id="ADDfood" role="dialog">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="close" data-dismiss="modal">&times;</span>
-                <h2>ADD FOOD</h2>
-            </div>
-            <div class="modal-body">
-                <div class="regbox">
-                    <form class="reg" enctype="multipart/form-data">
-                        <label for="image">Select image of food</label>
-                        <input type="file" name="image" id="image">
-                        <input type="text" placeholder="Food name" name="fname" required>
-                        <input type="text" placeholder="Food description" name="fdesc" required>
-                        <input type="text" placeholder="Food price" name="fprice" required>
-                        <button class="search-btn-light add-food" id="add-food">Submit</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="EDITfood" role="dialog">
+<div class="modal fade" id="EDITprod" role="dialog">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -98,12 +96,15 @@
             </div>
             <div class="modal-body">
                 <div class="regbox">
-                    <form class="reg" action=""  enctype="multipart/form-data" method="GET">
-                        <input type="hidden" name="editfid" id="editfid">
-                        <input type="text" placeholder="Food name" name="editfname" required>
-                        <input type="text" placeholder="Food description" name="editfdesc" required>
-                        <input type="text" placeholder="Food price" name="editfprice" required>
-                        <button class="search-btn-light edit-food" id="edit-food">Save</button>
+                    <form class="reg" id="updateForm" enctype="multipart/form-data">
+                        <img class="img-responsive img-thumbnail img-upload-preview" style="margin-bottom: 20px; max-height: 150px;">
+                        <input type="hidden" name="id">
+                        <input type="file" name="product_image" class="img-input">
+                        <input type="hidden" name="image_category" value="product_image" required>
+                        <input type="text" placeholder="Food name" name="name" required>
+                        <input type="text" placeholder="Food description" name="details" required>
+                        <input type="text" placeholder="Food price" name="price" required>
+                        <button class="submit" id="edit_btn">SAVE</button>
                     </form>
                 </div>
             </div>
@@ -111,145 +112,261 @@
     </div>
 </div>
 
-<div class="modal fade" id="DELfood" role="dialog">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <input type="hidden" id="del-id">
-                <input type="hidden" id="del-fdesc">
-                <span class="close" data-dismiss="modal">&times;</span>
-                <h2>DELETE FOOD</h2>
-            </div>
-            <div class="modal-body">
-                <div class="regbox">
-                    <p>Are you sure you want to delete this food?</p>
-                    <button class="search-btn-light add" id="del-food"  class="close" data-dismiss="modal">Delete</button>
-                    <button class="search-btn-light delete-food" class="close" data-dismiss="modal">No</button>
-                </div>
-            </div>
-        </div>
+<div class="modal fade" id="DELprod" role="dialog">
+  <div class="modal-dialog modal-lg">
+   <div class="modal-content">
+    <div class="modal-header">
+     <span class="close" data-dismiss="modal">&times;</span>
+     <h2>DELETE FOOD</h2>
     </div>
+   <div class="modal-body">
+    <div class="regbox">
+     <p>Are you sure you want to delete this food?</p>
+     <button class="delete" name="del_btn">DELETE</button>
+     <button data-dismiss="modal">NO</button>
+    </div>
+   </div>
+   </div>
+  </div>
 </div>
-<script src="js/o-main.js"></script>
+
+</div>
+
+</body>
 <script src="lib/jquery.min.js"></script>
 <script src="lib/bootstrap.min.js"></script>
 <script src="js/jquery.growl.js" type="text/javascript"></script>
-<script type="text/javascript">
-    $(document).ready(function() {
-        //$.growl({ title: "Growl", message: "The kitten is awake!" });
-        //$.growl.error({ message: "The kitten is attacking!" });
-        //$.growl.notice({ message: "The kitten is cute!" });
-        //$.growl.warning({ message: "The kitten is ugly!" });
-        get_data();
+<script src="common/constants.js"></script>
+<script src="common/app.js"></script>
+<script src="common/common.js"></script>
+<script src="common/owner_sub_checker.js"></script>
+<script>
+    var restoid = CrapiApp.config.login_data.resto_info.id;
+    var prodid = null;
+    $(document).ready(function(){
+        // loadRestaurantInfo();
+        loadProducts();
+
+        $('#btnSearch').click(function(e){
+            e.preventDefault();
+            loadProducts();
+        });
+
+        $(document).on('click', '.prodDeleteBtn', function(e){
+            e.preventDefault();
+            prodid = $(this).data('prodid');
+        });
+
+        $(document).on('click', '[name="del_btn"]', function(e){
+            e.preventDefault();
+            deleteProduct(prodid);
+        });
+
+        $(document).on('click', '.prodEditBtn', function(e){
+            e.preventDefault();
+            $('#updateForm')[0].reset();
+            prodid = $(this).data('prodid');
+
+            showProductEditModal(prodid, function(){
+                 $('#EDITprod').modal('show');
+            });
+        });
+
+        $(document).on('click', '#edit_btn', function(e){
+            e.preventDefault();
+            updateProduct();
+        });
+
+        $(document).on('click', '#create_btn', function(e){
+            e.preventDefault();
+            createProduct();
+        });
+
+        $(document).on('click', '.showModalAddForm', function(){
+            $('#createForm')[0].reset();
+            $('#createForm .img-upload-preview').attr('src', IMAGE_PLACEHOLDER_URL);
+        });
     });
 
-    // - Get menu data
-    function get_data() {
-        $.ajax({
-            url: "http://localhost/menu.php"
-        }).then(function(data) {
-            console.log(data);
-            var html = "";
-            $.each( data, function( key, value ) {
-                if (value.id == undefined) {
-                    return false;
+    function loadProducts(){
+        CrapiApp.showCommonLoader();
+        var search = $('[name="search"]').val();
+        CrapiApp.searchProducts({
+            name: search,
+            resto_id: restoid
+        })
+        .then(function(res){
+            $('#prodListResult').html('');
+
+            if (res.result === 'OK') {
+                for (var key in res.data) {
+                    // skip loop if the property is from prototype
+                    if (!res.data.hasOwnProperty(key)) continue;
+                    var obj = res.data[key];
+                    var prodRow = $('#masterProdRow').clone();
+                    prodRow.removeClass('hidden');
+                    prodRow.find('.prodName').html(obj.name);
+                    prodRow.find('.prodPrice').html(obj.price);
+                    prodRow.find('.prodEditBtn').attr('data-prodid', obj.id);
+                    prodRow.find('.prodDeleteBtn').attr('data-prodid', obj.id);
+
+                    $('#prodListResult').append(prodRow);
                 }
-                html +='<tr '+value.id+'><th id="custname">' + value.food_name +'</th><th>P ' + value.price +'</th><th class="text-right">';
-                html +='<button onclick="edit_menu('+value.id+',\'' + value.food_name + '\',\'' + value.description + '\','+value.price+'); return false;" class="editbut" name="edit_btn"><i class="glyphicon glyphicon-edit"></i></button>';
-                html +='<button onclick="del_menu('+value.id+',\'' + value.food_name + '\'); return false;" class="deletebut" name="delete_btn"><i class="glyphicon glyphicon-trash"></i></button>';
-                html +='</th></tr>';
-            }); 
-            $('#product-data').empty().append(html);
+            }
+        })
+        .always(function(){
+            CrapiApp.removeCommonLoader();
         });
     }
-    // -Insert menu data
-    $("#add-food").click(function(){
-        var fname = $('input[name="fname"]').val();
-        var fdesc = $('input[name="fdesc"]').val();
-        var fprice = $('input[name="fprice"]').val();
-        $.ajax({
-            type: "GET",
-            data: {fname:fname,fdesc:fdesc,fprice:fprice},
-            contentType: "application/json; charset=utf-8",
-            url: "http://localhost/add_menu.php",
-            success: function(data){
-                $.growl.notice({ title: "Success", message: "New food added!" });
-            },
-            complete:function(){
-                $.growl.notice({ title: "Success", message: "New food added!" });
-            }
-        });
-    });
 
-    // -Edit menu data
-    function edit_menu(fid,fname,fdesc,fprice) {
-        $('#EDITfood').modal('show');
-        $('#editfid').val(fid);
-        $('input[name="editfname"]').val(fname);
-        $('input[name="editfdesc"]').val(fdesc);
-        $('input[name="editfprice"]').val(fprice);
+    // function loadRestaurantInfo(){
+    //     CrapiApp.searchResto({
+    //         owner_id: CrapiApp.config.login_data.user_id
+    //     })
+    //     .then(function(res){
+    //         $('.loader').remove();
+
+    //         if (res.result === 'OK') {
+    //             if (typeof res.data[0] !== 'undefined') {
+    //                 var obj = res.data[0];
+    //                 restoid = obj.id
+    //                 loadProducts();
+    //             }
+    //         }
+    //     })
+    //     .catch(function(err){
+    //         console.warn(err);
+    //     });
+    // }
+
+    function deleteProduct(prodid){
+        CrapiApp.showCommonLoader();
+        CrapiApp.deleteProduct({
+            id: prodid
+        })
+        .then(function(res){
+            console.log(res);
+            if (res.result === 'OK') {
+                $.growl.notice({ message: "Successfully deleted." });
+            }
+        })
+        .catch(function(err){
+            console.warn(err);
+        })
+        .always(function(){
+            loadProducts();
+            CrapiApp.removeCommonLoader();
+            $('#DELprod').modal('hide');
+        });
     }
 
-    $("#edit-food").click(function(){
-        var fid = $('#editfid').val();
-        var fname = $('input[name="editfname"]').val();
-        var fdesc = $('input[name="editfdesc"]').val();
-        var fprice = $('input[name="editfprice"]').val();
-        $.ajax({
-            type: "GET",
-            data: {fid:fid,fname:fname,fdesc:fdesc,fprice:fprice},
-            contentType: "application/json; charset=utf-8",
-            url: "http://localhost/edit_menu.php",
-            success: function(data){
-                $.growl.notice({ title: desc, message: "Data has been successfully updated!" });
-            }
-        });
-    });
+    function showProductEditModal(prodid, callback){
+        CrapiApp.showCommonLoader();
+        CrapiApp.getProductInfo({
+            id: prodid
+        })
+        .then(function(res){
+            console.log(res);
+            if (res.result === 'OK' && !$.isEmptyObject(res.data)) {
+                var obj = res.data;
 
-    // -Delete menu data
-    function del_menu(fid,fdesc) {
-        $('#DELfood').modal('show');
-        $('#del-id').val(fid);
-        $('#del-fdesc').val(fdesc);
+                $('#updateForm [name="id"]').val(obj.id);
+                $('#updateForm [name="name"]').val(obj.name);
+                $('#updateForm [name="details"]').val(obj.details);
+                $('#updateForm [name="price"]').val(obj.price);
+                if (typeof obj.image_url != undefined && obj.image_url != null && obj.image_url.length > 0) {
+                    $('#updateForm .img-upload-preview').attr('src', UPLOADS_URL+obj.image_url);
+                } else {
+                    $('#updateForm .img-upload-preview').attr('src', IMAGE_PLACEHOLDER_URL);
+                }
+                
+                if (typeof callback === 'function') {
+                    callback();
+                }
+            }
+        })
+        .catch(function(err){
+            console.warn(err);
+        })
+        .always(function(){
+            CrapiApp.removeCommonLoader();
+        });
     }
 
-    $("#del-food").click(function(){
-        var fid = $('#del-id').val();
-        var desc = $('#del-fdesc').val();
-        $.ajax({
-            type: "GET",
-            data: {fid:fid},
-            contentType: "application/json; charset=utf-8",
-            url: "http://localhost/delete_menu.php",
-            success: function(data){
-                get_data();
-                $.growl.notice({ title: desc, message: "Data has been successfully deleted!" });
-            }
-        });
-    });
+    function updateProduct(){
+        CrapiApp.showCommonLoader();
+        var formData = $('#updateForm').serializeArray();
+        var newFormData = CrapiApp.getCleanFormData(formData);
 
-    $("#fsearch").click(function(){
-        var fsearch = $('input[name="search"]').val();     
-        $.ajax({
-            type: "GET",
-            data: {fsearch:fsearch},
-            contentType: "application/json; charset=utf-8",
-            url: "http://localhost/search_menu.php",
-            success: function(data){
-                var html = "";
-                $.each( data, function( key, value ) {
-                    if (value.id == undefined) {
-                        return false;
-                    }
-                    html +='<tr '+value.id+'><th id="custname">' + value.food_name +'</th><th>P ' + value.price +'</th><th class="text-right">';
-                    html +='<button onclick="edit_menu('+value.id+',\'' + value.food_name + '\',\'' + value.description + '\','+value.price+'); return false;" class="editbut" name="edit_btn"><i class="glyphicon glyphicon-edit"></i></button>';
-                    html +='<button onclick="del_menu('+value.id+'); return false;" class="deletebut" name="delete_btn"><i class="glyphicon glyphicon-trash"></i></button>';
-                    html +='</th></tr>';
-                });
-                $('#product-data').empty().append(html);
+        uploadProductImage($('#updateForm'), function(data){
+            console.log(data);
+            if (typeof data !== 'undefined' && data != null && typeof data.image_url !== 'undefined') {
+                newFormData.image_url = data.image_url;
+            }
+            console.log(newFormData);
+            CrapiApp.updateProduct(newFormData)
+            .then(function(res){
+                console.log(res);
+                if (res.result === 'OK') {
+                    $.growl.notice({ message: "Successfully updated." });
+                } else {
+                    $.growl.error({ message: res.error });
+                }
+            })
+            .catch(function(err){
+                console.warn(err);
+            })
+            .always(function(){
+                loadProducts();
+                CrapiApp.removeCommonLoader();
+                $('#EDITprod').modal('hide');
+            });
+        });
+    }
+
+
+    function createProduct(){
+        CrapiApp.showCommonLoader();
+
+        var formData = $('#createForm').serializeArray();
+        var newFormData = CrapiApp.getCleanFormData(formData);
+        newFormData['resto_id'] = restoid;
+
+        uploadProductImage($('#createForm'), function(data){
+            console.log(data);
+            if (typeof data !== 'undefined' && data != null && typeof data.image_url !== 'undefined') {
+                newFormData.image_url = data.image_url;
+            }
+            CrapiApp.createProduct(newFormData)
+            .then(function(res){
+                console.log(res);
+                if (res.result === 'OK') {
+                    $.growl.notice({ message: "Successfully added." });
+                } else {
+                    $.growl.error({ message: res.error });
+                }
+            })
+            .catch(function(err){
+                console.warn(err);
+            })
+            .always(function(){
+                loadProducts();
+                CrapiApp.removeCommonLoader();
+                $('#createForm')[0].reset();
+                $('#ADDprod').modal('hide');
+            });
+        });
+    }
+
+    function uploadProductImage(form, callback){
+        CrapiApp.showCommonLoader();
+
+        CrapiApp.uploadImage(form).always(function(res){
+            console.log(res);
+            if (typeof callback === 'function') {
+                callback(res.data);
             }
         });
-    });
+    }
 </script>
-</body>
 </html>

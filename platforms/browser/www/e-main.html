@@ -1,208 +1,583 @@
-<!DOCTYPE>
+<!DOCTYPE html>
 <html>
-<head>
-    <title>MENU</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/o-main.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/order_list.css">
-    <link rel="stylesheet" href="css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-</head>
-<body id="bg-color">
+	<head>
+			<title>ORDER HISTORY</title>
+			<meta name="viewport" content="width=device-width, initial-scale=1">
+			<script src="js/o-main.js"></script>
+			<link rel="stylesheet" type="text/css" href="css/o-main.css">
+			<link rel="stylesheet" type="text/css" href="css/style.css">
+			<link rel="stylesheet" href="css/font-awesome.min.css">
+			<link rel="stylesheet" href="css/bootstrap.min.css">
+			<script src="lib/jquery.min.js"></script>
+			<script src="lib/bootstrap.min.js"></script>
+			<link href="css/jquery.growl.css" rel="stylesheet" type="text/css" />
+	</head>
+	<body>
 
-<!-- Top Navigation Menu -->
-<div class="topnav" id="myTopnav">
-    <a href="e-menu.html">Food Menu</a>
-    <a href="e-main.html" class="active">Orders</a>
-    <a href="e-hist.html">Order History</a>
-    <a href="index.html">Logout</a>
-    <a href="javascript:void(0);" class="icon" onclick="myFunction()">
-        <i class="fa fa-bars"></i>
-    </a>
-</div>
+		<!-- Top Navigation Menu -->
+		<div class="topnav" id="myTopnav">
+			<a href="e-main.html" class="active">Orders</a>
+			<a href="e-menu.html">Food Menu</a>
+			<a href="e-hist.html">Order History</a>
+			<a href="index.html" id="log-out">Logout</a>
+			<a href="javascript:void(0);" class="icon" onclick="myFunction()">
+				<i class="fa fa-bars"></i>
+			</a>
+		</div>
 
-<div class="main">
-    <div class="title">
-        <div class="row">
-            <div class="col-sm-12 col-md-12 col-lg-12">
-                <h1>Order list</h1>
-            </div>
-        </div>
-    </div>
+		<div class="main">
+			<br>
+			<div class="title">
+				<h1>Orders</h1>
+			</div>
+			<br>
 
-    <div class="left mt-5">
-        <div class="row">
-            <div class="col-sm-12 col-md-12 col-lg-12">
-                <form action="">
-                    <input class="search" type="text" placeholder="Search.." name="search">
-                    <button type="submit" class="btn-light search-btn-light"><i class="fa fa-search"></i></button>
-                </form>
-            </div>
-        </div>
-    </div>
+			<div class="left">
+				<form action="">
+					<input class="search" type="text" placeholder="Search.." name="search">
+					<button id="btnSearch" class="btn btn-default btn-lg"><i class="fa fa-search"></i></button>
+				</form>
+			</div>
 
-    <div class="container-fluid">        
-        <table class="table">
-            <thead>
-              <tr>
-                <th>Order ID</th>
-                <th id="custname">Full name</th>
-                <th class="text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody id="product-data">
-            </tbody>
-        </table>
-    </div>
-</div>
+			<table class="table table-condensed">
+				<thead>
+					<tr>
+						<th>Order Date</th>
+						<th>Full name</th>
+						<th>Payment</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody id="ordListResult"></tbody>
 
-<!-- Add Modal -->
-<!-- Add Modal -->
-<div class="modal fade" id="VIEWord" role="dialog">
-<div class="modal-content">
-  <span class="close" data-dismiss="modal">&times;</span>
-  <div class="header">
-    <h2 class="order_hash"></h2>
-  </div>
-  <div class="modal-body">
-    <!-- php | API KEY -->
-    <div class="location">
-      <div class="timebox" data-toggle="modal" data-target="#LOCinfo">13 MINS | 6.5 KM</div>
-    </div>
-    <!-- php -->
-     <div class="info">
-       <center>
-        <button class="custInfo" data-toggle="modal" data-target="#CUSTinfo"><p class="customer_name"></p></button>
-       </center>
-     </div>
-     <div class="t-order">
-      <table>
-        <tr>
-          <th style="width: 67%; text-align: left;">Product</th>
-          <th style="width: 5%; text-align: center;">Qty</th>
-          <th style="width: 25%; text-align: left;">Price</th>
-          <th style="width: 3%; text-align: right;"></th>
-        </tr>
-      </table>
-     </div>
-     <div class="order">
-      <table>
-        <!-- php -->
-        <tr id="history-details">
-        </tr>
-      </table>
-     </div>
-    <div class="modal-footer">
-      <div class="labelT">TOTAL</div><div class="labelV">(Incl. VAT)</div>
-      <!-- php --><div class="TotalA">P 92.00</div><!-- php -->
-      <!-- php | when customer chooses on-spot payment method-->
-      <div class="labelP">PAYMENT</div><div class="TotalP">P 100.00</div>
-      <div class="labelC">CHANGE</div><div class="TotalC">P 8.00</div>
-      <!-- php -->
-    </div>
-    <div class="Delibox">
-      <button class="confirm" data-dismiss="modal" data-toggle="modal" data-target="#Dprompt">DELIVERED</button>
-    </div>
-  </div>
- </div>
-</div>
+				<!-- data -->
+				<tr id="masterOrdRow" class="hidden">
+					<th class="ordDate">--</th>
+					<th class="ordName">--</th>
+					<th>
+						<span class="label label-info ordPaymentMethod hidden"></span><br>
+						<span class="label label-success badgeReady hidden">Ready</span>
+					</th>
+					<th>
+						<button class="ordViewBtn btn btn-info btn-sm"><i class="glyphicon glyphicon-eye-open"></i></button>
+						<button class="ordApprovedBtn btn btn-warning btn-sm"><i class="glyphicon glyphicon-ok-sign"></i></button>
+						<button class="ordReadyBtn btn btn-success btn-sm"><i class="glyphicon glyphicon-ok-sign"></i></button>
+						<button class="ordRejectBtn btn btn-danger btn-sm"><i class="fa fa-times"></i></button>
+					</th>
+				</tr>
+			</table>
 
-<!-- php -->
-<div class="modal fade" id="Dprompt" role="dialog">
-  <div class="modal-content" id="foodreq">
-    <div class="modal-header" id="custreq">
-      <span class="close" data-dismiss="modal">&times;</span>
-      <h2 class="food_name"></h2>
-    </div>
-    <div class="modal-body" id="qtyFOOD">
-      <div class="regbox">
-        <p>Are you sure that the customer received the order?</p>
-        <button class="confirm" name="del_btn" data-dismiss="modal">YES</button>
-        <button data-dismiss="modal" data-toggle="modal" data-target="#VIEWord" >NO</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- php -->
-      
-<!-- php -->
-<div class="modal fade" id="CUSTreq" role="dialog">
-  <div class="modal-content" id="foodreq">
-    <div class="modal-header" id="custreq">
-      <span class="close" data-dismiss="modal">&times;</span>
-      <h2 class="food_name" ></h2>
-    </div>
-    <div class="modal-body" id="qtyFOOD">
-      <p class="request">Please add more sauce. Thank you!</p>
-    </div>
-  </div>
-</div>
-<!-- php -->
+			<!-- Add Modal -->
+			<div class="modal fade" id="VIEWord" role="dialog" data-backdrop="false">
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<span class="close" data-dismiss="modal">&times;</span>
+							<h2>ORD#: <span id="ordNumber">--</span></h2>
+						</div>
+						<div class="modal-body">
+							<h3 class="text-center">Customer's Location</h3>
+							<div id="map" style="height: 250px;"></div><br>
+							<div class="info" id="customerInfo">
+								<p><strong>Customer name: </strong><span id="custFullname">--</span></p>
+								<p><strong>Address: </strong><span id="custAddress">--</span></p>
+								<p><strong>Contact number: </strong><span id="custContactNumber">--</span></p>
+								<p><strong>Email address: </strong><span id="custEmail">--</span></p>
+								<p><strong>Date & Time: </strong><span id="custCreated">--</span></p>  
+								<p><strong>Payment Type: </strong><span id="custPaymentType">--</span></p>
+								<p><strong>Cash: </strong><span id="custCash">--</span></p>
+								<p><strong>Change: </strong><span id="custChange">--</span></p>
+							</div>
+							<div class="order" id="orderDetails">
+								<table class="table table-condensed text-right" style="margin-bottom:0">
+									<thead>
+										<tr>
+											<th>Product</th>
+											<th>Qty</th>
+											<th>Price</th>
+										</tr>
+									</thead>
+									
+									<tbody id="ordDetailListResult"></tbody>
+									<tr id="masterOrdDetailRow" class="hidden">
+										<th class="ordDetProdname">--</th>
+										<th class="ordDetQty">--</th>
+										<th class="ordDetPrice text-right">--</th> 
+									</tr>
+								</table>
+							</div>
+							<div class="modal-footer">
+								<div class="row">
+									<div class="col-xs-8">Total</div>
+									<div class="col-xs-4"><span id="ordSubtotal">--</span></div>
+								</div>
+								<!-- <div class="row">
+									<div class="col-xs-8">+ 12% VAT</div>
+									<div class="col-xs-4"><span id="ordVat">--</span></div>
+								</div>
+								<hr>
+								<div class="row">
+									<div class="col-xs-8">Total</div>
+									<div class="col-xs-4"><span id="ordTotalPayable">--</span></div>
+								</div> -->
+							</div>
+							<br>
+							<button class="btn btn-success" id="btnOrderReceived" style=" padding: 10px !important; width: 200px; border-radius: 0; margin-bottom: 5px;">
+								<span class="fa fa-check"></span> Order Received 
+							</button>
+							<button class="btn btn-warning mt-1" id="btnOrderNotClaimed" style=" padding: 10px !important; width: 200px; border-radius: 0; ">
+								<span class="fa fa-times"></span> Order Not Claimed 
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
 
-<div class="modal fade" id="CUSTinfo" role="dialog">
-<div class="modal-content" id="infoCUST">
-  <div class="modal-header">
-    <span class="close" data-dismiss="modal">&times;</span>
-   <h2 class="order_hash"></h2>
-  </div>
-  <div class="modal-body">
-   <div class="cust">
-    <!-- php -->
-    Customer name:<p class="customer_name"></p>
-    Address:<p id="customer_address"> </p>
-    Contact number:<p id="customer_contact"></p>
-    Email:<p id="customer_email"> </p>
-    Date & Time:<p  id="customer_order_date"> </p> 
-    <!-- php -->
-   </div>
-  </div>
-</div>
-</div>
+			<!-- Add Modal -->
+			<div class="modal fade" id="confirmActionModal" role="dialog" data-backdrop="false">
+				<div class="modal-dialog modal-md">
+					<div class="modal-content">
+						<div class="modal-header">
+							<span class="close" data-dismiss="modal">&times;</span>
+							<h2 id="modalConfirmQuestion"></h2>
+							<h2>ORD#: <span id="ordNumbered">--</span></h2>
+						</div>
+						<div class="modal-body">
+							<div class="info" id="customerInfo">
 
-<div class="modal fade" id="LOCinfo" role="dialog">
-<div class="modal-content" id="infoCUST">
-  <div class="modal-header">
-    <span class="close" data-dismiss="modal">&times;</span>
-    <h2 class="order_hash">BM3Y4</h2>
-  </div>
-  <div class="modal-body">
-   <div class="cust">
-    <!-- php | location of customer -->
-   </div>
-  </div>
-</div>
-</div>
-<script src="js/o-main.js"></script>
-<script src="lib/jquery.min.js"></script>
-<script src="lib/bootstrap.min.js"></script>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $.ajax({
-            url: "http://localhost/order_list.php"
-        }).then(function(data) {
-            console.log(data);
-            var html = "";
-            $.each( data, function( key, value ) {
-                if (value.id == undefined) {
-                        return false;
-                }
-                html +='<tr '+value.id+'><th id="custname">' + value.order_id +'</th><th>' + value.full_name +'</th><th class="text-right"><button class="viewbut" name="view_btn" onclick="view_details(\'' + value.order_date + '\',\'' + value.full_name + '\',\'' + value.description + '\',\'' + value.address + '\',\'' + value.email_address + '\',\'' + value.contact_no + '\',\'' + value.food_name + '\','+value.price+','+value.qty+',\'' + value.order_id + '\'); return false;"><i class="glyphicon glyphicon-eye-open"></i></button></th></tr>';
-            });
-            $('#product-data').empty().append(html);
-        });
-    });
-    function view_details(date_order,full_name,description,address,email_address,contact_no,food_name,price,qty,hash) {
-        $('#VIEWord').modal('show');
-        $('.order_hash').text(hash);
-        $('.food_name').text(description);
-        $('.customer_name').text(full_name);
-        $('#customer_address').text(address);
-        $('#customer_contact').text(contact_no);
-        $('#customer_email').text(email_address);
-        $('#customer_order_date').text(date_order);
-        $('#history-details').empty().append('<th style="width: 67%; text-align: left;"><a data-toggle="modal" data-target="#CUSTreq">'+description+'</a></th><th style="width: 5%; text-align: center;">'+qty+'</th><th style="width: 25%; text-align: left;">P'+price+'</th><th style="width: 3%; text-align: right;"><button class="remove" href="">&times;</button></th>');
-    }
-</script>
-</body>
+								
+								<p id="acceptOrderTAC" class="text-left hidden" style="padding: 10px; border: 1px solid grey;">Upon proceeding to process this order, you must ensure that all of the food listed on the order must be met and be produce at a span of time that you will give to the said customer after accepting this order. If all task will not be met please do reject the order and kindly contact them to apologize for rejecting their order.</p>
+							</div>
+							<div class="modal-footer" style="background-color:white;">
+								<button id="btnActionSubmit" class="submit" >Ok</button> 
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Reject Modal -->
+			<!-- <div class="modal fade" id="RejectVIEWord" role="dialog" data-backdrop="false">
+				<div class="modal-dialog modal-md">
+					<div class="modal-content">
+						<div class="modal-header">
+							<span class="close" data-dismiss="modal">&times;</span>
+							<h2>Are you sure you want to reject this order?</h2>
+						</div>
+						<div class="modal-body">
+							<div class="info" id="customerInfo">
+								<h2>ORD#: <span id="ordNumberApprove">--</span></h2>
+							</div>
+							<div class="modal-footer" style="background-color:white;">
+								<button class="submit ordApprovedBtnOk" >Ok</button> 
+							</div>
+						</div>
+					</div>
+				</div>
+			</div> -->
+		</div>
+	</body>
+	<script src="lib/jquery.min.js"></script>
+	<script src="lib/bootstrap.min.js"></script>
+	<script src="js/jquery.growl.js" type="text/javascript"></script>
+	<script src="common/constants.js"></script>
+	<script src="common/app.js"></script>
+	<script src="common/owner_sub_checker.js"></script>
+	<script>
+		// var myResto = null;
+		var ordid = null;
+		var orderList = {};
+		var resto_latitude = null;
+		var resto_longitude = null;
+		var map, marker, geocoder;
+
+		$(document).ready(function(){
+			// loadRestaurantInfo(function(){
+				loadOrders();
+			// });
+
+			$('#btnSearch').click(function(e){
+				e.preventDefault();
+				loadOrders();
+			});
+
+			$(document).on('click', '.ordViewBtn', function(e){
+				e.preventDefault();
+				ordid = $(this).data('ordid');
+
+				showOrderDetailModal(ordid, function(){
+					 $('#VIEWord').modal('show');
+				});
+			});
+
+			$(document).on('click', '.ordApprovedBtn', function(e){
+				e.preventDefault();
+				if ($(this).hasClass("disabled")) {
+					return;
+				}
+				ordid = $(this).data('ordid');
+				showConfirmModal(ordid, 'reject', function(data){
+					$('#confirmActionModal').modal('show');
+					$('#modalConfirmQuestion').text('');
+					$('#acceptOrderTAC').removeClass('hidden');
+					$('#btnActionSubmit').addClass('ordApprovedBtnOk');
+				});
+			});
+
+			$(document).on('click', '.ordReadyBtn', function(e){
+				e.preventDefault();
+				if ($(this).hasClass("disabled")) {
+					return;
+				}
+				ordid = $(this).data('ordid');
+				showConfirmModal(ordid, 'reject', function(data){
+					$('#confirmActionModal').modal('show');
+					$('#modalConfirmQuestion').text('Order ready? ');
+					$('#btnActionSubmit').addClass('ordReadyBtnOk');
+				});
+			});
+
+			$(document).on('click', '.ordRejectBtn', function(e){
+				e.preventDefault();
+				if ($(this).hasClass("disabled")) {
+					return;
+				}
+				ordid = $(this).data('ordid');
+				showConfirmModal(ordid, 'reject', function(data){
+					$('#confirmActionModal').modal('show');
+					$('#modalConfirmQuestion').text('Reject this order? ');
+					$('#btnActionSubmit').addClass('ordRejectBtnOk');
+				});
+			});
+
+			$(document).on('click', '.ordApprovedBtnOk', function(e){
+				e.preventDefault();
+				updateOrderStatus({
+					order_id: ordid,
+					is_approved: 2,
+					is_preparing: 1,
+					employee_id: CrapiApp.config.login_data.user_id
+				}, 'approve');
+			});
+			$(document).on('click', '.ordReadyBtnOk', function(e){
+				e.preventDefault();
+				updateOrderStatus({
+					order_id: ordid,
+					is_delivered: 1
+				}, 'ready');
+			});
+			$(document).on('click', '.ordRejectBtnOk', function(e){
+				e.preventDefault();
+				updateOrderStatus({
+					order_id: ordid,
+					order_status: 'failed'
+				}, 'reject');
+			});
+
+			$(document).on('click', '#btnOrderReceived', function(e){
+				e.preventDefault();
+				updateOrderStatus({
+					order_id: ordid,
+					order_status: 'success',
+					is_received: 1
+				}, 'received', function(){
+					$('#VIEWord').modal('hide');
+				});
+			});
+
+			$(document).on('click', '#btnOrderNotClaimed', function(e){
+				e.preventDefault();
+				updateOrderStatus({
+					order_id: ordid,
+					order_status: 'success',
+					is_received: 2
+				}, 'received', function(){
+					$('#VIEWord').modal('hide');
+				});
+			});
+
+
+		});
+
+		function updateOrderStatus(requestObj, action, callback){
+			CrapiApp.updateOrder(requestObj)
+			.then(function(res){
+				$('.loader').remove();
+
+				if (res.result === 'OK') {
+					loadOrders();
+					if (action == 'approve') {
+						$.growl.notice({ title: "Success", message: "Order has been successfully accepted!" });
+					} else if (action == 'reject'){
+						$.growl.notice({ title: "Success", message: "Order has been successfully rejected!" });
+					} else if (action == 'ready'){
+						$.growl.notice({ title: "Success", message: "Order is now ready!" });
+					} else if (action == 'received'){
+						$.growl.notice({ title: "Success", message: "Order status updated!" });
+					}
+					$('#confirmActionModal').modal('hide');
+				}
+
+				if (typeof callback == 'function') {
+					callback();
+				}
+			})
+			.catch(function(err){
+				console.warn(err);
+			});
+		}
+
+		// function loadRestaurantInfo(callback){
+		// 	CrapiApp.searchResto({
+		// 		owner_id: CrapiApp.config.login_data.resto_info.owner_id
+		// 	})
+		// 	.then(function(res){
+		// 		$('.loader').remove();
+
+		// 		if (res.result === 'OK') {
+		// 			if (typeof res.data[0] !== 'undefined') {
+
+		// 				console.warn(res.data[0]);
+		// 				myResto = res.data[0];
+		// 				if (typeof callback == 'function') {
+		// 					callback();
+		// 				}
+		// 			}
+		// 		}
+		// 	})
+		// 	.catch(function(err){
+		// 		console.warn(err);
+		// 	});
+		// }
+		
+		function loadOrders(){
+			CrapiApp.showCommonLoader();
+			var search = $('[name="search"]').val();
+			CrapiApp.orderListUrl({
+				search: search,
+				is_approved: [1,2],
+				order_status: ORDER_STATUS.pending,
+				resto_id: CrapiApp.config.login_data.resto_info.id
+			})
+			.then(function(res){
+				$('#ordListResult').html('');
+
+				if (res.result === 'OK') {
+					for (var key in res.data) {
+						// skip loop if the property is from prototype
+						if (!res.data.hasOwnProperty(key)) continue;
+						var obj = res.data[key];
+						var empRow = null;
+						empRow = $('#masterOrdRow').clone();
+						empRow.removeClass('hidden');
+						empRow.attr('id', '');
+						empRow.find('.ordDate').html(obj.created_at);
+						empRow.find('.ordName').html(obj.customer_fullname);
+						empRow.find('.ordViewBtn').attr('data-ordid', obj.id);
+						empRow.find('.ordApprovedBtn').attr('data-ordid', obj.id);
+						empRow.find('.ordRejectBtn').attr('data-ordid', obj.id);
+						empRow.find('.ordReadyBtn').attr('data-ordid', obj.id);
+						empRow.find('.ordReadyBtn').attr('id', "ordReadyBtn"+obj.id);
+
+
+						if (obj.payment_type != null) {
+							empRow.find('.ordPaymentMethod').text(obj.payment_type.charAt(0).toUpperCase() + obj.payment_type.slice(1));
+							empRow.find('.ordPaymentMethod').removeClass('hidden');
+						} else {
+							// empRow.find('.ordReadyBtn').remove();
+							// empRow.find('#ordReadyBtn'+obj.id).addClass('disabled');
+							empRow.find('.ordReadyBtn').addClass('disabled');
+							// empRow.find('.ordApprovedBtn').addClass('disabled');
+							// empRow.find('.ordApprovedBtn').removeClass('ordApprovedBtn');
+						}
+
+						if(obj.is_delivered == 1) {
+							empRow.find('.badgeReady').removeClass('hidden');
+							empRow.find('.ordRejectBtn').addClass('hidden');
+							empRow.find('.ordApprovedBtn').addClass('hidden');
+							empRow.find('.ordReadyBtn').addClass('hidden');
+						} else if (obj.is_preparing == 1) {
+							empRow.find('.ordRejectBtn').remove();
+							empRow.find('.ordApprovedBtn').addClass('hidden');
+							empRow.find('.ordReadyBtn').removeClass('hidden');
+							empRow.find('.badgeReady').addClass('hidden');
+						} else {
+							empRow.find('.badgeReady').addClass('hidden');
+							empRow.find('.ordRejectBtn').removeClass('hidden');
+							empRow.find('.ordApprovedBtn').removeClass('hidden');
+							empRow.find('.ordReadyBtn').addClass('hidden');
+						}
+
+
+						if (obj.payment_type == 'paymaya') {
+							empRow.find('.ordRejectBtn').addClass('hidden');
+						}
+						
+
+						$('#ordListResult').append(empRow);
+
+						orderList[obj.id] = obj;
+					}
+				}
+			})
+			.catch(function(err){
+				console.warn(err);
+			})
+			.always(function(){
+				CrapiApp.removeCommonLoader();
+			});
+		}
+
+		function showConfirmModal(ordid, status, callback){
+			CrapiApp.showCommonLoader();
+
+			$("#btnActionSubmit").removeClass();
+			$("#btnActionSubmit").addClass('submit');
+			CrapiApp.getOrderById({
+				order_id: ordid,
+			})
+			.then(function(res){
+				console.log(res);
+				// if (typeof orderList[ordid] == 'undefined') {
+				// 	console.warn("Customer order not found.");
+				// 	return;
+				// }
+				// var customerInfo = orderList[ordid];
+				$('#ordNumbered').text(res.data.order_number);
+				console.log(res.data.order_number);
+				console.log($('#ordNumbersss'));
+				// $('#ordNumberApprove').html(customerInfo.order_number);
+				// $('#customerInfo #custFullname').html(customerInfo.customer_fullname);
+				// $('#customerInfo #custAddress').html(customerInfo.customer_address);
+				// $('#customerInfo #custContactNumber').html(customerInfo.contact_number);
+				// $('#customerInfo #custEmail').html(customerInfo.email);
+				// $('#customerInfo #custCreated').html(customerInfo.created_at);
+
+				// if (res.result === 'OK') {
+				// 	var subTotalPrice = 0;
+				// 	for (var key in res.data) {
+				// 		// skip loop if the property is from prototype
+				// 		if (!res.data.hasOwnProperty(key)) continue;
+				// 		var obj = res.data[key];
+				// 		var ordDetRow = $('#masterOrdDetailRow').clone();
+				// 		ordDetRow.removeClass('hidden');
+				// 		ordDetRow.find('.ordDetProdname').html(obj.name);
+				// 		ordDetRow.find('.ordDetQty').html(obj.qty);
+				// 		ordDetRow.find('.ordDetPrice').html(obj.price);
+
+				// 		$('#ordDetailListResult').append(ordDetRow);
+				// 		subTotalPrice = Number(obj.price) + Number(subTotalPrice);
+				// 	}
+
+				// 	var vatObj = CrapiApp.calculateVat(subTotalPrice);
+				// 	$('#ordSubtotal').html(subTotalPrice);
+				// 	$('#ordVat').html(vatObj.amount);
+				// 	$('#ordTotalPayable').html(vatObj.total_payable);
+				// }
+
+				if (typeof callback == 'function') {callback(res.data);}
+			})
+			.catch(function(err){
+				console.warn(err);
+			})
+			.always(function(){
+				CrapiApp.removeCommonLoader();
+			});
+		}
+
+		function showOrderDetailModal(ordid, callback){
+			CrapiApp.showCommonLoader();
+			CrapiApp.getOrderDetails({
+				order_id: ordid
+			})
+			.then(function(res){
+				console.warn('ORDERDETAILS -----------------');
+				console.warn(res);
+				$('#ordDetailListResult').html('');
+				if (typeof orderList[ordid] == 'undefined') {
+					console.warn("Customer order not found.");
+					return;
+				}
+				
+				// - load map
+				resto_latitude = Number(res.order.latitude);
+				resto_longitude = Number(res.order.longitude);
+
+				initMap();
+
+				var customerInfo = orderList[ordid];
+				$('#ordNumber').html(customerInfo.order_number);
+				$('#ordNumberApprove').html(customerInfo.order_number);
+				$('#customerInfo #custFullname').html(customerInfo.customer_fullname);
+				$('#customerInfo #custAddress').html(customerInfo.customer_address);
+				$('#customerInfo #custContactNumber').html(customerInfo.contact_number);
+				$('#customerInfo #custEmail').html(customerInfo.email);
+				$('#customerInfo #custCreated').html(customerInfo.created_at);
+				if (typeof res.order.payment_type !== 'undefined' && res.order.payment_type != null) {
+					$('#customerInfo #custPaymentType').html('<span class="label label-info">'+res.order.payment_type.toUpperCase()+'</span>');
+					$('#customerInfo #custCash').html("₱ " + res.order.cod_cash);
+					$('#customerInfo #custChange').html("₱ " + (Number(res.order.cod_cash) - Number(res.order.sub_total)));
+				}
+
+				if (res.result === 'OK') {
+					var subTotalPrice = 0;
+					for (var key in res.data) {
+						// skip loop if the property is from prototype
+						if (!res.data.hasOwnProperty(key)) continue;
+						var obj = res.data[key];
+						var ordDetRow = $('#masterOrdDetailRow').clone();
+						ordDetRow.removeClass('hidden');
+						ordDetRow.find('.ordDetProdname').html(obj.name);
+						ordDetRow.find('.ordDetQty').html(obj.qty);
+						ordDetRow.find('.ordDetPrice').html(obj.price);
+
+						$('#ordDetailListResult').append(ordDetRow);
+						var prodQty = Number(obj.qty);
+						subTotalPrice = (Number(obj.price) * prodQty) + Number(subTotalPrice);
+					}
+
+					var vatObj = CrapiApp.calculateVat(subTotalPrice);
+					$('#ordSubtotal').html(subTotalPrice);
+					$('#ordVat').html(vatObj.amount);
+					$('#ordTotalPayable').html(vatObj.total_payable);
+				}
+
+				if (typeof callback == 'function') {callback();}
+			})
+			.catch(function(err){
+				console.warn(err);
+			})
+			.always(function(){
+				CrapiApp.removeCommonLoader();
+			});
+		}
+
+		function getDefaultMapCenter() {
+			var defaultLat = resto_latitude ||  10.3157,
+			defaultLng =  resto_longitude ||  123.8854;
+			console.log("LAT ---> " + defaultLat);
+			console.log("LNG ---> " + defaultLng);
+			return {
+				lat: defaultLat,
+				lng: defaultLng
+			} 
+		}
+
+		function initMap() {
+
+			geocoder = new google.maps.Geocoder;
+
+			map = new google.maps.Map(document.getElementById('map'), {
+				zoom: 14,
+				center: getDefaultMapCenter()
+			});
+
+			marker = new google.maps.Marker({
+				map: map,
+				position: getDefaultMapCenter()
+			});
+
+		}
+	</script>
+	<script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBb9gjcZGig7KAgoJC1EmMHA98Rp8Ayz98&amp;callback=initMap"></script>
 </html>

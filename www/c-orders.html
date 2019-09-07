@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ORDER HISTORY</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="js/o-main.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/o-main.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link rel="stylesheet" type="text/css" href="css/c-hist.css">
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link href="css/jquery.growl.css" rel="stylesheet" type="text/css" />
+<body>
+
+<!-- Top Navigation Menu -->
+<div class="topnav" id="myTopnav">
+	<a href="c-orders.html" class="active">Orders</a>
+	<a href="c-hist.html">Order History</a>
+	<a href="c-locate-resto.html">Locate</a>
+	<a href="index.html" id="log-out">Logout</a>
+	<a href="javascript:void(0);" class="icon" onclick="myFunction()">
+		<i class="fa fa-bars"></i>
+	</a>
+</div>
+
+<div class="main">
+	<br>
+	<div class="title">
+		<h1>My Orders</h1>
+	</div>
+	<br>
+	<div class="container-fluid">
+		<div class="left">
+			<form action="" method="GET">
+				<input class="search" type="text" placeholder="Search.." name="search">
+				<button type="button" class="btn-light search-btn-light" style="padding: 10px !important;" id="fsearch"><i class="fa fa-search"></i></button>
+			</form>
+		</div>
+	</div>
+
+	<div class="container-fluid">
+		<table class="table">
+			<thead>
+				<tr>
+					<th class="text-left"><b>Restaurant Name</b></th>
+					<th class="text-center"><b>Order Date</b></th>
+					<th class="text-center"><b>Status</b></th>
+					<th class="text-center"><b>Amount Due</b></th>
+					<th class="text-right"><b>Action</b></th>
+				</tr>
+			</thead>
+			<tbody id="tbody-order-list">
+			</tbody>
+		</table>
+	</div>
+
+</div>
+<!-- Add Modal -->
+<div class="modal fade" id="VIEWord" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<span class="close" data-dismiss="modal">&times;</span>
+				<div class="col-12">
+
+					<h3><small>ORD#:</small><b id="order_hash">--</b></h3>
+				</div>
+			</div>
+			<div class="modal-body">
+				<div class="col-12">
+					<h3 class="text-center">Restaurant's Location</h3>
+					<div id="map" style="height: 250px;"></div><br>
+					
+					<div class="info bg-info" style="padding: 20px 20px;">
+						<center><h4>Customer Info</h4></center>
+						<p> Customer name: <b id="customer_name">--</b></p>
+						<p> Address: <b id="address">--</b></p>
+						<p> Contact number: <b id="contact_number">--</b></p>
+						<p> Email address: <b id="email_address">--</b></p>
+						<p> Date & Time: <b id="date_time">--</b></p>
+						<p> Status: <b id="orderStatus">--</b></p>
+						<!-- <p> GUID: <b id="orderGuid">--</b></p> -->
+						<p> Payment Type: <b id="orderPaymentType">--</b></p>
+						<p> Cash: <b id="orderCash">--</b></p>
+						<p> Change: <b id="orderChange">--</b></p>
+						<br>
+						<center><button class="btn btn-info" id="showCustLocationPickerModal">Update my location.</button></center>
+					</div>
+
+					<div class="info bg-warning" style="padding: 20px 20px;">
+						<center><h4>Employee Info</h4></center>
+						<p> Employee name: <b id="ordEmpName">--</b></p>
+						<p> Contact number: <b id="ordEmpContact">--</b></p>
+					</div>
+				</div>
+				<div class="col-12">
+					<br>
+					<br>
+					<table class="table">
+						<thead>
+							<tr>
+								<th class="text-left"><b>Product</b></th>
+								<th class="text-center"><b>Qty</b></th>
+								<th class="text-center"><b>Price</b></th>
+							</tr>
+						</thead>
+						<tbody id="tbody-order-list-view">
+						</tbody>
+						<tfoot id="fbody-order-list-view">
+						</tfoot>
+					</table>
+					
+					<div class="text-center">
+						<!-- <button class="btn btn-success" id="btnOrderReceived" style=" padding: 10px !important; width: 200px; border-radius: 0; ">
+							<span class="fa fa-check"></span> Order Received 
+						</button> -->
+
+						<button class="btn btn-success" id="btnupdatePaymentMethod" style=" padding: 10px !important; width: 200px; border-radius: 0; ">
+							<span class="fa fa-money"></span> Update Payment Method 
+						</button>
+						<div class="alert alert-warning" id="orderPaymentWarning">
+							Your order needs to be approved by employee. Please update payment method after employee's approval.
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- MODALS -->
+<div class="modal fade" id="paymentMethodOptionModal" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<span class="close" data-dismiss="modal">&times;</span>
+				<input type="hidden" name="del-order" id="del-order">
+				<h2>Payment method.</h2>
+			</div>
+			<div class="modal-body">
+				<div class="regbox">
+					<h4>Choose payment method.</h4><br>
+					<button class="btn btn-success btn-block" id="btnCod" style="padding: 12px; border-radius: 0;">Cash on Pickup</button><br>
+					<button class="btn btn-success btn-block" id="btnPaymaya" style="padding: 12px; border-radius: 0;">Paymaya</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="cashOnDeliveryModal" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<span class="close" data-dismiss="modal">&times;</span>
+				<input type="hidden" name="del-order" id="del-order">
+				<h2>Cash On Delivery</h2>
+			</div>
+			<div class="modal-body">
+				<div class="regbox">
+					<h4>How much cash do you have?</h4><br>
+					<center><b>PAYABLE AMOUNT: </b>P <span id="totalAmountPayable">--</span></center>
+					<br>
+					<center><b>CHANGE: </b>P <span id="yourChange">0</span></center>
+					<br>
+					<input type="number" max="99999" min="1" id="moneyOnHand" class="input-text qty text search-btn-light" >
+					<button class="btn btn-success btn-block" id="placeOrderByCod" style="padding: 12px; border-radius: 0;">Continue <span class="fa fa-arrow-right"></span></button><br>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="paymayaModal" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<span class="close" data-dismiss="modal">&times;</span>
+				<h2>Paymaya</h2>
+			</div>
+			<div class="modal-body">
+				<iframe 
+					id="paymayaPaymentIframe"
+					overflow-x='hidden'
+					style="width: 100%; border: 0; height: 535px;"
+					onload="if(typeof paymayaPaymentIframeLoaded == 'function'){paymayaPaymentIframeLoaded()}" 
+				></iframe>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="custUpdateLocationModal" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<span class="close" data-dismiss="modal">&times;</span>
+				<h4>Pin you location</h4>
+			</div>
+			<div class="modal-body">
+				<input type="hidden" name="cust_latitude">
+				<input type="hidden" name="cust_longitude">
+				<div class="form-group">
+					<input type="text" name="cust_address" class="form-control">
+				</div>
+				<div id="cust_map" style="height: 250px;"></div>
+				<br>
+				<center><button class="btn btn-success" id="updateCustomerLocationAction">UPDATE</button></center>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script src="js/o-main.js"></script>
+<script src="lib/jquery.min.js"></script>
+<script src="lib/bootstrap.min.js"></script>
+<script src="js/jquery.growl.js" type="text/javascript"></script>
+<script src="common/constants.js"></script>
+<script src="common/app.js"></script>
+<script type="text/javascript">
+	var resto_latitude = null;
+	var resto_longitude = null;
+	var customer_order_id  = null;
+	var map, marker, geocoder;
+
+	$(document).ready(function() {
+		loadOrders();
+		$(document).on('click', '#fsearch', function(){
+			loadOrders();
+		});
+		$(document).on('click', '#btnOrderReceived', function(){
+			let selOrderId = $(this).data('order_id');
+			updateOrderStatus(selOrderId);
+		});
+
+		$(document).on('click', '#btnupdatePaymentMethod', function(){
+			$('#paymentMethodOptionModal').modal('show');
+			$('#VIEWord').modal('hide');
+		});
+
+		$(document).on('click', '#btnCod', function(){
+			$('#paymentMethodOptionModal').modal('hide');
+			$('#cashOnDeliveryModal').modal('show');
+		});
+
+		$(document).on('click', '#btnPaymaya', function(){
+			CrapiApp.showCommonLoader();
+			get_paymaya_checkout_url();
+		});
+
+		$(document).on('click', '#showCustLocationPickerModal', function(){
+			$('#custUpdateLocationModal').modal('show');
+			$('#VIEWord').modal('hide');
+		});
+
+		$(document).on('click', '#updateCustomerLocationAction', function(){
+			// do update location process
+			updateOrderLocation();
+		});
+
+		$('#moneyOnHand').keyup(function(){
+			var money = Number($('#moneyOnHand').val());
+			var cost = Number($('#totalAmountPayable').text());
+			if (money <= cost) {
+				return;
+			}
+			var change = Number(money) - Number(cost);
+			$('#yourChange').text(change);
+		});
+
+		$(document).on('click', '#placeOrderByCod', function(){
+			var totalAmountPayable = $('#totalAmountPayable').text();
+			var moneyOnHand = $('#moneyOnHand').val();
+			if ($('#moneyOnHand').val() < 1) {
+				$.growl.error({ message: "Please input cash amount!"});
+				return;
+			} else if (Number(moneyOnHand) < Number(totalAmountPayable)) {
+				$.growl.error({ message: "Cash is not enough!"});
+				return;
+			} else {
+				placeOrderByCod();
+			}
+		});
+	});
+
+	function loadOrders(){
+		CrapiApp.showCommonLoader();
+		var search = $('[name="search"]').val();
+		CrapiApp.orderListUrl({
+			search: search, 
+			order_status: ORDER_STATUS.pending,
+			customer_id: CrapiApp.config.login_data.user_id,
+			is_approved: [1,2],
+		})
+		.then(function(result_data){
+			$('#tbody-order-list').empty();
+
+			if (result_data.result === 'OK') {
+				var tbody_html = "";
+				$.each( result_data.data, function( key, value ) {
+					if (value.id == undefined) {
+						return false;
+					}
+						tbody_html +='<tr id="'+value.id+'">';
+							tbody_html +='<td class="text-left">'+value.restaurants_name+'</td>';
+							tbody_html +='<td class="text-center">'+value.created_at+'</td>';
+
+							if(value.is_delivered == 1) {
+								tbody_html +='<td class="text-center"><span class="label label-success">Ready</span></td>';
+							} else if (value.is_approved == 2 && value.payment_type == null) {
+								tbody_html +='<td class="text-center"><span class="label label-warning">Payment</span></td>';
+							} else if (value.is_preparing == 1) {
+								tbody_html +='<td class="text-center"><span class="label label-info">Processing</span></td>';
+							} else {
+								tbody_html +='<td class="text-center"><span class="label label-warning">Pending</span></td>';
+							}
+
+							tbody_html +='<td class="text-center">'+value.amount_due+'</td>';
+							
+							tbody_html +='<td class="text-right">';
+								tbody_html +='<button class="editbut" name="edit_btn" onclick="view_details('+value.id+','+value.order_number+',\'' + value.created_at + '\',\'' + value.customer_fullname + '\',\'' + value.customer_fullname + '\',\'' + value.customer_address.trim() + '\',\'' + value.email + '\',\'' + value.contact_number + '\'); return false;"><i class="glyphicon glyphicon-eye-open"></i></button>';
+							tbody_html +='</td>';
+						tbody_html +='</tr>';
+
+				}); 
+				$('#tbody-order-list').empty().append(tbody_html);
+			}
+		})
+		.catch(function(err){
+			console.warn(err);
+		})
+		.always(function(){
+			CrapiApp.removeCommonLoader();
+		});
+	}
+
+
+	function view_details(order_id,order_number,date_order,full_name,description,address,email_address,contact_no) {
+		customer_order_id = order_id;
+		$('#order_hash').text(order_number);
+		$('#customer_name').text(full_name);
+		$('#address').text(address);
+		$('#contact_number').text(contact_no);
+		$('#email_address').text(email_address);
+		$('#date_time').text(date_order);
+		$('#btnOrderReceived').attr('data-order_id', order_id);
+
+		
+		CrapiApp.showCommonLoader();
+		CrapiApp.getOrderDetails({
+			order_id: order_id
+		}).then(function(result_data){
+			$('#tbody-order-list-view').empty();
+			$('#fbody-order-list-view').empty();
+			if (result_data.result == 'OK') {
+				var tbody_html = "";
+				var fbody_html = "";
+				var sub_total = 0;
+				var total_order = 0;
+
+				// - load map
+				resto_latitude = Number(result_data.resto.latitude);
+				resto_longitude = Number(result_data.resto.longitude);
+				initMap();
+				if (typeof result_data.employee.firstname != 'undefined') {
+					$('#ordEmpName').text(result_data.employee.firstname + " " + result_data.employee.lastname);
+					$('#ordEmpContact').text(result_data.employee.contact_number);
+				}
+				// $('#orderGuid').text(result_data.order.order_guid);
+				if (typeof result_data.order.payment_type !== 'undefined' && result_data.order.payment_type != null) {
+					$('#orderPaymentType').html('<span class="label label-info">'+result_data.order.payment_type.toUpperCase()+'</span>');
+					$('#orderCash').html("₱ " + result_data.order.cod_cash);
+					$('#orderChange').html("₱ " + (Number(result_data.order.cod_cash) - Number(result_data.order.sub_total)));
+				}
+
+				$('#btnOrderReceived').hide();
+				$('#btnupdatePaymentMethod').hide();
+				$('#orderPaymentWarning').hide();
+
+				if(result_data.order.is_delivered == 1) {
+					$('#btnOrderReceived').show();
+					$('#orderStatus').html('<span class="label label-success">Ready</span>');
+				} else if (result_data.order.is_approved == 2 && result_data.order.payment_type == null) {
+					$('#orderStatus').html('<span class="label label-warning">Payment</span>');
+				} else if (result_data.order.is_preparing == 1) {
+					$('#orderStatus').html('<span class="label label-info">Processing</span>');
+				} else {
+					$('#orderStatus').html('<span class="label label-warning">Pending</span>');
+				}
+
+				if (result_data.order.payment_type == null && result_data.order.is_approved == 2) {
+					$('#btnupdatePaymentMethod').show();
+				} else if (result_data.order.is_approved == 1) {
+					$('#orderPaymentWarning').show();
+				}
+
+				$.each( result_data.data, function( key, value ) {
+					if (value.id == undefined) {
+						return false;
+					}
+					sub_total += parseInt(value.sub_total, 10);
+					tbody_html +='<tr>';
+						tbody_html +='<th class="text-left"> '+value.name+' </th>';
+						tbody_html +='<th class="text-center"> '+value.qty+' </th>';
+						tbody_html +='<th class="text-center">P '+value.price+' </th>';
+					tbody_html +='</tr>';
+				}); 
+					total_order = (sub_total*.12) + sub_total;
+					fbody_html +='<tr style="background-color:#ffe680;">';
+						fbody_html +='<th class="text-left"><b>TOTAL </b></th>';
+						fbody_html +='<th> </th>';
+						fbody_html +='<th class="text-center"><b>P '+numberWithCommas(sub_total);
+						// +'<br>P '+numberWithCommas(total_order)+' (Incl. VAT)</b></th>'
+					fbody_html +='</tr>';
+				$('#tbody-order-list-view').empty().append(tbody_html);
+				$('#fbody-order-list-view').empty().append(fbody_html);
+
+				$('#totalAmountPayable').text(sub_total);
+				$('#VIEWord').modal('show');
+			}
+		})
+		.catch(function(res){
+			$.growl.error({ message: "Connection refused!"});
+		})
+		.always(function(){
+			CrapiApp.removeCommonLoader();
+		});
+	}
+
+	function updateOrderLocation(){
+        CrapiApp.showCommonLoader();
+        CrapiApp.updateOrder({
+            order_id: customer_order_id,
+            latitude: $('[name=cust_latitude]').val(),
+            longitude: $('[name=cust_longitude]').val(),
+            delivery_address: $('[name=cust_address]').val()
+        })
+        .then(function(res){
+        	$.growl.notice({ message: "Successfully updated." });
+        })
+        .catch(function(err){
+            console.warn(err);
+        })
+        .always(function(){
+            CrapiApp.removeCommonLoader();
+        });
+    }
+
+	function updateOrderStatus(selOrderId){
+        CrapiApp.showCommonLoader();
+        CrapiApp.updateOrder({
+            order_id: selOrderId,
+            order_status: ORDER_STATUS.success,
+            is_delivered: 1,
+            is_received: 1
+        })
+        .then(function(res){
+        	$.growl.notice({ message: "Successfully updated." });
+        })
+        .catch(function(err){
+            console.warn(err);
+        })
+        .always(function(){
+        	$('#VIEWord').modal('hide');
+        	loadOrders()
+            CrapiApp.removeCommonLoader();
+        });
+    }
+
+    function get_paymaya_checkout_url(){
+		CrapiApp.showCommonLoader();
+		CrapiApp.checkoutWithPaymaya({
+			order_id: customer_order_id,
+			customer_id: CrapiApp.config.login_data.user_id,
+			callback_url: window.location.origin
+		})
+		.then(function(res){
+			console.log(res);
+
+			if (res.result === 'OK') {
+				window.location.href = res.data.checkout_url 
+			}
+		})
+		.catch(function(err){
+			console.warn(err);
+		})
+		.always(function(){
+			CrapiApp.removeCommonLoader();
+		});
+	}
+
+
+	function placeOrderByCod(){
+        CrapiApp.showCommonLoader();
+        CrapiApp.updateOrder({
+            order_id: customer_order_id,
+            payment_type: 'coa',
+            cod_cash: $('#moneyOnHand').val()
+        })
+        .then(function(res){
+        	window.location.href = "c-orders.html";
+        })
+        .catch(function(err){
+            console.warn(err);
+        })
+        .always(function(){
+            CrapiApp.removeCommonLoader();
+        });
+    }
+
+	function paymayaPaymentIframeLoaded(){
+		$('#paymayaPaymentIframe').contents().find('#logo').remove();
+		$('#paymayaModal').modal('show');
+		console.log('iframe loaded successfully')
+		CrapiApp.removeCommonLoader();
+		$('#logo').remove();
+	}
+
+	function getDefaultMapCenter() {
+		var defaultLat = resto_latitude ||  10.3157,
+		defaultLng =  resto_longitude ||  123.8854;
+		console.log("LAT ---> " + defaultLat);
+		console.log("LNG ---> " + defaultLng);
+		return {
+			lat: defaultLat,
+			lng: defaultLng
+		} 
+	}
+
+	function initMap() {
+
+		geocoder = new google.maps.Geocoder;
+
+		map = new google.maps.Map(document.getElementById('map'), {
+			zoom: 14,
+			center: getDefaultMapCenter()
+		});
+
+		marker = new google.maps.Marker({
+			map: map,
+			position: getDefaultMapCenter()
+		});
+
+	}
+</script>
+<script>
+	var cust_map, cust_marker, cust_geocoder;
+	function cust_getDefaultMapCenter() {
+		var defaultLat = parseFloat($('[name=latitude]').val()) ||  10.3157,
+		defaultLng =  parseFloat($('[name=longitude]').val()) ||  123.8854;
+
+		return {
+			lat: defaultLat,
+			lng: defaultLng
+		} 
+	}
+
+	function cust_codeAddress() {
+		var address = $('[name=cust_address]').val();
+		cust_geocoder.geocode( { 'address': address}, function(results, status) {
+			if (status == 'OK') {
+				cust_map.setCenter(results[0].geometry.location);
+				cust_marker.setPosition(results[0].geometry.location);
+				console.log(results[0].geometry.location.lat());
+				let deliveryLat = results[0].geometry.location.lat();
+				let deliveryLng = results[0].geometry.location.lng();
+				$('[name=cust_latitude]').val(deliveryLat);
+				$('[name=cust_longitude]').val(deliveryLng);
+			} else {
+				$.growl.error({ message: 'Geocode was not successful for the following reason: ' + status});
+			}
+		});
+	}
+
+	function cust_initMap() {
+
+		cust_geocoder = new google.maps.Geocoder;
+
+		cust_map = new google.maps.Map(document.getElementById('cust_map'), {
+			zoom: 14,
+			center: cust_getDefaultMapCenter()
+		});
+
+		cust_marker = new google.maps.Marker({
+			map: cust_map,
+			position: cust_getDefaultMapCenter()
+		});
+
+		cust_map.addListener('click', function (e) {
+			cust_geocoder.geocode({'location': e.latLng}, function(results, status) {
+				if (status === 'OK') {
+					if (results[0]) {
+						cust_marker.setPosition(e.latLng);
+						let deliveryLat = e.latLng.lat();
+						let deliveryLng = e.latLng.lng();
+						$('[name=cust_address]').val(results[0].formatted_address);
+						$('[name=cust_latitude]').val(deliveryLat);
+						$('[name=cust_longitude]').val(deliveryLng);
+						// $('#btnContinue').attr('disabled', false);
+						// localStorage.setItem('deliveryLat', deliveryLat);
+						// localStorage.setItem('deliveryLng', deliveryLng);
+					}
+				}
+			})
+		})
+	}
+
+	$('[name=cust_address]').keydown(function (e) {
+		if(e.keyCode === 13){
+			e.preventDefault();
+			cust_codeAddress();
+		}
+	});
+</script>
+<script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBb9gjcZGig7KAgoJC1EmMHA98Rp8Ayz98&amp;callback=cust_initMap"></script>
+</body>
+</html>
